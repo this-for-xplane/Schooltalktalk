@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shool Talk Talk</title>
-    <!-- 스타일시트: 전체 레이아웃, 다크 모드, 반응형 디자인, 아코디언 및 드롭다운 메뉴 -->
     <style>
         body {
             font-family: 'Malgun Gothic', sans-serif;
@@ -313,34 +312,36 @@
         body.dark-mode .post-actions-menu button:hover {
             background-color: #444;
         }
-        .post-detail-row {
-            display: none;
-        }
-        .post-detail-row.active {
-            display: table-row;
-        }
-        .post-detail-content {
-            padding: 20px;
+        .post-detail {
+            max-height: 0;
+            overflow: hidden;
+            padding: 0 20px;
             background-color: #fff;
             border-bottom: 1px solid #eee;
-            transition: max-height 0.3s ease-out;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
         }
-        body.dark-mode .post-detail-content {
+        body.dark-mode .post-detail {
             background-color: #333;
             border-bottom: 1px solid #444;
         }
-        .post-detail-content h2 {
-            margin-top: 0;
+        .post-detail.active {
+            padding: 20px;
+            overflow: auto;
         }
-        .post-detail-content .meta {
+        .post-detail h2 {
+            margin-top: 0;
+            font-size: 1.5em;
+        }
+        .post-detail .meta {
             color: #666;
             margin-bottom: 15px;
         }
-        body.dark-mode .post-detail-content .meta {
+        body.dark-mode .post-detail .meta {
             color: #aaa;
         }
-        .post-detail-content .content {
+        .post-detail .content {
             white-space: pre-wrap;
+            font-size: 1em;
         }
         .main-container {
             display: flex;
@@ -638,7 +639,6 @@
             background-color: #333;
             border-color: #555;
         }
-        /* 반응형 디자인 */
         @media screen and (max-width: 768px) {
             body {
                 flex-direction: column;
@@ -722,6 +722,9 @@
             .post-actions-menu {
                 right: -10px;
             }
+            .post-detail.active {
+                max-height: 300px;
+            }
         }
         @media screen and (min-width: 769px) and (max-width: 1024px) {
             .main-container {
@@ -789,15 +792,12 @@
     </style>
 </head>
 <body>
-    <!-- 왼쪽 세로 탭: 메인, 커뮤니티, 설정 탭 -->
     <div class="vertical-tabs">
         <button class="tab-button active" onclick="switchTab('main')" title="시간표">📅</button>
         <button class="tab-button" onclick="switchTab('community')" title="커뮤니티">📋</button>
         <button class="tab-button" onclick="switchTab('settings')" title="설정">⚙️</button>
     </div>
-    <!-- 메인 컨텐츠 영역 -->
     <div class="content-area">
-        <!-- 메인 페이지: 시간표와 달력 -->
         <div class="main-container active">
             <div class="left-container">
                 <div class="top-controls">
@@ -851,7 +851,6 @@
                 </table>
             </div>
         </div>
-        <!-- 커뮤니티 페이지: 게시글 목록, 작성 폼 -->
         <div class="community-container">
             <div class="community-header">
                 <h2>커뮤니티</h2>
@@ -878,7 +877,6 @@
                 </table>
             </div>
         </div>
-        <!-- 설정 페이지: 프로필, 알림, 테마, 데이터 관리 등 -->
         <div class="settings-container">
             <div class="settings-profile">
                 <div class="profile-image" onclick="document.getElementById('profile-image-input').click()">
@@ -1041,15 +1039,13 @@
             </div>
         </div>
     </div>
-    <!-- 모바일 하단 탭 -->
     <div class="mobile-bottom-tabs">
         <button class="mobile-tab-button active" onclick="switchTab('main')" title="시간표">📅</button>
         <button class="mobile-tab-button" onclick="switchTab('community')" title="커뮤니티">📋</button>
         <button class="mobile-tab-button" onclick="switchTab('settings')" title="설정">⚙️</button>
     </div>
-    <!-- 자바스크립트: 기능 구현 -->
     <script>
-        // 번역 데이터: 다국어 지원을 위한 텍스트 정의
+        // 다국어 번역 데이터
         const translations = {
             ko: {
                 timetable: "시간표",
@@ -1113,24 +1109,88 @@
                 deleteConfirm: "이 게시글을 삭제하시겠습니까?",
                 shareSuccess: "게시글 내용이 클립보드에 복사되었습니다.",
                 shareError: "공유에 실패했습니다. 다시 시도해주세요."
+            },
+            en: {
+                timetable: "Timetable",
+                community: "Community",
+                settings: "Settings",
+                searchPlaceholder: "Search school",
+                classSelect: "Select class",
+                notifications: "Notification Settings",
+                theme: "Theme Settings",
+                data: "Data Management",
+                sync: "Backup & Sync",
+                privacy: "Privacy Settings",
+                help: "Help",
+                pushNotification: "Push Notifications",
+                emailNotification: "Email Notifications",
+                timetableNotification: "Timetable Change Notifications",
+                examNotification: "Exam Schedule Notifications",
+                notificationSound: "Notification Sound",
+                defaultSound: "Default Sound",
+                bellSound: "Bell Sound",
+                chimeSound: "Chime Sound",
+                dingSound: "Ding Sound",
+                darkMode: "Toggle Dark Mode",
+                fontSize: "Font Size",
+                language: "Language Settings",
+                reset: "Reset",
+                exportData: "Export Data",
+                importData: "Import Data",
+                resetData: "Reset Data",
+                autoSave: "Auto Save",
+                confirmReset: "Are you sure you want to reset all data? This action cannot be undone.",
+                autoBackup: "Auto Backup",
+                manualBackup: "Manual Backup",
+                cloudSync: "Cloud Sync",
+                lastSync: "Last Sync",
+                backupComplete: "Data restoration completed.",
+                privacyPolicy: "Privacy Policy",
+                locationSettings: "Location Settings",
+                accountSettings: "Account Settings",
+                faq: "Frequently Asked Questions",
+                contact: "Contact Us",
+                userGuide: "User Guide",
+                version: "Version Info",
+                communityHeader: "Community",
+                writePost: "Write Post",
+                postTitle: "Title",
+                postContent: "Content",
+                postAuthor: "Author (default: Anonymous)",
+                submitPost: "Post",
+                postListTitle: "Title",
+                postListAuthor: "Author",
+                postListDate: "Date",
+                postListViews: "Views",
+                deletePost: "Delete",
+                sharePost: "Share",
+                exportSuccess: "Data exported successfully.",
+                importSuccess: "Data imported successfully.",
+                importError: "Invalid file format. Please upload a JSON file.",
+                importInvalid: "Invalid data format.",
+                postNotFound: "Post not found.",
+                deleteConfirm: "Are you sure you want to delete this post?",
+                shareSuccess: "Post content copied to clipboard.",
+                shareError: "Failed to share. Please try again."
             }
         };
 
-        // 현재 언어 설정 변수
-        let currentLanguage = 'ko';
+        let currentLanguage = localStorage.getItem('language') || 'ko';
+        const timetableCells = document.querySelectorAll('.timetable td[contenteditable="true"]');
+        let currentClass = "1반";
+        let currentSchool = "";
+        const timetables = {};
 
-        // 언어 변경: 선택된 언어로 UI 텍스트 업데이트
+        // 언어 변경 및 UI 업데이트
         function changeLanguage(lang) {
             currentLanguage = lang;
             localStorage.setItem('language', lang);
             updateTranslations();
             const languageSelect = document.querySelector('.language-select');
-            if (languageSelect) {
-                languageSelect.value = lang;
-            }
+            if (languageSelect) languageSelect.value = lang;
         }
 
-        // UI 번역 업데이트: 선택된 언어에 따라 텍스트 적용
+        // UI 번역 업데이트
         function updateTranslations() {
             const t = translations[currentLanguage];
             document.querySelector('.tab-button[onclick="switchTab(\'main\')"]').title = t.timetable;
@@ -1143,9 +1203,7 @@
             const settingsItems = document.querySelectorAll('.settings-item');
             settingsItems.forEach(item => {
                 const section = item.dataset.section;
-                if (section && t[section]) {
-                    item.childNodes[0].textContent = t[section];
-                }
+                if (section && t[section]) item.childNodes[0].textContent = t[section];
             });
             const notificationsContent = document.getElementById('notifications-content');
             if (notificationsContent) {
@@ -1215,236 +1273,32 @@
             }
         }
 
-        // 페이지 로드 시 초기화
-        window.addEventListener('load', function() {
-            changeLanguage('ko'); // 기본 언어: 한국어
-            createCalendar(2025, 4); // 2025년 5월 달력 생성
-            loadPosts(); // 게시글 목록 로드
-            restoreSettings(); // 저장된 설정 복원
-            if (localStorage.getItem('darkMode') === 'true') {
-                document.body.classList.add('dark-mode');
-            }
-            const savedProfileImage = localStorage.getItem('profileImage');
-            if (savedProfileImage) {
-                document.getElementById('profile-preview').src = savedProfileImage;
-            }
-            const savedUserName = localStorage.getItem('user-name');
-            const savedUserEmail = localStorage.getItem('user-email');
-            if (savedUserName) document.getElementById('user-name').textContent = savedUserName;
-            if (savedUserEmail) document.getElementById('user-email').textContent = savedUserEmail;
-        });
-
-        // 학교 목록: 서울시 중학교 데이터
-        const schools = [
-            "가락중학교", "가산중학교", "가원중학교", "가재울중학교", "강남중학교", "강동중학교", "강명중학교", "강북중학교", "강빛중학교", "강신중학교", "강일중학교", "강현중학교", "개봉중학교", "개운중학교", "개웅중학교", "개원중학교", "개포중학교", "거원중학교", "건국대학교 사범대학 부속중학교", "경서중학교", "경성중학교", "경수중학교", "경신중학교", "경원중학교", "경인중학교", "경일중학교", "경희여자중학교", "경희중학교", "고덕중학교", "고려대학교 사범대학 부속중학교", "고명중학교", "고척중학교", "공릉중학교", "공항중학교", "관악중학교", "광남중학교", "광성중학교", "광신중학교", "광양중학교", "광운중학교", "광장중학교", "광진중학교", "광희중학교", "구로중학교", "구룡중학교", "구산중학교", "구암중학교", "구의중학교", "구일중학교", "국사봉중학교", "금옥중학교", "금호여자중학교", "길음중학교", "난곡중학교", "난우중학교", "남강중학교", "남대문중학교", "남서울중학교", "남성중학교", "내곡중학교", "노곡중학교", "노원중학교", "노일중학교", "녹천중학교", "단국대학교 사범대학 부속중학교", "당곡중학교", "당산서중학교", "당산중학교", "대경중학교", "대광중학교", "대림중학교", "대명중학교", "대방중학교", "대성중학교", "대신중학교", "대영중학교", "대왕중학교", "대원국제중학교", "대청중학교", "대치중학교", "덕산중학교", "덕성여자중학교", "덕수중학교", "덕원중학교", "도곡중학교", "도봉중학교", "동구여자중학교", "동국대학교 사범대학 부속 가람중학교", "동국대학교 사범대학 부속중학교", "동대문중학교", "동덕여자중학교", "동도중학교", "동마중학교", "동명여자중학교", "동북중학교", "동성중학교", "동신중학교", "동양중학교", "동원중학교", "동일중학교", "동작중학교", "둔촌중학교", "등명중학교", "등원중학교", "등촌중학교", "마곡중학교", "마곡하늬중학교", "마장중학교", "마포중학교", "면목중학교", "명덕여자중학교", "명일중학교", "명지중학교", "목동중학교", "목운중학교", "목일중학교", "무학중학교", "문래중학교", "문성중학교", "문일중학교", "문정중학교", "문창중학교", "문현중학교", "미성중학교", "반포중학교", "방배중학교", "방산중학교", "방원중학교", "방이중학교", "방학중학교", "방화중학교", "배명중학교", "배문중학교", "배재중학교", "배화여자중학교", "백석중학교", "백운중학교", "번동중학교", "보성여자중학교", "보성중학교", "보인중학교", "봉림중학교", "봉영여자중학교", "봉원중학교", "봉은중학교", "봉화중학교", "북서울중학교", "북악중학교", "불광중학교", "불암중학교", "사당중학교", "삼각산중학교", "삼선중학교", "삼성중학교", "삼정중학교", "상경중학교", "상계제일중학교", "상계중학교", "상도중학교", "상명대학교 사범대학 부속여자중학교", "상명중학교", "상봉중학교", "상신중학교", "상암중학교", "상원중학교", "상일중학교", "상현중학교", "서라벌중학교", "서문여자중학교", "서연중학교", "서운중학교", "서울대학교 사범대학 부설여자중학교", "서울대학교 사범대학 부설중학교", "서울문영여자중학교", "서울여자중학교", "서울체육중학교", "서일중학교", "서초중학교", "석관중학교", "석촌중학교", "선덕중학교", "선린중학교", "선유중학교", "선일여자중학교", "선정중학교", "성남중학교", "성내중학교", "성덕여자중학교", "성보중학교", "성사중학교", "성산중학교", "성서중학교", "성수중학교", "성신여자중학교", "성심여자중학교", "성암여자중학교", "성원중학교", "성일중학교", "성재중학교", "세곡중학교", "세륜중학교", "세일중학교", "세화여자중학교", "솔샘중학교", "송곡중학교", "송례중학교", "송정중학교", "송파중학교", "수락중학교", "수명중학교", "수서중학교", "수송중학교", "수유중학교", "숙명여자중학교", "숭곡중학교", "숭문중학교", "숭실중학교", "숭의여자중학교", "숭인중학교", "시흥중학교", "신관중학교", "신광여자중학교", "신구중학교", "신길중학교", "신남중학교", "신도림중학교", "신도봉중학교", "신도중학교", "신동중학교", "신림중학교", "신명중학교", "신목중학교", "신반포중학교", "신방학중학교", "신사중학교", "신상중학교", "신서중학교", "신수중학교", "신암중학교", "신양중학교", "신연중학교", "신원중학교", "신월중학교", "신일중학교", "신정여자중학교", "신창중학교", "신천중학교", "신현중학교", "신화중학교", "아주중학교", "아현중학교", "안천중학교", "압구정중학교", "양강중학교", "양동중학교", "양서중학교", "양정중학교", "양진중학교", "양천중학교", "양화중학교", "언남중학교", "언북중학교", "언주중학교", "여의도중학교", "역삼중학교", "연북중학교", "연서중학교", "연신중학교", "연천중학교", "연희중학교", "염경중학교", "염광중학교", "염창중학교", "영남중학교", "영도중학교", "영동중학교", "영등포중학교", "영락중학교", "영란여자중학교", "영림중학교", "영서중학교", "영원중학교", "영파여자중학교", "영훈국제중학교", "예일여자중학교", "오금중학교", "오남중학교", "오류중학교", "오륜중학교", "오산중학교", "오주중학교", "옥정중학교", "온곡중학교", "용강중학교", "용곡중학교", "용마중학교", "용문중학교", "용산중학교", "우신중학교", "위례솔중학교", "원묵중학교", "원촌중학교", "월계중학교", "월곡중학교", "월촌중학교", "윤중중학교", "은성중학교", "은평중학교", "을지중학교", "이수중학교", "이화여자대학교 사범대학 부속 이화·금란중학교", "인수중학교", "인왕중학교", "인창중학교", "인헌중학교", "일신여자중학교", "자양중학교", "잠신중학교", "잠실중학교", "장승중학교", "장안중학교", "장원중학교", "장위중학교", "장충중학교", "장평중학교", "재현중학교", "전농중학교", "전동중학교", "전일중학교", "정신여자중학교", "정원여자중학교", "정의여자중학교", "정화여자중학교", "종암중학교", "중계중학교", "중동중학교", "중랑중학교", "중암중학교", "중앙대학교 사범대학 부속중학교", "중앙여자중학교", "중앙중학교", "중원중학교", "중평중학교", "중화중학교", "증산중학교", "진관중학교", "진선여자중학교", "창덕여자중학교", "창동중학교", "창문여자중학교", "창북중학교", "창일중학교", "창천중학교", "천왕중학교", "천일중학교", "천호중학교", "청담중학교", "청량중학교", "청운중학교", "청원중학교", "충암중학교", "하계중학교", "한강중학교", "한산중학교", "한성여자중학교", "한성중학교", "한양대학교 사범대학 부속중학교", "한양중학교", "한영중학교", "한울중학교", "한천중학교", "항동중학교", "해누리중학교", "행당중학교", "휘원여자중학교", "홍은중학교", "홍익대학교 사범대학 부속여자중학교", "홍익대학교 사범대학 부속중학교", "화계중학교", "화곡중학교", "화원중학교", "환일중학교", "효문중학교", "휘경여자중학교", "휘경중학교", "휘문중학교"
-        ];
-
-        // 시간표 및 학교 선택 변수
-        const schoolList = document.getElementById('school-list');
-        const timetableCells = document.querySelectorAll('.timetable td[contenteditable="true"]');
-        let currentClass = "1반";
-        let currentSchool = "";
-        const timetables = {};
-
-        // 학교 선택: 선택된 학교의 시간표 초기화
-        function selectSchool(school) {
-            currentSchool = school;
-            if (!timetables[school]) {
-                timetables[school] = {
-                    "1반": Array(timetableCells.length).fill(""),
-                    "2반": Array(timetableCells.length).fill(""),
-                    "3반": Array(timetableCells.length).fill(""),
-                    "4반": Array(timetableCells.length).fill("")
-                };
-            }
-            loadTimetable();
-        }
-
-        // 시간표 로드: 현재 학교와 반의 시간표 표시
-        function loadTimetable() {
-            if (currentSchool && timetables[currentSchool]) {
-                timetableCells.forEach((cell, index) => {
-                    cell.innerText = timetables[currentSchool][currentClass][index];
-                });
-            }
-        }
-
-        // 반 변경: 현재 시간표 저장 후 새 반으로 전환
-        function switchClass(newClass) {
-            if (currentSchool) {
-                timetableCells.forEach((cell, index) => {
-                    timetables[currentSchool][currentClass][index] = cell.innerText;
-                });
-            }
-            currentClass = newClass;
-            loadTimetable();
-        }
-
-        // 학교 목록 생성: 검색 가능한 학교 목록 추가
-        schools.forEach(school => {
-            const option = document.createElement('a');
-            option.href = "#";
-            option.textContent = school;
-            option.onclick = function(e) {
-                e.preventDefault();
-                document.getElementById("search-input").value = school;
-                schoolList.style.display = "none";
-                selectSchool(school);
-            };
-            schoolList.appendChild(option);
-        });
-
-        // 시간표 입력 처리: 입력된 내용 저장
-        timetableCells.forEach(cell => {
-            cell.addEventListener('blur', function() {
-                if (currentSchool) {
-                    const index = Array.from(timetableCells).indexOf(cell);
-                    timetables[currentSchool][currentClass][index] = cell.innerText;
-                }
-            });
-        });
-
-        // 학교 검색: 입력에 따라 학교 목록 필터링
-        function filterSchools() {
-            const input = document.getElementById("search-input");
-            const filter = input.value.toLowerCase();
-            const options = schoolList.getElementsByTagName("a");
-            if (filter === "") {
-                schoolList.style.display = "none";
-                return;
-            }
-            schoolList.style.display = "block";
-            let visible = false;
-            for (let i = 0; i < options.length; i++) {
-                const option = options[i];
-                const text = option.textContent || option.innerText;
-                if (text.toLowerCase().includes(filter)) {
-                    option.style.display = "block";
-                    visible = true;
-                } else {
-                    option.style.display = "none";
-                }
-            }
-            if (!visible) {
-                schoolList.style.display = "none";
-            }
-        }
-
-        // 달력 생성: 지정된 연도와 월로 달력 생성
-        function createCalendar(year = 2025, month = 4) {
-            const calendarBody = document.getElementById('calendar-body');
-            const firstDay = new Date(year, month, 1);
-            const lastDay = new Date(year, month + 1, 0);
-            const startDay = firstDay.getDay();
-            const totalDays = lastDay.getDate();
-            let date = 1;
-            let calendar = '';
-            for (let i = 0; i < 6; i++) {
-                let row = '<tr>';
-                for (let j = 0; j < 7; j++) {
-                    const cellIndex = i * 7 + j;
-                    if (cellIndex < startDay || date > totalDays) {
-                        row += '<td><div class="date-number"></div><textarea class="memo" data-date=""></textarea></td>';
-                    } else {
-                        const dateStr = `${year}-${month + 1}-${date}`;
-                        row += `<td><div class="date-number">${date}</div><textarea class="memo" data-date="${dateStr}"></textarea></td>`;
-                        date++;
-                    }
-                }
-                row += '</tr>';
-                calendar += row;
-            }
-            calendarBody.innerHTML = calendar;
-
-            // 메모 저장 및 로드
-            document.querySelectorAll('.memo').forEach(memo => {
-                const dateStr = memo.dataset.date;
-                if (dateStr) {
-                    const savedMemo = localStorage.getItem(`memo-${dateStr}`);
-                    if (savedMemo) memo.value = savedMemo;
-                    memo.addEventListener('input', () => {
-                        localStorage.setItem(`memo-${dateStr}`, memo.value);
-                    });
-                }
-            });
-        }
-
-        // 검색창 포커스 처리
-        document.getElementById("search-input").addEventListener("focus", function() {
-            if (this.value !== "") {
-                schoolList.style.display = "block";
-            }
-        });
-
-        // 검색창 포커스 해제 처리
-        document.getElementById("search-input").addEventListener("blur", function() {
-            setTimeout(() => {
-                schoolList.style.display = "none";
-            }, 200);
-        });
-
-        // 시간표 입력 제한: Enter 키와 붙여넣기 처리
-        document.querySelectorAll('.timetable td[contenteditable="true"]').forEach(cell => {
-            cell.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                }
-            });
-            cell.addEventListener('paste', function(e) {
-                e.preventDefault();
-                const text = (e.originalEvent || e).clipboardData.getData('text/plain');
-                document.execCommand('insertText', false, text.replace(/[\r\n]/g, ' '));
-            });
-        });
-
-        // 탭 전환: 메인, 커뮤니티, 설정 간 화면 전환
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-button, .mobile-tab-button').forEach(button => {
-                button.classList.remove('active');
-            });
-            document.querySelectorAll(`[onclick="switchTab('${tabName}')"]`).forEach(button => {
-                button.classList.add('active');
-            });
+        // 탭 전환
+        function switchTab(tab) {
             document.querySelectorAll('.main-container, .community-container, .settings-container').forEach(container => {
                 container.classList.remove('active');
             });
-            document.querySelector('.' + tabName + '-container').classList.add('active');
-            if (tabName === 'community') {
-                loadPosts();
-                document.querySelector('.post-form').style.display = 'none';
-            }
-            syncMobileTabs();
-        }
-
-        // 모바일 탭 동기화
-        function syncMobileTabs() {
-            const desktopTabs = document.querySelectorAll('.tab-button');
-            const mobileTabs = document.querySelectorAll('.mobile-tab-button');
-            desktopTabs.forEach((tab, index) => {
-                if (tab.classList.contains('active')) {
-                    mobileTabs[index].classList.add('active');
-                } else {
-                    mobileTabs[index].classList.remove('active');
-                }
+            document.querySelectorAll('.tab-button, .mobile-tab-button').forEach(button => {
+                button.classList.remove('active');
             });
+            document.querySelector(`.${tab}-container`).classList.add('active');
+            document.querySelector(`.tab-button[onclick="switchTab('${tab}')"]`).classList.add('active');
+            document.querySelector(`.mobile-tab-button[onclick="switchTab('${tab}')"]`).classList.add('active');
         }
 
-        // 게시글 작성 폼 표시/숨김
+        // 글쓰기 폼 표시
         function showPostForm() {
             const postForm = document.querySelector('.post-form');
             postForm.style.display = postForm.style.display === 'none' ? 'block' : 'none';
-            document.getElementById('post-title').value = '';
-            document.getElementById('post-author').value = '익명';
-            document.getElementById('post-content').value = '';
         }
 
-        // 게시글 제출: 새 게시글 저장
+        // 게시글 제출
         function submitPost() {
             const title = document.getElementById('post-title').value.trim();
             const author = document.getElementById('post-author').value.trim() || '익명';
             const content = document.getElementById('post-content').value.trim();
             if (!title || !content) {
-                alert('제목과 내용을 입력해주세요.');
+                alert(translations[currentLanguage].postTitle + '과 ' + translations[currentLanguage].postContent + '을 입력해주세요.');
                 return;
             }
             const posts = JSON.parse(localStorage.getItem('posts') || '[]');
@@ -1453,41 +1307,33 @@
                 title,
                 author,
                 content,
-                date: new Date().toLocaleDateString('ko-KR'),
+                date: new Date().toISOString(),
                 views: 0
             };
-            posts.push(newPost);
+            posts.unshift(newPost);
             localStorage.setItem('posts', JSON.stringify(posts));
-            document.querySelector('.post-form').style.display = 'none';
+            document.getElementById('post-title').value = '';
+            document.getElementById('post-author').value = '익명';
+            document.getElementById('post-content').value = '';
+            showPostForm();
             loadPosts();
         }
 
-        // 게시글 목록 로드: localStorage에서 게시글 표시
+        // 게시글 목록 로드
         function loadPosts() {
-            let posts;
-            try {
-                posts = JSON.parse(localStorage.getItem('posts') || '[]');
-            } catch (error) {
-                console.error('게시글 로드 오류:', error);
-                posts = [];
-            }
             const postListBody = document.getElementById('post-list-body');
-            if (!postListBody) {
-                console.error('게시글 목록 요소를 찾을 수 없습니다.');
-                return;
-            }
             postListBody.innerHTML = '';
+            const posts = JSON.parse(localStorage.getItem('posts') || '[]');
             posts.forEach(post => {
-                // 게시글 행
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${post.title}</td>
                     <td>${post.author}</td>
-                    <td>${post.date}</td>
+                    <td>${new Date(post.date).toLocaleDateString('ko-KR')}</td>
                     <td>${post.views}</td>
                     <td>
                         <div class="post-actions">
-                            <button class="post-actions-button" onclick="togglePostActions(${post.id})">⋮</button>
+                            <button class="post-actions-button" onclick="togglePostActions(${post.id}, event)">⋮</button>
                             <div class="post-actions-menu" id="post-actions-${post.id}">
                                 <button onclick="deletePost(${post.id})">${translations[currentLanguage].deletePost}</button>
                                 <button onclick="sharePost(${post.id})">${translations[currentLanguage].sharePost}</button>
@@ -1495,61 +1341,43 @@
                         </div>
                     </td>
                 `;
-                row.style.cursor = 'pointer';
-                row.addEventListener('click', (e) => {
-                    if (e.target.closest('.post-actions')) return; // 3점 버튼 클릭 시 상세 보기 방지
-                    e.preventDefault();
-                    e.stopPropagation();
-                    viewPost(post.id);
-                });
+                row.onclick = function(e) {
+                    if (!e.target.closest('.post-actions')) viewPost(post.id);
+                };
                 postListBody.appendChild(row);
 
-                // 상세 보기 아코디언 행
-                const detailRow = document.createElement('tr');
-                detailRow.classList.add('post-detail-row');
-                detailRow.id = `post-detail-${post.id}`;
-                detailRow.innerHTML = `
-                    <td colspan="5">
-                        <div class="post-detail-content">
-                            <h2>${post.title}</h2>
-                            <div class="meta">작성자: ${post.author} | 작성일: ${post.date} | 조회수: ${post.views}</div>
-                            <div class="content">${post.content}</div>
-                        </div>
-                    </td>
+                // 아코디언 상세 보기 div 추가
+                const detailDiv = document.createElement('div');
+                detailDiv.className = 'post-detail';
+                detailDiv.id = `post-detail-${post.id}`;
+                detailDiv.innerHTML = `
+                    <h2>${post.title}</h2>
+                    <div class="meta">${translations[currentLanguage].postAuthor}: ${post.author} | ${translations[currentLanguage].postListDate}: ${new Date(post.date).toLocaleString('ko-KR')} | ${translations[currentLanguage].postListViews}: ${post.views}</div>
+                    <div class="content">${post.content}</div>
                 `;
-                postListBody.appendChild(detailRow);
+                postListBody.parentElement.appendChild(detailDiv);
             });
         }
 
-        // 3점 버튼 메뉴 토글
-        function togglePostActions(postId) {
+        // 3점 메뉴 토글
+        function togglePostActions(postId, event) {
+            event.stopPropagation();
             const menu = document.getElementById(`post-actions-${postId}`);
-            if (!menu) return;
             const isActive = menu.classList.contains('active');
-            // 모든 메뉴 닫기
-            document.querySelectorAll('.post-actions-menu').forEach(m => {
-                m.classList.remove('active');
-            });
-            // 선택된 메뉴만 토글
-            if (!isActive) {
-                menu.classList.add('active');
-            }
+            document.querySelectorAll('.post-actions-menu').forEach(m => m.classList.remove('active'));
+            if (!isActive) menu.classList.add('active');
         }
 
         // 게시글 삭제
         function deletePost(postId) {
             if (!confirm(translations[currentLanguage].deleteConfirm)) return;
-            try {
-                let posts = JSON.parse(localStorage.getItem('posts') || '[]');
-                posts = posts.filter(post => post.id !== postId);
-                localStorage.setItem('posts', JSON.stringify(posts));
-                loadPosts();
-            } catch (error) {
-                console.error('게시글 삭제 오류:', error);
-            }
+            let posts = JSON.parse(localStorage.getItem('posts') || '[]');
+            posts = posts.filter(post => post.id !== postId);
+            localStorage.setItem('posts', JSON.stringify(posts));
+            loadPosts();
         }
 
-        // 게시글 공유: 클립보드에 복사
+        // 게시글 공유
         function sharePost(postId) {
             try {
                 const posts = JSON.parse(localStorage.getItem('posts') || '[]');
@@ -1571,308 +1399,421 @@
         }
 
         // 게시글 상세 보기: 아코디언 스타일로 토글
-    function viewPost(postId) {
-        try {
-            // 모든 아코디언 닫기
-            document.querySelectorAll('.post-detail-row').forEach(row => {
-                row.classList.remove('active');
-                row.style.display = 'none';
-            });
+        function viewPost(postId) {
+            try {
+                // 모든 아코디언 닫기
+                document.querySelectorAll('.post-detail').forEach(detail => {
+                    detail.classList.remove('active');
+                    detail.style.maxHeight = null;
+                    detail.style.padding = '0 20px';
+                });
 
-            // 선택된 게시글의 아코디언 열기
-            const detailRow = document.getElementById(`post-detail-${postId}`);
-            if (!detailRow) {
+                // 선택된 게시글의 아코디언 열기
+                const detailDiv = document.getElementById(`post-detail-${postId}`);
+                if (!detailDiv) {
+                    alert(translations[currentLanguage].postNotFound);
+                    return;
+                }
+
+                // 조회수 증가
+                let posts = JSON.parse(localStorage.getItem('posts') || '[]');
+                const post = posts.find(p => p.id === postId);
+                if (post) {
+                    post.views += 1;
+                    localStorage.setItem('posts', JSON.stringify(posts));
+                    loadPosts(); // 조회수 및 상세 보기 업데이트
+                }
+
+                // 아코디언 토글
+                detailDiv.classList.add('active');
+                detailDiv.style.maxHeight = detailDiv.scrollHeight + 'px';
+            } catch (error) {
+                console.error('게시글 상세 보기 오류:', error);
                 alert(translations[currentLanguage].postNotFound);
+            }
+        }
+
+        // 다크 모드 토글: 테마 전환 및 저장
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDarkMode);
+        }
+
+        // 폰트 크기 변경: UI 텍스트 크기 조정
+        function changeFontSize(delta) {
+            const root = document.documentElement;
+            const currentSize = parseFloat(getComputedStyle(root).fontSize);
+            const newSize = Math.max(12, Math.min(20, currentSize + delta));
+            root.style.fontSize = `${newSize}px`;
+            localStorage.setItem('fontSize', newSize);
+        }
+
+        // 폰트 크기 초기화: 기본값(16px)으로 복원
+        function resetFontSize() {
+            document.documentElement.style.fontSize = '16px';
+            localStorage.setItem('fontSize', '16');
+        }
+
+        // 프로필 필드 편집: 이름, 이메일 수정
+        function editField(fieldId) {
+            const element = document.getElementById(fieldId);
+            const currentValue = element.textContent;
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentValue;
+            input.className = 'edit-input';
+            input.onblur = function() {
+                element.textContent = input.value || currentValue;
+                localStorage.setItem(fieldId, input.value || currentValue);
+                element.style.display = 'inline';
+                input.remove();
+            };
+            input.onkeydown = function(e) {
+                if (e.key === 'Enter') input.blur();
+            };
+            element.style.display = 'none';
+            element.parentNode.insertBefore(input, element.nextSibling);
+            input.focus();
+        }
+
+        // 프로필 이미지 업로드: 이미지 미리보기 및 저장
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById('profile-preview');
+                img.src = e.target.result;
+                localStorage.setItem('profileImage', e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 알림 설정 토글: 푸시, 이메일, 시간표, 시험 알림
+        function toggleNotification(type) {
+            const checkbox = document.getElementById(`${type}-notification`);
+            localStorage.setItem(`${type}Notification`, checkbox.checked);
+        }
+
+        // 알림음 변경: 선택된 알림음 저장
+        function changeNotificationSound(sound) {
+            localStorage.setItem('notificationSound', sound);
+        }
+
+        // 자동 저장 토글
+        function toggleAutoSave() {
+            const autoSave = document.getElementById('auto-save').checked;
+            localStorage.setItem('autoSave', autoSave);
+        }
+
+        // 자동 백업 토글
+        function toggleAutoBackup() {
+            const autoBackup = document.getElementById('auto-backup').checked;
+            localStorage.setItem('autoBackup', autoBackup);
+        }
+
+        // 클라우드 동기화 토글
+        function toggleCloudSync() {
+            const cloudSync = document.getElementById('cloud-sync').checked;
+            localStorage.setItem('cloudSync', cloudSync);
+            if (cloudSync) {
+                document.getElementById('last-sync').textContent = new Date().toLocaleString('ko-KR');
+                localStorage.setItem('lastSync', new Date().toISOString());
+            }
+        }
+
+        // 수동 백업: 데이터 다운로드
+        function manualBackup() {
+            const data = {
+                timetables,
+                posts: JSON.parse(localStorage.getItem('posts') || '[]'),
+                settings: {
+                    darkMode: localStorage.getItem('darkMode'),
+                    fontSize: localStorage.getItem('fontSize'),
+                    language: localStorage.getItem('language')
+                }
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'school-talk-backup.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            alert(translations[currentLanguage].exportSuccess);
+        }
+
+        // 데이터 내보내기: 현재 데이터 다운로드
+        function exportData() {
+            manualBackup();
+        }
+
+        // 데이터 가져오기: JSON 파일 업로드 및 복원
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            if (!file.name.endsWith('.json')) {
+                alert(translations[currentLanguage].importError);
                 return;
             }
-
-            // 조회수 증가
-            let posts = JSON.parse(localStorage.getItem('posts') || '[]');
-            const post = posts.find(p => p.id === postId);
-            if (post) {
-                post.views += 1;
-                localStorage.setItem('posts', JSON.stringify(posts));
-                loadPosts(); // 조회수 업데이트 반영
-            }
-
-            // 아코디언 토글
-            detailRow.style.display = 'table-row';
-            setTimeout(() => {
-                detailRow.classList.add('active');
-            }, 10); // 애니메이션 위해 약간의 지연
-        } catch (error) {
-            console.error('게시글 상세 보기 오류:', error);
-            alert(translations[currentLanguage].postNotFound);
-        }
-    }
-
-    // 다크 모드 토글: 테마 전환 및 저장
-    function toggleDarkMode() {
-        document.body.classList.toggle('dark-mode');
-        const isDarkMode = document.body.classList.contains('dark-mode');
-        localStorage.setItem('darkMode', isDarkMode);
-    }
-
-    // 폰트 크기 변경: UI 텍스트 크기 조정
-    function changeFontSize(delta) {
-        const root = document.documentElement;
-        const currentSize = parseFloat(getComputedStyle(root).fontSize);
-        const newSize = Math.max(12, Math.min(20, currentSize + delta));
-        root.style.fontSize = `${newSize}px`;
-        localStorage.setItem('fontSize', newSize);
-    }
-
-    // 폰트 크기 초기화: 기본값(16px)으로 복원
-    function resetFontSize() {
-        document.documentElement.style.fontSize = '16px';
-        localStorage.setItem('fontSize', '16');
-    }
-
-    // 프로필 필드 편집: 이름, 이메일 수정
-    function editField(fieldId) {
-        const element = document.getElementById(fieldId);
-        const currentValue = element.textContent;
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.value = currentValue;
-        input.className = 'edit-input';
-        input.onblur = function() {
-            element.textContent = input.value || currentValue;
-            localStorage.setItem(fieldId, input.value || currentValue);
-            element.style.display = 'inline';
-            input.remove();
-        };
-        input.onkeydown = function(e) {
-            if (e.key === 'Enter') input.blur();
-        };
-        element.style.display = 'none';
-        element.parentNode.insertBefore(input, element.nextSibling);
-        input.focus();
-    }
-
-    // 프로필 이미지 업로드: 이미지 미리보기 및 저장
-    function handleImageUpload(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const img = document.getElementById('profile-preview');
-            img.src = e.target.result;
-            localStorage.setItem('profileImage', e.target.result);
-        };
-        reader.readAsDataURL(file);
-    }
-
-    // 알림 설정 토글: 푸시, 이메일, 시간표, 시험 알림
-    function toggleNotification(type) {
-        const checkbox = document.getElementById(`${type}-notification`);
-        localStorage.setItem(`${type}Notification`, checkbox.checked);
-    }
-
-    // 알림음 변경: 선택된 알림음 저장
-    function changeNotificationSound(sound) {
-        localStorage.setItem('notificationSound', sound);
-    }
-
-    // 자동 저장 토글
-    function toggleAutoSave() {
-        const autoSave = document.getElementById('auto-save').checked;
-        localStorage.setItem('autoSave', autoSave);
-    }
-
-    // 자동 백업 토글
-    function toggleAutoBackup() {
-        const autoBackup = document.getElementById('auto-backup').checked;
-        localStorage.setItem('autoBackup', autoBackup);
-    }
-
-    // 클라우드 동기화 토글
-    function toggleCloudSync() {
-        const cloudSync = document.getElementById('cloud-sync').checked;
-        localStorage.setItem('cloudSync', cloudSync);
-        if (cloudSync) {
-            document.getElementById('last-sync').textContent = new Date().toLocaleString('ko-KR');
-            localStorage.setItem('lastSync', new Date().toISOString());
-        }
-    }
-
-    // 수동 백업: 데이터 다운로드
-    function manualBackup() {
-        const data = {
-            timetables,
-            posts: JSON.parse(localStorage.getItem('posts') || '[]'),
-            settings: {
-                darkMode: localStorage.getItem('darkMode'),
-                fontSize: localStorage.getItem('fontSize'),
-                language: localStorage.getItem('language')
-            }
-        };
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'school-talk-backup.json';
-        a.click();
-        URL.revokeObjectURL(url);
-        alert(translations[currentLanguage].exportSuccess);
-    }
-
-    // 데이터 내보내기: 현재 데이터 다운로드
-    function exportData() {
-        manualBackup();
-    }
-
-    // 데이터 가져오기: JSON 파일 업로드 및 복원
-    function importData(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        if (!file.name.endsWith('.json')) {
-            alert(translations[currentLanguage].importError);
-            return;
-        }
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            try {
-                const data = JSON.parse(e.target.result);
-                if (data.timetables) {
-                    Object.assign(timetables, data.timetables);
-                    loadTimetable();
-                }
-                if (data.posts) {
-                    localStorage.setItem('posts', JSON.stringify(data.posts));
-                    loadPosts();
-                }
-                if (data.settings) {
-                    if (data.settings.darkMode) {
-                        localStorage.setItem('darkMode', data.settings.darkMode);
-                        if (data.settings.darkMode === 'true') {
-                            document.body.classList.add('dark-mode');
-                        } else {
-                            document.body.classList.remove('dark-mode');
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.timetables) {
+                        Object.assign(timetables, data.timetables);
+                        loadTimetable();
+                    }
+                    if (data.posts) {
+                        localStorage.setItem('posts', JSON.stringify(data.posts));
+                        loadPosts();
+                    }
+                    if (data.settings) {
+                        if (data.settings.darkMode) {
+                            localStorage.setItem('darkMode', data.settings.darkMode);
+                            if (data.settings.darkMode === 'true') {
+                                document.body.classList.add('dark-mode');
+                            } else {
+                                document.body.classList.remove('dark-mode');
+                            }
+                        }
+                        if (data.settings.fontSize) {
+                            document.documentElement.style.fontSize = `${data.settings.fontSize}px`;
+                            localStorage.setItem('fontSize', data.settings.fontSize);
+                        }
+                        if (data.settings.language) {
+                            changeLanguage(data.settings.language);
                         }
                     }
-                    if (data.settings.fontSize) {
-                        document.documentElement.style.fontSize = `${data.settings.fontSize}px`;
-                        localStorage.setItem('fontSize', data.settings.fontSize);
-                    }
-                    if (data.settings.language) {
-                        changeLanguage(data.settings.language);
-                    }
+                    alert(translations[currentLanguage].importSuccess);
+                } catch (error) {
+                    console.error('데이터 가져오기 오류:', error);
+                    alert(translations[currentLanguage].importInvalid);
                 }
-                alert(translations[currentLanguage].importSuccess);
-            } catch (error) {
-                console.error('데이터 가져오기 오류:', error);
-                alert(translations[currentLanguage].importInvalid);
-            }
-        };
-        reader.readAsText(file);
-    }
-
-    // 데이터 초기화: 모든 데이터 삭제
-    function resetData() {
-        if (!confirm(translations[currentLanguage].confirmReset)) return;
-        localStorage.clear();
-        Object.keys(timetables).forEach(school => {
-            timetables[school] = {
-                "1반": Array(timetableCells.length).fill(""),
-                "2반": Array(timetableCells.length).fill(""),
-                "3반": Array(timetableCells.length).fill(""),
-                "4반": Array(timetableCells.length).fill("")
             };
-        });
-        loadTimetable();
-        loadPosts();
-        document.documentElement.style.fontSize = '16px';
-        document.body.classList.remove('dark-mode');
-        document.getElementById('profile-preview').src = '';
-        document.getElementById('user-name').textContent = '사용자 이름';
-        document.getElementById('user-email').textContent = 'user@example.com';
-        changeLanguage('ko');
-    }
-
-    // 설정 복원: 저장된 설정 적용
-    function restoreSettings() {
-        const fontSize = localStorage.getItem('fontSize');
-        if (fontSize) document.documentElement.style.fontSize = `${fontSize}px`;
-
-        const language = localStorage.getItem('language');
-        if (language) changeLanguage(language);
-
-        const notifications = ['push', 'email', 'timetable', 'exam'];
-        notifications.forEach(type => {
-            const enabled = localStorage.getItem(`${type}Notification`) === 'true';
-            document.getElementById(`${type}-notification`).checked = enabled;
-        });
-
-        const notificationSound = localStorage.getItem('notificationSound') || 'default';
-        document.querySelector('.notification-sound').value = notificationSound;
-
-        const autoSave = localStorage.getItem('autoSave') === 'true';
-        document.getElementById('auto-save').checked = autoSave;
-
-        const autoBackup = localStorage.getItem('autoBackup') === 'true';
-        document.getElementById('auto-backup').checked = autoBackup;
-
-        const cloudSync = localStorage.getItem('cloudSync') === 'true';
-        document.getElementById('cloud-sync').checked = cloudSync;
-
-        const lastSync = localStorage.getItem('lastSync');
-        if (lastSync) {
-            document.getElementById('last-sync').textContent = new Date(lastSync).toLocaleString('ko-KR');
+            reader.readAsText(file);
         }
-    }
 
-    // 아코디언 설정 메뉴 토글: 설정 페이지의 아코디언 동작
-    document.querySelectorAll('.settings-item').forEach(item => {
-        item.addEventListener('click', function() {
-            const section = this.dataset.section;
-            const content = document.getElementById(`${section}-content`);
-            const isActive = content.classList.contains('active');
-
-            // 모든 아코디언 닫기
-            document.querySelectorAll('.accordion-content').forEach(c => {
-                c.classList.remove('active');
-                c.style.maxHeight = null;
+        // 데이터 초기화: 모든 데이터 삭제
+        function resetData() {
+            if (!confirm(translations[currentLanguage].confirmReset)) return;
+            localStorage.clear();
+            Object.keys(timetables).forEach(school => {
+                timetables[school] = {
+                    "1반": Array(timetableCells.length).fill(""),
+                    "2반": Array(timetableCells.length).fill(""),
+                    "3반": Array(timetableCells.length).fill(""),
+                    "4반": Array(timetableCells.length).fill("")
+                };
             });
-            document.querySelectorAll('.settings-item').forEach(i => {
-                i.classList.remove('active');
+            loadTimetable();
+            loadPosts();
+            document.documentElement.style.fontSize = '16px';
+            document.body.classList.remove('dark-mode');
+            document.getElementById('profile-preview').src = '';
+            document.getElementById('user-name').textContent = '사용자 이름';
+            document.getElementById('user-email').textContent = 'user@example.com';
+            changeLanguage('ko');
+        }
+
+        // 설정 복원: 저장된 설정 적용
+        function restoreSettings() {
+            const fontSize = localStorage.getItem('fontSize');
+            if (fontSize) document.documentElement.style.fontSize = `${fontSize}px`;
+
+            const language = localStorage.getItem('language');
+            if (language) changeLanguage(language);
+
+            const notifications = ['push', 'email', 'timetable', 'exam'];
+            notifications.forEach(type => {
+                const enabled = localStorage.getItem(`${type}Notification`) === 'true';
+                document.getElementById(`${type}-notification`).checked = enabled;
             });
 
-            // 선택된 아코디언 열기
-            if (!isActive) {
-                this.classList.add('active');
-                content.classList.add('active');
-                content.style.maxHeight = content.scrollHeight + 'px';
+            const notificationSound = localStorage.getItem('notificationSound') || 'default';
+            document.querySelector('.notification-sound').value = notificationSound;
+
+            const autoSave = localStorage.getItem('autoSave') === 'true';
+            document.getElementById('auto-save').checked = autoSave;
+
+            const autoBackup = localStorage.getItem('autoBackup') === 'true';
+            document.getElementById('auto-backup').checked = autoBackup;
+
+            const cloudSync = localStorage.getItem('cloudSync') === 'true';
+            document.getElementById('cloud-sync').checked = cloudSync;
+
+            const lastSync = localStorage.getItem('lastSync');
+            if (lastSync) {
+                document.getElementById('last-sync').textContent = new Date(lastSync).toLocaleString('ko-KR');
+            }
+        }
+
+        // 아코디언 설정 메뉴 토글: 설정 페이지의 아코디언 동작
+        document.querySelectorAll('.settings-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const section = this.dataset.section;
+                const content = document.getElementById(`${section}-content`);
+                const isActive = content.classList.contains('active');
+
+                // 모든 아코디언 닫기
+                document.querySelectorAll('.accordion-content').forEach(c => {
+                    c.classList.remove('active');
+                    c.style.maxHeight = null;
+                });
+                document.querySelectorAll('.settings-item').forEach(i => {
+                    i.classList.remove('active');
+                });
+
+                // 선택된 아코디언 열기
+                if (!isActive) {
+                    this.classList.add('active');
+                    content.classList.add('active');
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                }
+            });
+        });
+
+        // 도움말 관련 함수: 미구현 알림
+        function showTerms() {
+            alert('개인정보 수집·이용 동의서: 구현 예정');
+        }
+        function showLocationSettings() {
+            alert('위치 정보 설정: 구현 예정');
+        }
+        function showAccountSettings() {
+            alert('계정 정보 관리: 구현 예정');
+        }
+        function showFAQ() {
+            alert('자주 찾는 도움말: 구현 예정');
+        }
+        function showContact() {
+            alert('문의하기: 구현 예정');
+        }
+        function showUserGuide() {
+            alert('사용 가이드: 구현 예정');
+        }
+
+        // 문서 외부 클릭 시 3점 메뉴 닫기
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.post-actions')) {
+                document.querySelectorAll('.post-actions-menu').forEach(menu => {
+                    menu.classList.remove('active');
+                });
             }
         });
-    });
 
-    // 도움말 관련 함수: 미구현 알림
-    function showTerms() {
-        alert('개인정보 수집·이용 동의서: 구현 예정');
-    }
-    function showLocationSettings() {
-        alert('위치 정보 설정: 구현 예정');
-    }
-    function showAccountSettings() {
-        alert('계정 정보 관리: 구현 예정');
-    }
-    function showFAQ() {
-        alert('자주 찾는 도움말: 구현 예정');
-    }
-    function showContact() {
-        alert('문의하기: 구현 예정');
-    }
-    function showUserGuide() {
-        alert('사용 가이드: 구현 예정');
-    }
+        // 학교 목록
+        const schools = [
+            "가락중학교", "가산중학교", "가원중학교", "가재울중학교", "강남중학교", "강동중학교", "강명중학교", "강북중학교", "강빛중학교", "강신중학교",
+            "강일중학교", "강현중학교", "개봉중학교", "개운중학교", "개웅중학교", "개원중학교", "개포중학교", "거원중학교", "건국대학교 사범대학 부속중학교", "경서중학교"
+        ];
 
-    // 문서 외부 클릭 시 3점 메뉴 닫기
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.post-actions')) {
-            document.querySelectorAll('.post-actions-menu').forEach(menu => {
-                menu.classList.remove('active');
+        // 학교 필터링
+        function filterSchools() {
+            const input = document.getElementById('search-input').value.toLowerCase();
+            const schoolList = document.getElementById('school-list');
+            schoolList.innerHTML = '';
+            schools.filter(school => school.toLowerCase().includes(input)).forEach(school => {
+                const option = document.createElement('a');
+                option.href = "#";
+                option.textContent = school;
+                option.onclick = function(e) {
+                    e.preventDefault();
+                    selectSchool(school);
+                    schoolList.innerHTML = '';
+                    document.getElementById('search-input').value = school;
+                };
+                schoolList.appendChild(option);
             });
         }
-    });
-</script>
+
+        // 학교 선택
+        function selectSchool(school) {
+            currentSchool = school;
+            if (!timetables[school]) {
+                timetables[school] = {
+                    "1반": Array(timetableCells.length).fill(""),
+                    "2반": Array(timetableCells.length).fill(""),
+                    "3반": Array(timetableCells.length).fill(""),
+                    "4반": Array(timetableCells.length).fill("")
+                };
+            }
+            loadTimetable();
+        }
+
+        // 시간표 로드
+        function loadTimetable() {
+            if (currentSchool && timetables[currentSchool]) {
+                timetableCells.forEach((cell, index) => {
+                    cell.innerText = timetables[currentSchool][currentClass][index];
+                });
+            }
+        }
+
+        // 반 변경
+        function switchClass(newClass) {
+            if (currentSchool) {
+                timetableCells.forEach((cell, index) => {
+                    timetables[currentSchool][currentClass][index] = cell.innerText;
+                });
+            }
+            currentClass = newClass;
+            loadTimetable();
+        }
+
+        // 달력 생성
+        function createCalendar(year, month) {
+            const calendarBody = document.getElementById('calendar-body');
+            calendarBody.innerHTML = '';
+            const firstDay = new Date(year, month - 1, 1).getDay();
+            const lastDate = new Date(year, month, 0).getDate();
+            let date = 1;
+            for (let i = 0; i < 6; i++) {
+                const row = document.createElement('tr');
+                for (let j = 0; j < 7; j++) {
+                    const cell = document.createElement('td');
+                    if (i === 0 && j < firstDay || date > lastDate) {
+                        row.appendChild(cell);
+                        continue;
+                    }
+                    cell.innerHTML = `
+                        <div class="date-number">${date}</div>
+                        <textarea class="memo" placeholder="메모" onblur="saveMemo(${year}, ${month}, ${date}, this.value)"></textarea>
+                    `;
+                    const savedMemo = localStorage.getItem(`memo-${year}-${month}-${date}`);
+                    if (savedMemo) cell.querySelector('.memo').value = savedMemo;
+                    row.appendChild(cell);
+                    date++;
+                }
+                calendarBody.appendChild(row);
+                if (date > lastDate) break;
+            }
+        }
+
+        // 메모 저장
+        function saveMemo(year, month, date, value) {
+            localStorage.setItem(`memo-${year}-${month}-${date}`, value);
+        }
+
+        // 페이지 로드 시 초기화
+        window.addEventListener('load', function() {
+            changeLanguage('ko');
+            createCalendar(2025, 4);
+            loadPosts();
+            restoreSettings();
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.body.classList.add('dark-mode');
+            }
+            const savedProfileImage = localStorage.getItem('profileImage');
+            if (savedProfileImage) {
+                document.getElementById('profile-preview').src = savedProfileImage;
+            }
+            const savedUserName = localStorage.getItem('user-name');
+            const savedUserEmail = localStorage.getItem('user-email');
+            if (savedUserName) document.getElementById('user-name').textContent = savedUserName;
+            if (savedUserEmail) document.getElementById('user-email').textContent = savedUserEmail;
+        });
+    </script>
+</body>
+</html>
