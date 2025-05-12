@@ -1,1464 +1,208 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shool Talk Talk</title>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js"></script>
-    <style>
-        body {
-            font-family: 'Malgun Gothic', sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            min-height: 100vh;
-            background-color: #ffffff;
-            color: #333333;
-            transition: background-color 0.3s, color 0.3s;
-            font-size: 16px;
-        }
-
-        body.dark-mode {
-            background-color: #1a1a1a;
-            color: #ffffff;
-        }
-
-        .vertical-tabs {
-            width: 60px;
-            background-color: #f8f8f8;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 20px;
-            transition: background-color 0.3s;
-        }
-
-        body.dark-mode .vertical-tabs {
-            background-color: #2a2a2a;
-        }
-
-        .tab-button {
-            width: 40px;
-            height: 40px;
-            margin: 10px 0;
-            border: none;
-            background: none;
-            font-size: 24px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .tab-button:hover {
-            background-color: #e0e0e0;
-            border-radius: 5px;
-        }
-
-        body.dark-mode .tab-button:hover {
-            background-color: #3f3f3f;
-        }
-
-        .tab-button.active {
-            background-color: #0078d4;
-            color: #ffffff;
-            border-radius: 5px;
-        }
-
-        .content-area {
-            flex-grow: 1;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .main-container,
-        .community-container,
-        .settings-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            transition: background-color 0.3s;
-        }
-
-        body.dark-mode .main-container,
-        body.dark-mode .community-container,
-        body.dark-mode .settings-container {
-            background-color: #333333;
-        }
-
-        .main-container.active,
-        .community-container.active,
-        .settings-container.active {
-            display: block;
-        }
-
-        .main-container,
-        .community-container,
-        .settings-container {
-            display: none;
-        }
-
-        .timetable-section,
-        .calendar-section {
-            margin-bottom: 40px;
-        }
-
-        .timetable-section h2,
-        .calendar-section h2,
-        .community-header h2,
-        .settings-container h2 {
-            margin-top: 0;
-        }
-
-        .school-search-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .school-search {
-            flex-grow: 1;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background-color: #fff;
-            color: #333;
-            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-        }
-
-        body.dark-mode .school-search {
-            background-color: #2a2a2a;
-            color: #fff;
-            border-color: #444;
-        }
-
-        .school-search:focus {
-            outline: none;
-            border-color: #0078d4;
-        }
-
-        .school-list {
-            position: absolute;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            max-height: 200px;
-            overflow-y: auto;
-            width: calc(100% - 110px);
-            z-index: 10;
-            margin-top: 5px;
-            transition: background-color 0.3s;
-        }
-
-        body.dark-mode .school-list {
-            background-color: #2a2a2a;
-            border-color: #444;
-        }
-
-        .school-list div {
-            padding: 8px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .school-list div:hover {
-            background-color: #f5f5f5;
-        }
-
-        body.dark-mode .school-list div:hover {
-            background-color: #3f3f3f;
-        }
-
-        select {
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background-color: #fff;
-            color: #333;
-            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-        }
-
-        body.dark-mode select {
-            background-color: #2a2a2a;
-            color: #fff;
-            border-color: #444;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        th,
-        td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: center;
-            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-        }
-
-        body.dark-mode th,
-        body.dark-mode td {
-            border-color: #444;
-        }
-
-        th {
-            background-color: #f5f5f5;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
-
-        body.dark-mode th {
-            background-color: #333;
-        }
-
-        td[contenteditable="true"] {
-            cursor: text;
-            background-color: #fff;
-            transition: background-color 0.3s;
-        }
-
-        body.dark-mode td[contenteditable="true"] {
-            background-color: #2a2a2a;
-        }
-
-        td[contenteditable="true"]:hover {
-            background-color: #f8f8f8;
-        }
-
-        body.dark-mode td[contenteditable="true"]:hover {
-            background-color: #3f3f3f;
-        }
-
-        .calendar-section table td {
-            height: 100px;
-            vertical-align: top;
-            position: relative;
-        }
-
-        .calendar-section table td textarea {
-            width: 100%;
-            height: 80%;
-            border: none;
-            background: none;
-            resize: none;
-            padding: 5px;
-            font-size: 14px;
-            color: inherit;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .calendar-section table td textarea:focus {
-            outline: none;
-            background-color: #f8f8f8;
-        }
-
-        body.dark-mode .calendar-section table td textarea:focus {
-            background-color: #3f3f3f;
-        }
-
-        .settings-container ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .settings-container ul li {
-            padding: 12px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .settings-container ul li:hover {
-            background-color: #f5f5f5;
-        }
-
-        body.dark-mode .settings-container ul li:hover {
-            background-color: #3f3f3f;
-        }
-
-        .submenu {
-            display: none;
-            padding: 20px;
-        }
-
-        .submenu button {
-            margin-bottom: 20px;
-            padding: 8px 16px;
-            background-color: #0078d4;
-            color: #ffffff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .submenu button:hover {
-            background-color: #005a9e;
-        }
-
-        .submenu input,
-        .submenu select {
-            margin-bottom: 10px;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            width: calc(100% - 18px);
-            background-color: #fff;
-            color: #333;
-            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-        }
-
-        body.dark-mode .submenu input,
-        body.dark-mode .submenu select {
-            background-color: #2a2a2a;
-            color: #fff;
-            border-color: #444;
-        }
-
-        .submenu p {
-            margin: 10px 0;
-        }
-
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 40px;
-            height: 20px;
-        }
-
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: 0.4s;
-            border-radius: 20px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 2px;
-            bottom: 2px;
-            background-color: white;
-            transition: 0.4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background-color: #0078d4;
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(20px);
-        }
-
-        .mobile-bottom-tabs {
-            display: none;
-            justify-content: space-around;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background-color: #f8f8f8;
-            padding: 10px 0;
-            transition: background-color 0.3s;
-        }
-
-        body.dark-mode .mobile-bottom-tabs {
-            background-color: #2a2a2a;
-        }
-
-        .mobile-tab-button {
-            width: 50px;
-            height: 50px;
-            border: none;
-            background: none;
-            font-size: 24px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .mobile-tab-button.active {
-            background-color: #0078d4;
-            color: #ffffff;
-            border-radius: 50%;
-        }
-
-        .community-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .write-post-button {
-            padding: 8px 16px;
-            background-color: #0078d4;
-            color: #ffffff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .write-post-button:hover {
-            background-color: #005a9e;
-        }
-
-        .post-list {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .post-list th,
-        .post-list td {
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-            text-align: left;
-            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-        }
-
-        body.dark-mode .post-list th,
-        body.dark-mode .post-list td {
-            border-bottom: 1px solid #444;
-        }
-
-        .post-list th {
-            background-color: #f5f5f5;
-            font-weight: bold;
-        }
-
-        body.dark-mode .post-list th {
-            background-color: #333;
-        }
-
-        .post-list tr:hover {
-            background-color: #f8f8f8;
-            cursor: pointer;
-        }
-
-        body.dark-mode .post-list tr:hover {
-            background-color: #444;
-        }
-
-        .post-title {
-            max-width: 50%;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .post-preview {
-            max-width: 30%;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .post-modal,
-        .sync-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .post-modal.active,
-        .sync-modal.active {
-            display: flex;
-        }
-
-        .post-modal-content,
-        .sync-modal-content {
-            background-color: #ffffff;
-            border-radius: 10px;
-            padding: 20px;
-            width: 90%;
-            max-width: 600px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s;
-        }
-
-        body.dark-mode .post-modal-content,
-        body.dark-mode .sync-modal-content {
-            background-color: #333333;
-        }
-
-        .post-modal-content h2,
-        .sync-modal-content h2 {
-            margin-top: 0;
-        }
-
-        .post-modal-content input,
-        .post-modal-content textarea {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-            background-color: #fff;
-            color: #333;
-            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-        }
-
-        body.dark-mode .post-modal-content input,
-        body.dark-mode .post-modal-content textarea {
-            background-color: #2a2a2a;
-            color: #fff;
-            border-color: #444;
-        }
-
-        .post-modal-content textarea {
-            height: 200px;
-            resize: vertical;
-        }
-
-        .post-modal-buttons,
-        .sync-modal-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-        }
-
-        .modal-button {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .modal-button.submit {
-            background-color: #0078d4;
-            color: #ffffff;
-        }
-
-        .modal-button.submit:hover {
-            background-color: #005a9e;
-        }
-
-        .modal-button.cancel {
-            background-color: #e0e0e0;
-            color: #333;
-        }
-
-        body.dark-mode .modal-button.cancel {
-            background-color: #3f3f3f;
-            color: #ffffff;
-        }
-
-        .modal-button.cancel:hover {
-            background-color: #d0d0d0;
-        }
-
-        body.dark-mode .modal-button.cancel:hover {
-            background-color: #4f4f4f;
-        }
-
-        .sync-button {
-            padding: 8px 16px;
-            background-color: #28a745;
-            color: #ffffff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .sync-button:hover {
-            background-color: #218838;
-        }
-
-        .sync-modal-content p {
-            margin: 0 0 20px;
-        }
-
-        .sync-modal-content button {
-            padding: 8px 16px;
-            background-color: #0078d4;
-            color: #ffffff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .sync-modal-content button:hover {
-            background-color: #005a9e;
-        }
-
-        @media screen and (max-width: 768px) {
-            .vertical-tabs {
-                display: none;
-            }
-
-            .content-area {
-                padding: 10px;
-            }
-
-            .main-container,
-            .community-container,
-            .settings-container {
-                padding: 15px;
-            }
-
-            .school-search-container {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .school-search,
-            select {
-                width: 100%;
-                margin-bottom: 10px;
-            }
-
-            .school-list {
-                width: 100%;
-            }
-
-            table {
-                font-size: 14px;
-            }
-
-            th,
-            td {
-                padding: 8px;
-            }
-
-            .calendar-section table td {
-                height: 80px;
-            }
-
-            .calendar-section table td textarea {
-                font-size: 12px;
-            }
-
-            .mobile-bottom-tabs {
-                display: flex;
-            }
-
-            .post-list th,
-            .post-list td {
-                padding: 8px;
-                font-size: 14px;
-            }
-
-            .post-title {
-                max-width: 40%;
-            }
-
-            .post-preview {
-                max-width: 20%;
-            }
-
-            .post-modal-content,
-            .sync-modal-content {
-                width: 95%;
-                padding: 15px;
-            }
-
-            .post-modal-content textarea {
-                height: 150px;
-            }
-
-            .settings-container ul li {
-                padding: 8px;
-                font-size: 14px;
-            }
-        }
-
-        @media screen and (min-width: 769px) and (max-width: 1024px) {
-            .main-container,
-            .community-container,
-            .settings-container {
-                max-width: 100%;
-            }
-
-            .calendar-section table td {
-                height: 90px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>학교 웹 프로젝트</title>
+  <style>
+    body {
+      margin: 0; font-family: 'Malgun Gothic', sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    .vertical-tabs {
+      display: flex;
+      flex-direction: row;
+      border-bottom: 1px solid #ccc;
+      background-color: #f1f1f1;
+    }
+    .tab-button {
+      flex: 1;
+      padding: 1rem;
+      background-color: #e0e0e0;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .tab-button.active {
+      background-color: #ffffff;
+      font-weight: bold;
+    }
+    .content-area {
+      padding: 1rem;
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1rem;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+    button {
+      padding: 8px 16px;
+      background-color: #0078d4;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #005a9e;
+    }
+    .post {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-top: 10px;
+      background-color: #fafafa;
+    }
+    .post h3 {
+      margin: 0;
+    }
+    .settings-list {
+      list-style: none;
+      padding: 0;
+    }
+    .settings-list li {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      cursor: pointer;
+    }
+    .settings-list li:hover {
+      background-color: #f0f0f0;
+    }
+  </style>
 </head>
 <body>
-    <div class="vertical-tabs">
-        <button class="tab-button active" onclick="switchTab('main')" title="시간표">📅</button>
-        <button class="tab-button" onclick="switchTab('community')" title="커뮤니티">📋</button>
-        <button class="tab-button" onclick="switchTab('settings')" title="설정">⚙️</button>
+  <div class="vertical-tabs">
+    <button class="tab-button active" onclick="showTab(0)">홈</button>
+    <button class="tab-button" onclick="showTab(1)">커뮤니티</button>
+    <button class="tab-button" onclick="showTab(2)">설정</button>
+  </div>
+  <div class="content-area">
+    <div class="tab-content active" id="tab-0">
+      <h2>시간표</h2>
+      <input type="text" id="searchInput" placeholder="시간표 검색">
+      <table id="timetable">
+        <thead><tr><th>교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td contenteditable="true">국어</td><td contenteditable="true">수학</td><td contenteditable="true">영어</td><td contenteditable="true">과학</td><td contenteditable="true">사회</td></tr>
+          <tr><td>2</td><td contenteditable="true">수학</td><td contenteditable="true">국어</td><td contenteditable="true">체육</td><td contenteditable="true">음악</td><td contenteditable="true">미술</td></tr>
+          <tr><td>3</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+        </tbody>
+      </table>
+        
+      <h2>급식</h2>
+      <table>
+        <thead><tr><th>요일</th><th>급식 내용</th></tr></thead>
+        <tbody>
+          <tr><td>월</td><td>김치찌개, 제육볶음</td></tr>
+          <tr><td>화</td><td>된장국, 오징어볶음</td></tr>
+        </tbody>
+      </table>
     </div>
+    <div class="tab-content" id="tab-1">
+      <h2>커뮤니티</h2>
+      <input type="text" id="post-title" placeholder="제목을 입력하세요" />
+      <textarea id="post-content" placeholder="내용을 입력하세요"></textarea>
+      <button onclick="submitPost()">게시</button>
 
-    <div class="content-area">
-        <div class="main-container active">
-            <div class="timetable-section">
-                <h2>시간표</h2>
-                <div class="school-search-container">
-                    <input type="text" class="school-search" placeholder="학교 검색..." oninput="searchSchool(this.value)">
-                    <div class="school-list" style="display: none;"></div>
-                    <select onchange="switchClass(this.value)">
-                        <option value="1">1반</option>
-                        <option value="2">2반</option>
-                        <option value="3">3반</option>
-                        <option value="4">4반</option>
-                    </select>
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>시간</th>
-                            <th>월</th>
-                            <th>화</th>
-                            <th>수</th>
-                            <th>목</th>
-                            <th>금</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>1</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
-                        <tr><td>2</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
-                        <tr><td>3</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
-                        <tr><td>4</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
-                        <tr><td>5</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
-                        <tr><td>6</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
-                        <tr><td>7</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="calendar-section">
-                <h2>캘린더</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>일</th>
-                            <th>월</th>
-                            <th>화</th>
-                            <th>수</th>
-                            <th>목</th>
-                            <th>금</th>
-                            <th>토</th>
-                        </tr>
-                    </thead>
-                    <tbody id="calendar-body"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="community-container">
-            <div class="community-header">
-                <h2>커뮤니티</h2>
-                <button class="write-post-button" onclick="openPostModal()">글쓰기</button>
-            </div>
-            <table class="post-list">
-                <thead>
-                    <tr>
-                        <th style="width: 50%;">제목</th>
-                        <th style="width: 20%;">작성자</th>
-                        <th style="width: 20%;">작성 시간</th>
-                        <th style="width: 10%;">미리보기</th>
-                    </tr>
-                </thead>
-                <tbody id="post-list-body"></tbody>
-            </table>
-        </div>
-
-        <div class="settings-container">
-            <ul>
-                <li onclick="showSubmenu('profile')">프로필</li>
-                <li onclick="showSubmenu('notifications')">알림</li>
-                <li onclick="showSubmenu('theme')">테마</li>
-                <li onclick="showSubmenu('data')">데이터 관리</li>
-                <li onclick="showSubmenu('backup')">백업 및 동기화</li>
-                <li onclick="showSubmenu('privacy')">개인정보</li>
-                <li onclick="showSubmenu('help')">도움말</li>
-                <li><button class="sync-button" onclick="syncData()">데이터 동기화</button></li>
-            </ul>
-            <div class="submenu profile">
-                <button onclick="hideSubmenu()">뒤로</button>
-                <h3>프로필</h3>
-                <p>이름: <span id="user-name">사용자</span></p>
-                <p>이메일: <input type="email" id="user-email" placeholder="이메일을 입력하세요"></p>
-                <p>프로필 이미지: <input type="file" id="profile-image" accept="image/*"></p>
-            </div>
-            <div class="submenu notifications">
-                <button onclick="hideSubmenu()">뒤로</button>
-                <h3>알림</h3>
-                <p><label><input type="checkbox" id="push-notifications"> 푸시 알림</label></p>
-                <p><label><input type="checkbox" id="email-notifications"> 이메일 알림</label></p>
-                <p><label><input type="checkbox" id="timetable-changes"> 시간표 변경 알림</label></p>
-                <p><label><input type="checkbox" id="exam-schedule"> 시험 일정 알림</label></p>
-            </div>
-            <div class="submenu theme">
-                <button onclick="hideSubmenu()">뒤로</button>
-                <h3>테마</h3>
-                <p><label><input type="checkbox" id="dark-mode" onchange="toggleDarkMode()"> 다크 모드</label></p>
-                <p>폰트 크기: <select id="font-size" onchange="changeFontSize(this.value)">
-                    <option value="14">14px</option>
-                    <option value="16" selected>16px</option>
-                    <option value="18">18px</option>
-                </select></p>
-                <p>언어: <select class="language-select" onchange="changeLanguage(this.value)">
-                    <option value="ko">한국어</option>
-                    <option value="en">English</option>
-                    <option value="ja">日本語</option>
-                    <option value="zh">中文</option>
-                </select></p>
-            </div>
-            <div class="submenu data">
-                <button onclick="hideSubmenu()">뒤로</button>
-                <h3>데이터 관리</h3>
-                <p><button onclick="exportData()">데이터 내보내기</button></p>
-                <p><input type="file" id="import-file" accept=".json"><button onclick="importData()">데이터 가져오기</button></p>
-                <p><button onclick="resetData()">데이터 초기화</button></p>
-                <p><label><input type="checkbox" id="auto-save"> 자동 저장</label></p>
-            </div>
-            <div class="submenu backup">
-                <button onclick="hideSubmenu()">뒤로</button>
-                <h3>백업 및 동기화</h3>
-                <p><label><input type="checkbox" id="auto-backup"> 자동 백업</label></p>
-                <p><button onclick="manualBackup()">수동 백업</button></p>
-                <p><label><input type="checkbox" id="cloud-sync"> 클라우드 동기화</label></p>
-            </div>
-            <div class="submenu privacy">
-                <button onclick="hideSubmenu()">뒤로</button>
-                <h3>개인정보</h3>
-                <p><button onclick="viewTerms()">약관 보기</button></p>
-                <p><label><input type="checkbox" id="location-sharing"> 위치 정보 공유</label></p>
-                <p><button onclick="changePassword()">비밀번호 변경</button></p>
-                <p><button onclick="deleteAccount()">계정 삭제</button></p>
-            </div>
-            <div class="submenu help">
-                <button onclick="hideSubmenu()">뒤로</button>
-                <h3>도움말</h3>
-                <p><button onclick="viewFAQ()">FAQ</button></p>
-                <p><button onclick="contactSupport()">문의하기</button></p>
-                <p><button onclick="viewGuide()">사용 가이드</button></p>
-                <p>버전: 1.0.0</p>
-            </div>
-        </div>
-
-        <div class="post-modal" id="post-modal">
-            <div class="post-modal-content">
-                <h2>새 게시글 작성</h2>
-                <input type="text" id="post-title" placeholder="제목을 입력하세요">
-                <textarea id="post-content" placeholder="내용을 입력하세요"></textarea>
-                <div class="post-modal-buttons">
-                    <button class="modal-button cancel" onclick="closePostModal()">취소</button>
-                    <button class="modal-button submit" onclick="submitPost()">게시</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="sync-modal" id="sync-modal">
-            <div class="sync-modal-content">
-                <p id="sync-message"></p>
-                <button onclick="closeSyncModal()">확인</button>
-            </div>
-        </div>
+      <div id="post-list"></div>
     </div>
-
-    <div class="mobile-bottom-tabs">
-        <button class="mobile-tab-button active" onclick="switchTab('main')" title="시간표">📅</button>
-        <button class="mobile-tab-button" onclick="switchTab('community')" title="커뮤니티">📋</button>
-        <button class="mobile-tab-button" onclick="switchTab('settings')" title="설정">⚙️</button>
+    <div class="tab-content" id="tab-2">
+      <h2>설정</h2>
+      <ul class="settings-list">
+        <li onclick="alert('푸시 알림 설정')">🔔 푸시 알림</li>
+        <li onclick="toggleDarkMode()">🌙 다크 모드</li>
+        <li onclick="resetData()">🗑 데이터 초기화</li>
+        <li onclick="alert('버전: 1.0.0')">ℹ️ 버전 정보</li>
+      </ul>
     </div>
+  </div> <!-- content-area 끝 -->
 
-    <script>
-        // Firebase 초기화
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        db.enablePersistence();
+  <script>
+    // 탭 전환
+    function showTab(index) {
+      const tabs = document.querySelectorAll('.tab-content');
+      const buttons = document.querySelectorAll('.tab-button');
+      tabs.forEach(t => t.classList.remove('active'));
+      buttons.forEach(b => b.classList.remove('active'));
+      tabs[index].classList.add('active');
+      buttons[index].classList.add('active');
+    }
 
-        // SHA-256 해시 함수
-        async function sha256(str) {
-            const msgBuffer = new TextEncoder().encode(str);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        }
+    // 다크 모드
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+    }
 
-        const translations = {
-            ko: {
-                timetable: "시간표",
-                calendar: "캘린더",
-                settings: "설정",
-                community: "커뮤니티",
-                writePost: "글쓰기",
-                newPost: "새 게시글 작성",
-                postTitle: "제목을 입력하세요",
-                postContent: "내용을 입력하세요",
-                submit: "게시",
-                cancel: "취소",
-                noPosts: "게시글이 없습니다.",
-                syncData: "데이터 동기화",
-                syncSuccess: "데이터 동기화 성공!",
-                syncFail: "동기화 실패: 이메일을 입력하거나 네트워크를 확인하세요.",
-                enterEmail: "먼저 이메일을 입력해주세요.",
-                profile: "프로필",
-                notifications: "알림",
-                theme: "테마",
-                data: "데이터 관리",
-                backup: "백업 및 동기화",
-                privacy: "개인정보",
-                help: "도움말"
-            },
-            en: {
-                timetable: "Timetable",
-                calendar: "Calendar",
-                settings: "Settings",
-                community: "Community",
-                writePost: "Write Post",
-                newPost: "New Post",
-                postTitle: "Enter title",
-                postContent: "Enter content",
-                submit: "Submit",
-                cancel: "Cancel",
-                noPosts: "No posts available.",
-                syncData: "Sync Data",
-                syncSuccess: "Data synced successfully!",
-                syncFail: "Sync failed: Please enter an email or check your network.",
-                enterEmail: "Please enter an email first.",
-                profile: "Profile",
-                notifications: "Notifications",
-                theme: "Theme",
-                data: "Data Management",
-                backup: "Backup & Sync",
-                privacy: "Privacy",
-                help: "Help"
-            },
-            ja: {
-                timetable: "時間割",
-                calendar: "カレンダー",
-                settings: "設定",
-                community: "コミュニティ",
-                writePost: "投稿を書く",
-                newPost: "新しい投稿",
-                postTitle: "タイトルを入力",
-                postContent: "内容を入力",
-                submit: "投稿",
-                cancel: "キャンセル",
-                noPosts: "投稿がありません。",
-                syncData: "データ同期",
-                syncSuccess: "データ同期に成功しました！",
-                syncFail: "同期失敗：メールアドレスを入力するか、ネットワークを確認してください。",
-                enterEmail: "まずメールアドレスを入力してください。",
-                profile: "プロフィール",
-                notifications: "通知",
-                theme: "テーマ",
-                data: "データ管理",
-                backup: "バックアップと同期",
-                privacy: "プライバシー",
-                help: "ヘルプ"
-            },
-            zh: {
-                timetable: "课程表",
-                calendar: "日历",
-                settings: "设置",
-                community: "社区",
-                writePost: "写帖子",
-                newPost: "新帖子",
-                postTitle: "输入标题",
-                postContent: "输入内容",
-                submit: "提交",
-                cancel: "取消",
-                noPosts: "暂无帖子。",
-                syncData: "数据同步",
-                syncSuccess: "数据同步成功！",
-                syncFail: "同步失败：请输入邮箱或检查网络。",
-                enterEmail: "请先输入邮箱。",
-                profile: "个人资料",
-                notifications: "通知",
-                theme: "主题",
-                data: "数据管理",
-                backup: "备份与同步",
-                privacy: "隐私",
-                help: "帮助"
-            }
-        };
+    // 커뮤니티 localStorage 저장
+    function submitPost() {
+      const title = document.getElementById("post-title").value.trim();
+      const content = document.getElementById("post-content").value.trim();
+      if (!title || !content) {
+        alert("제목과 내용을 모두 입력하세요.");
+        return;
+      }
 
-        let currentLanguage = localStorage.getItem('language') || 'ko';
-        let currentSchool = '';
-        let currentClass = '1';
-        let timetables = JSON.parse(localStorage.getItem('timetables')) || {};
+      const post = {
+        title: title,
+        content: content,
+        time: new Date().toLocaleString()
+      };
 
-        function updateTranslations() {
-            const t = translations[currentLanguage];
-            document.querySelector('.tab-button[onclick="switchTab(\'main\')"]').title = t.timetable;
-            document.querySelector('.tab-button[onclick="switchTab(\'community\')"]').title = t.community;
-            document.querySelector('.tab-button[onclick="switchTab(\'settings\')"]').title = t.settings;
-            document.querySelector('.mobile-tab-button[onclick="switchTab(\'main\')"]').title = t.timetable;
-            document.querySelector('.mobile-tab-button[onclick="switchTab(\'community\')"]').title = t.community;
-            document.querySelector('.mobile-tab-button[onclick="switchTab(\'settings\')"]').title = t.settings;
-            document.querySelector('.timetable-section h2').textContent = t.timetable;
-            document.querySelector('.calendar-section h2').textContent = t.calendar;
-            document.querySelector('.community-container h2').textContent = t.community;
-            document.querySelector('.write-post-button').textContent = t.writePost;
-            document.querySelector('.post-modal-content h2').textContent = t.newPost;
-            document.getElementById('post-title').placeholder = t.postTitle;
-            document.getElementById('post-content').placeholder = t.postContent;
-            document.querySelector('.modal-button.submit').textContent = t.submit;
-            document.querySelector('.modal-button.cancel').textContent = t.cancel;
-            document.querySelector('.sync-button').textContent = t.syncData;
-            document.querySelector('.settings-container h2').textContent = t.settings;
-            document.querySelectorAll('.settings-container ul li')[0].textContent = t.profile;
-            document.querySelectorAll('.settings-container ul li')[1].textContent = t.notifications;
-            document.querySelectorAll('.settings-container ul li')[2].textContent = t.theme;
-            document.querySelectorAll('.settings-container ul li')[3].textContent = t.data;
-            document.querySelectorAll('.settings-container ul li')[4].textContent = t.backup;
-            document.querySelectorAll('.settings-container ul li')[5].textContent = t.privacy;
-            document.querySelectorAll('.settings-container ul li')[6].textContent = t.help;
-            renderPostList();
-        }
+      let posts = JSON.parse(localStorage.getItem("posts") || "[]");
+      posts.unshift(post);
+      localStorage.setItem("posts", JSON.stringify(posts));
 
-        window.addEventListener('load', function () {
-            const savedLanguage = localStorage.getItem('language') || 'ko';
-            currentLanguage = savedLanguage;
-            const languageSelect = document.querySelector('.language-select');
-            if (languageSelect) languageSelect.value = savedLanguage;
-            const savedDarkMode = localStorage.getItem('darkMode') === 'true';
-            if (savedDarkMode) {
-                document.body.classList.add('dark-mode');
-                document.getElementById('dark-mode').checked = true;
-            }
-            const savedFontSize = localStorage.getItem('fontSize') || '16';
-            document.body.style.fontSize = savedFontSize + 'px';
-            document.getElementById('font-size').value = savedFontSize;
-            createCalendar();
-            loadTimetable();
-            updateTranslations();
-            const savedEmail = localStorage.getItem('userEmail');
-            if (savedEmail) {
-                document.getElementById('user-email').value = savedEmail;
-                syncData(true);
-            }
-            renderPostList();
-        });
+      document.getElementById("post-title").value = "";
+      document.getElementById("post-content").value = "";
 
-        async function syncData(auto = false) {
-            const email = document.getElementById('user-email').value.trim();
-            const syncModal = document.getElementById('sync-modal');
-            const syncMessage = document.getElementById('sync-message');
-            const t = translations[currentLanguage];
+      renderPosts();
+    }
 
-            if (!email) {
-                syncMessage.textContent = t.enterEmail;
-                syncModal.classList.add('active');
-                return;
-            }
+    function renderPosts() {
+      const posts = JSON.parse(localStorage.getItem("posts") || "[]");
+      const list = document.getElementById("post-list");
+      list.innerHTML = "";
+      posts.forEach(post => {
+        const div = document.createElement("div");
+        div.className = "post";
+        div.innerHTML = `<h3>${post.title}</h3><p>${post.content}</p><small>${post.time}</small>`;
+        list.appendChild(div);
+      });
+    }
 
-            try {
-                const emailHash = await sha256(email);
-                localStorage.setItem('userEmail', email);
+    function resetData() {
+      if (confirm("정말 모든 데이터를 삭제할까요?")) {
+        localStorage.clear();
+        renderPosts();
+        alert("초기화 완료");
+      }
+    }
 
-                const localData = {
-                    timetables: JSON.parse(localStorage.getItem('timetables')) || {},
-                    calendar: JSON.parse(localStorage.getItem('calendar')) || {},
-                    posts: JSON.parse(localStorage.getItem('communityPosts')) || [],
-                    settings: JSON.parse(localStorage.getItem('settings')) || {}
-                };
+    // 검색 기능 (시간표)
+    document.getElementById("searchInput").addEventListener("input", function () {
+      const filter = this.value.toLowerCase();
+      const rows = document.querySelectorAll("#timetable tbody tr");
+      rows.forEach(row => {
+        row.style.display = Array.from(row.cells).some(td => td.textContent.toLowerCase().includes(filter)) ? "" : "none";
+      });
+    });
 
-                await db.collection('users').doc(emailHash).set(localData, { merge: true });
-
-                const doc = await db.collection('users').doc(emailHash).get();
-                if (doc.exists) {
-                    const cloudData = doc.data();
-                    localStorage.setItem('timetables', JSON.stringify(cloudData.timetables || {}));
-                    localStorage.setItem('calendar', JSON.stringify(cloudData.calendar || {}));
-                    localStorage.setItem('communityPosts', JSON.stringify(cloudData.posts || []));
-                    localStorage.setItem('settings', JSON.stringify(cloudData.settings || {}));
-                    loadTimetable();
-                    createCalendar();
-                }
-
-                if (!auto) {
-                    syncMessage.textContent = t.syncSuccess;
-                    syncModal.classList.add('active');
-                }
-                renderPostList();
-            } catch (e) {
-                console.error('동기화 오류:', e);
-                if (!auto) {
-                    syncMessage.textContent = t.syncFail;
-                    syncModal.classList.add('active');
-                }
-            }
-        }
-
-        function closeSyncModal() {
-            document.getElementById('sync-modal').classList.remove('active');
-        }
-
-        async function renderPostList() {
-            const postListBody = document.getElementById('post-list-body');
-            const posts = JSON.parse(localStorage.getItem('communityPosts')) || [];
-            const t = translations[currentLanguage];
-
-            postListBody.innerHTML = '';
-            if (posts.length === 0) {
-                postListBody.innerHTML = `<tr><td colspan="4" style="text-align: center;">${t.noPosts}</td></tr>`;
-                return;
-            }
-
-            posts.forEach(post => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="post-title">${post.title}</td>
-                    <td>${post.author}</td>
-                    <td>${new Date(post.timestamp).toLocaleString()}</td>
-                    <td class="post-preview">${post.content.substring(0, 20)}${post.content.length > 20 ? '...' : ''}</td>
-                `;
-                row.onclick = () => showPostDetail(post.id);
-                postListBody.appendChild(row);
-            });
-        }
-
-        function openPostModal() {
-            document.getElementById('post-modal').classList.add('active');
-            document.getElementById('post-title').value = '';
-            document.getElementById('post-content').value = '';
-        }
-
-        function closePostModal() {
-            document.getElementById('post-modal').classList.remove('active');
-        }
-
-        async function submitPost() {
-            const title = document.getElementById('post-title').value.trim();
-            const content = document.getElementById('post-content').value.trim();
-            const author = document.getElementById('user-name').textContent || '익명';
-            const email = document.getElementById('user-email').value.trim();
-
-            if (!title || !content) {
-                alert('제목과 내용을 모두 입력해주세요.');
-                return;
-            }
-
-            const posts = JSON.parse(localStorage.getItem('communityPosts')) || [];
-            const newPost = {
-                id: Date.now().toString(),
-                title,
-                content,
-                author,
-                timestamp: new Date().toISOString()
-            };
-
-            posts.push(newPost);
-            localStorage.setItem('communityPosts', JSON.stringify(posts));
-
-            if (email) {
-                const emailHash = await sha256(email);
-                await db.collection('users').doc(emailHash).set({
-                    posts
-                }, { merge: true });
-            }
-
-            closePostModal();
-            renderPostList();
-        }
-
-        function showPostDetail(postId) {
-            const posts = JSON.parse(localStorage.getItem('communityPosts')) || [];
-            const post = posts.find(p => p.id === postId);
-            if (!post) return;
-
-            const modal = document.getElementById('post-modal');
-            const modalContent = document.querySelector('.post-modal-content');
-            modalContent.innerHTML = `
-                <h2>${post.title}</h2>
-                <p><strong>작성자:</strong> ${post.author}</p>
-                <p><strong>작성 시간:</strong> ${new Date(post.timestamp).toLocaleString()}</p>
-                <p>${post.content.replace(/\n/g, '<br>')}</p>
-                <div class="post-modal-buttons">
-                    <button class="modal-button cancel" onclick="closePostModal()">닫기</button>
-                </div>
-            `;
-            modal.classList.add('active');
-        }
-
-        const schools = [
-            "서울고등학교",
-            "부산고등학교",
-            "대구고등학교",
-            "인천고등학교",
-            "광주고등학교",
-            "대전고등학교",
-            "울산고등학교",
-            "세종고등학교"
-        ];
-
-        function searchSchool(query) {
-            const schoolList = document.querySelector('.school-list');
-            schoolList.innerHTML = '';
-            if (query) {
-                const filteredSchools = schools.filter(school => school.toLowerCase().includes(query.toLowerCase()));
-                filteredSchools.forEach(school => {
-                    const div = document.createElement('div');
-                    div.textContent = school;
-                    div.onclick = () => selectSchool(school);
-                    schoolList.appendChild(div);
-                });
-                schoolList.style.display = filteredSchools.length ? 'block' : 'none';
-            } else {
-                schoolList.style.display = 'none';
-            }
-        }
-
-        function selectSchool(school) {
-            currentSchool = school;
-            document.querySelector('.school-search').value = school;
-            document.querySelector('.school-list').style.display = 'none';
-            loadTimetable();
-        }
-
-        function switchClass(classNum) {
-            currentClass = classNum;
-            loadTimetable();
-        }
-
-        function loadTimetable() {
-            if (!currentSchool || !currentClass) return;
-            const timetable = timetables[currentSchool]?.[currentClass] || Array(7).fill().map(() => Array(5).fill(''));
-            const tbody = document.querySelector('tbody');
-            tbody.querySelectorAll('tr').forEach((row, period) => {
-                row.querySelectorAll('td:not(:first-child)').forEach((cell, day) => {
-                    cell.textContent = timetable[period][day];
-                });
-            });
-            tbody.querySelectorAll('td[contenteditable="true"]').forEach(cell => {
-                cell.onblur = () => saveTimetable();
-                cell.onkeydown = (e) => {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        cell.blur();
-                    }
-                };
-                cell.onpaste = (e) => {
-                    e.preventDefault();
-                    const text = (e.clipboardData || window.clipboardData).getData('text').replace(/[\n\r]/g, '');
-                    document.execCommand('insertText', false, text);
-                };
-            });
-        }
-
-        function saveTimetable() {
-            if (!currentSchool || !currentClass) return;
-            if (!timetables[currentSchool]) timetables[currentSchool] = {};
-            if (!timetables[currentSchool][currentClass]) timetables[currentSchool][currentClass] = Array(7).fill().map(() => Array(5).fill(''));
-            const tbody = document.querySelector('tbody');
-            tbody.querySelectorAll('tr').forEach((row, period) => {
-                row.querySelectorAll('td:not(:first-child)').forEach((cell, day) => {
-                    timetables[currentSchool][currentClass][period][day] = cell.textContent.trim();
-                });
-            });
-            localStorage.setItem('timetables', JSON.stringify(timetables));
-        }
-
-        function createCalendar() {
-            const tbody = document.getElementById('calendar-body');
-            tbody.innerHTML = '';
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = today.getMonth();
-            const firstDay = new Date(year, month, 1).getDay();
-            const lastDate = new Date(year, month + 1, 0).getDate();
-            let date = 1;
-            const savedCalendar = JSON.parse(localStorage.getItem('calendar')) || {};
-
-            for (let i = 0; i < 6; i++) {
-                const row = document.createElement('tr');
-                for (let j = 0; j < 7; j++) {
-                    const cell = document.createElement('td');
-                    if (i === 0 && j < firstDay || date > lastDate) {
-                        row.appendChild(cell);
-                        continue;
-                    }
-                    cell.textContent = date;
-                    const textarea = document.createElement('textarea');
-                    const key = `${year}-${month + 1}-${date}`;
-                    textarea.value = savedCalendar[key] || '';
-                    textarea.onblur = () => {
-                        savedCalendar[key] = textarea.value.trim();
-                        localStorage.setItem('calendar', JSON.stringify(savedCalendar));
-                    };
-                    cell.appendChild(textarea);
-                    row.appendChild(cell);
-                    date++;
-                }
-                tbody.appendChild(row);
-                if (date > lastDate) break;
-            }
-        }
-
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-button, .mobile-tab-button').forEach(button => {
-                button.classList.remove('active');
-            });
-            event.currentTarget.classList.add('active');
-            document.querySelectorAll('.main-container, .community-container, .settings-container').forEach(container => {
-                container.classList.remove('active');
-            });
-            document.querySelector('.' + tabName + '-container').classList.add('active');
-            syncMobileTabs();
-            if (tabName === 'community') renderPostList();
-        }
-
-        function syncMobileTabs() {
-            document.querySelectorAll('.mobile-tab-button').forEach(button => {
-                button.classList.remove('active');
-                if (button.getAttribute('onclick') === document.querySelector('.tab-button.active').getAttribute('onclick')) {
-                    button.classList.add('active');
-                }
-            });
-        }
-
-        function showSubmenu(submenuName) {
-            document.querySelectorAll('.submenu').forEach(submenu => {
-                submenu.style.display = 'none';
-            });
-            document.querySelector(`.submenu.${submenuName}`).style.display = 'block';
-        }
-
-        function hideSubmenu() {
-            document.querySelectorAll('.submenu').forEach(submenu => {
-                submenu.style.display = 'none';
-            });
-        }
-
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-        }
-
-        function changeFontSize(size) {
-            document.body.style.fontSize = size + 'px';
-            localStorage.setItem('fontSize', size);
-        }
-
-        function changeLanguage(lang) {
-            currentLanguage = lang;
-            localStorage.setItem('language', lang);
-            updateTranslations();
-        }
-
-        function exportData() {
-            const data = {
-                timetables: JSON.parse(localStorage.getItem('timetables')) || {},
-                calendar: JSON.parse(localStorage.getItem('calendar')) || {},
-                posts: JSON.parse(localStorage.getItem('communityPosts')) || [],
-                settings: JSON.parse(localStorage.getItem('settings')) || {},
-                lastSync: new Date().toISOString()
-            };
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'shooltalktalk_backup.json';
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        function importData() {
-            const fileInput = document.getElementById('import-file');
-            const file = fileInput.files[0];
-            if (!file) {
-                alert('파일을 선택해주세요.');
-                return;
-            }
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    localStorage.setItem('timetables', JSON.stringify(data.timetables || {}));
-                    localStorage.setItem('calendar', JSON.stringify(data.calendar || {}));
-                    localStorage.setItem('communityPosts', JSON.stringify(data.posts || []));
-                    localStorage.setItem('settings', JSON.stringify(data.settings || {}));
-                    alert('데이터 가져오기 성공!');
-                    loadTimetable();
-                    createCalendar();
-                    renderPostList();
-                } catch (error) {
-                    alert('잘못된 파일 형식입니다.');
-                }
-            };
-            reader.readAsText(file);
-        }
-
-        function resetData() {
-            if (confirm('모든 데이터를 초기화하시겠습니까?')) {
-                localStorage.clear();
-                timetables = {};
-                currentSchool = '';
-                currentClass = '1';
-                loadTimetable();
-                createCalendar();
-                renderPostList();
-                localStorage.setItem('language', currentLanguage);
-                localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-                localStorage.setItem('fontSize', document.body.style.fontSize.replace('px', '') || '16');
-            }
-        }
-
-        function manualBackup() {
-            exportData();
-        }
-
-        function viewTerms() {
-            alert('약관을 표시합니다.');
-        }
-
-        function contactSupport() {
-            alert('문의하기 창을 엽니다.');
-        }
-
-        function viewFAQ() {
-            alert('FAQ를 표시합니다.');
-        }
-
-        function viewGuide() {
-            alert('사용 가이드를 표시합니다.');
-        }
-
-        function changePassword() {
-            alert('비밀번호 변경 창을 엽니다.');
-        }
-
-        function deleteAccount() {
-            if (confirm('계정을 삭제하시겠습니까?')) {
-                alert('계정이 삭제되었습니다.');
-            }
-        }
-
-        function toggleMobileMenu() {
-            // 모바일 메뉴 토글 기능 (미구현)
-        }
-    </script>
+    // 초기 게시물 렌더링
+    renderPosts();
+  </script>
 </body>
 </html>
