@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Talk Talk</title>
+    <title>Shool Talk Talk</title>
     <style>
         body {
             font-family: 'Malgun Gothic', sans-serif;
@@ -13,8 +13,7 @@
             min-height: 100vh;
             background-color: #ffffff;
             color: #333333;
-            transition: all 0.3s ease;
-            font-size: 16px;
+            transition: background-color 0.3s, color 0.3s;
         }
         body.dark-mode {
             background-color: #1a1a1a;
@@ -44,7 +43,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.2s, transform 0.2s;
+            transition: background-color 0.2s, color 0.2s;
         }
         body.dark-mode .tab-button {
             background-color: #3f3f3f;
@@ -52,7 +51,6 @@
         }
         .tab-button:hover {
             background-color: #d0d0d0;
-            transform: scale(1.05);
         }
         body.dark-mode .tab-button:hover {
             background-color: #4f4f4f;
@@ -70,24 +68,22 @@
         body.dark-mode .content-area {
             background-color: #2b2b2b;
         }
-        .main-container, .community-container, .post-detail-container, .settings-container {
+        .main-container, .community-container, .settings-container {
             display: none;
             max-width: 1200px;
             margin: 0 auto;
             background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             transition: background-color 0.3s;
         }
         body.dark-mode .main-container,
         body.dark-mode .community-container,
-        body.dark-mode .post-detail-container,
         body.dark-mode .settings-container {
             background-color: #333333;
         }
         .main-container.active,
         .community-container.active,
-        .post-detail-container.active,
         .settings-container.active {
             display: block;
         }
@@ -124,7 +120,6 @@
         }
         .profile-info h2, .profile-info p {
             color: inherit;
-            margin: 0;
         }
         .settings-list {
             list-style: none;
@@ -132,22 +127,22 @@
             margin: 0;
         }
         .settings-item {
-            padding: 16px 20px;
+            padding: 15px 20px;
             border-bottom: 1px solid #eee;
             display: flex;
             align-items: center;
             justify-content: space-between;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: background-color 0.3s;
         }
         body.dark-mode .settings-item {
             border-bottom: 1px solid #444;
         }
         .settings-item:hover {
-            background-color: #f0f0f0;
+            background-color: #f8f8f8;
         }
         body.dark-mode .settings-item:hover {
-            background-color: #3a3a3a;
+            background-color: #444;
         }
         .settings-item .accordion-toggle {
             color: #666;
@@ -179,82 +174,10 @@
             margin: 0;
         }
         .accordion-content li {
-            padding: 12px 0;
+            padding: 10px 0;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            transition: background-color 0.2s;
-        }
-        .accordion-content li:hover {
-            background-color: #f0f0f0;
-        }
-        body.dark-mode .accordion-content li:hover {
-            background-color: #3a3a3a;
-        }
-        .action-button, .edit-button, .font-size-button, .reset-button, .post-form-button, .back-button, .delete-account {
-            padding: 10px 16px;
-            border: none;
-            border-radius: 8px;
-            background-color: #0078d4;
-            color: #fff;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
-        }
-        body.dark-mode .action-button,
-        body.dark-mode .edit-button,
-        body.dark-mode .font-size-button,
-        body.dark-mode .reset-button,
-        body.dark-mode .post-form-button,
-        body.dark-mode .back-button,
-        body.dark-mode .delete-account {
-            background-color: #4a90e2;
-        }
-        .action-button:hover, .edit-button:hover, .font-size-button:hover, .reset-button:hover, .post-form-button:hover, .back-button:hover, .delete-account:hover {
-            background-color: #005ea2;
-            transform: scale(1.02);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        body.dark-mode .action-button:hover,
-        body.dark-mode .edit-button:hover,
-        body.dark-mode .font-size-button:hover,
-        body.dark-mode .reset-button:hover,
-        body.dark-mode .post-form-button:hover,
-        body.dark-mode .back-button:hover,
-        body.dark-mode .delete-account:hover {
-            background-color: #357abd;
-        }
-        .action-button:active, .edit-button:active, .font-size-button:active, .reset-button:active, .post-form-button:active, .back-button:active, .delete-account:active {
-            transform: translateY(1px);
-        }
-        .edit-button {
-            background: none;
-            color: #0078d4;
-            font-size: 1.1em;
-        }
-        body.dark-mode .edit-button {
-            color: #4a90e2;
-        }
-        .font-size-button, .reset-button {
-            background-color: #e0e0e0;
-            color: #333;
-        }
-        body.dark-mode .font-size-button,
-        body.dark-mode .reset-button {
-            background-color: #3f3f3f;
-            color: #fff;
-        }
-        .delete-account {
-            background-color: #d32f2f;
-        }
-        body.dark-mode .delete-account {
-            background-color: #b71c1c;
-        }
-        .delete-account:hover {
-            background-color: #b71c1c;
-        }
-        body.dark-mode .delete-account:hover {
-            background-color: #8e0000;
         }
         .community-container {
             padding: 20px;
@@ -268,8 +191,8 @@
         .post-form {
             background-color: #fff;
             padding: 15px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             margin-bottom: 20px;
         }
         body.dark-mode .post-form {
@@ -277,10 +200,10 @@
         }
         .post-form input, .post-form textarea {
             width: 100%;
-            padding: 12px;
-            margin-bottom: 12px;
+            padding: 10px;
+            margin-bottom: 10px;
             border: 1px solid #ddd;
-            border-radius: 8px;
+            border-radius: 5px;
             font-family: inherit;
             color: inherit;
             background-color: #fff;
@@ -293,17 +216,29 @@
         }
         .post-form textarea {
             resize: vertical;
-            min-height: 120px;
+            min-height: 100px;
+        }
+        .post-form button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #0078d4;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .post-form button:hover {
+            background-color: #005ea2;
         }
         .post-list table {
             width: 100%;
             border-collapse: collapse;
         }
         .post-list th, .post-list td {
-            padding: 14px;
+            padding: 12px;
             border-bottom: 1px solid #eee;
             text-align: left;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, color 0.3s;
         }
         body.dark-mode .post-list th,
         body.dark-mode .post-list td {
@@ -317,43 +252,81 @@
             background-color: #333;
         }
         .post-list tr:hover {
-            background-color: #f0f0f0;
+            background-color: #f8f8f8;
             cursor: pointer;
         }
         body.dark-mode .post-list tr:hover {
-            background-color: #3a3a3a;
+            background-color: #444;
         }
-        .post-detail-container {
-            padding: 20px;
-        }
-        .post-detail-content {
+        .post-detail {
+            display: none;
             background-color: #fff;
             padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-top: 20px;
         }
-        body.dark-mode .post-detail-content {
+        body.dark-mode .post-detail {
             background-color: #333;
         }
-        .post-detail-content h2 {
+        .post-detail.active {
+            display: block;
+        }
+        .post-detail h2 {
             margin-top: 0;
-            font-size: 1.8em;
         }
-        .post-detail-content .meta {
+        .post-detail .meta {
             color: #666;
-            margin-bottom: 20px;
-            font-size: 0.9em;
+            margin-bottom: 15px;
         }
-        body.dark-mode .post-detail-content .meta {
+        body.dark-mode .post-detail .meta {
             color: #aaa;
         }
-        .post-detail-content .content {
+        .post-detail .content {
             white-space: pre-wrap;
-            font-size: 1.1em;
+        }
+        .back-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #e0e0e0;
+            color: #333;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        body.dark-mode .back-button {
+            background-color: #3f3f3f;
+            color: #fff;
+        }
+        .back-button:hover {
+            background-color: #d0d0d0;
+        }
+        body.dark-mode .back-button:hover {
+            background-color: #4f4f4f;
         }
         .main-container {
             display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
             gap: 20px;
+            display: none;
+        }
+        .main-container.active {
+            display: flex;
+        }
+        .settings-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: none;
+        }
+        body.dark-mode .settings-container {
+            background-color: #333333;
+        }
+        .settings-container.active {
+            display: block;
         }
         .left-container, .right-container {
             flex: 1;
@@ -377,14 +350,10 @@
             width: 100%;
             padding: 8px;
             font-size: 14px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
         }
         #class-select {
             padding: 8px;
             font-size: 14px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
         }
         #school-list {
             position: absolute;
@@ -396,7 +365,6 @@
             background: white;
             border: 1px solid #ddd;
             border-top: none;
-            border-radius: 0 0 8px 8px;
             z-index: 1000;
         }
         #school-list a {
@@ -492,6 +460,7 @@
         .timetable td[contenteditable="true"] {
             background-color: #fff;
             cursor: text;
+            transition: background-color 0.3s, color 0.3s;
         }
         body.dark-mode .timetable td[contenteditable="true"] {
             background-color: #2a2a2a;
@@ -507,25 +476,27 @@
             outline: 2px solid #007bff;
             outline-offset: -2px;
         }
-        .profile-edit, .location-controls, .account-section {
+        body.dark-mode .timetable td[contenteditable="true"]:focus {
+            outline-color: #0078d4;
+        }
+        .profile-edit {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin: 10px 0;
+            margin-top: 10px;
         }
-        .edit-input, .account-section input {
+        .edit-button {
+            background: none;
+            border: none;
+            color: #0078d4;
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+        .edit-input {
             border: 1px solid #ddd;
-            padding: 8px;
-            border-radius: 8px;
+            padding: 5px;
+            border-radius: 4px;
             width: 200px;
-            background-color: #fff;
-            color: #333;
-        }
-        body.dark-mode .edit-input,
-        body.dark-mode .account-section input {
-            background-color: #2a2a2a;
-            color: #fff;
-            border-color: #555;
         }
         .font-size-control {
             display: flex;
@@ -533,7 +504,30 @@
             gap: 10px;
             padding: 10px;
         }
-        .terms-container, .faq-container, .contact-container, .guide-container {
+        .font-size-button {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: none;
+            cursor: pointer;
+            color: inherit;
+        }
+        body.dark-mode .font-size-button {
+            border-color: #555;
+        }
+        .reset-button {
+            margin-left: auto;
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: none;
+            cursor: pointer;
+            color: #0078d4;
+        }
+        body.dark-mode .reset-button {
+            border-color: #555;
+        }
+        .terms-container {
             max-height: 400px;
             overflow-y: auto;
             padding: 20px;
@@ -541,10 +535,7 @@
             border-radius: 8px;
             margin: 10px 0;
         }
-        body.dark-mode .terms-container,
-        body.dark-mode .faq-container,
-        body.dark-mode .contact-container,
-        body.dark-mode .guide-container {
+        body.dark-mode .terms-container {
             background-color: #2a2a2a;
         }
         .toggle-switch {
@@ -588,7 +579,7 @@
         }
         .language-select, .notification-sound {
             padding: 8px;
-            border-radius: 8px;
+            border-radius: 4px;
             border: 1px solid #ddd;
             background-color: white;
             color: inherit;
@@ -628,6 +619,10 @@
                 height: 60px;
                 margin: 0;
                 border-radius: 50%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
                 font-size: 24px;
             }
             .content-area {
@@ -665,7 +660,7 @@
             .calendar tbody td {
                 height: 80px;
             }
-            .settings-container, .community-container, .post-detail-container {
+            .settings-container {
                 max-width: 100%;
             }
             .post-list th:nth-child(4), .post-list td:nth-child(4) {
@@ -680,28 +675,30 @@
                 bottom: 0;
                 left: 0;
                 width: 100%;
-                height: 80px;
+                height: 90px;
                 background-color: #f5f5f5;
                 flex-direction: row;
                 justify-content: space-around;
                 align-items: center;
                 z-index: 1000;
                 box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+                padding: 0 20px;
             }
             body.dark-mode .mobile-bottom-tabs {
                 background-color: #2b2b2b;
                 box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
             }
             .mobile-tab-button {
-                width: 60px;
-                height: 60px;
+                width: 70px;
+                height: 70px;
                 border-radius: 50%;
-                font-size: 24px;
+                font-size: 28px;
                 background-color: #e0e0e0;
                 color: #333333;
                 border: none;
                 cursor: pointer;
-                transition: background-color 0.2s, transform 0.2s;
+                transition: background-color 0.2s, color 0.2s;
+                margin: 0 5px;
             }
             body.dark-mode .mobile-tab-button {
                 background-color: #3f3f3f;
@@ -709,7 +706,6 @@
             }
             .mobile-tab-button:hover {
                 background-color: #d0d0d0;
-                transform: scale(1.05);
             }
             body.dark-mode .mobile-tab-button:hover {
                 background-color: #4f4f4f;
@@ -730,7 +726,7 @@
             .timetable, .calendar {
                 height: 500px;
             }
-            .settings-container, .community-container, .post-detail-container {
+            .settings-container, .community-container {
                 max-width: 90%;
             }
         }
@@ -745,6 +741,32 @@
                 height: 700px;
             }
         }
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #0078d4;
+            color: white;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        @media screen and (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+            .vertical-tabs {
+                display: none;
+            }
+            .vertical-tabs.active {
+                display: flex;
+            }
+        }
         .mobile-bottom-tabs {
             display: none;
         }
@@ -752,8 +774,8 @@
             .mobile-bottom-tabs {
                 display: flex;
             }
-            .vertical-tabs {
-                display: none;
+            .content-area {
+                padding-bottom: 100px;
             }
         }
     </style>
@@ -791,13 +813,62 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td>1교시</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
-                        <tr><td>2교시</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
-                        <tr><td>3교시</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
-                        <tr><td>4교시</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
-                        <tr><td>5교시</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
-                        <tr><td>6교시</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
-                        <tr><td>7교시</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+                        <tr>
+                            <td>1교시</td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                        </tr>
+                        <tr>
+                            <td>2교시</td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                        </tr>
+                        <tr>
+                            <td>3교시</td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                        </tr>
+                        <tr>
+                            <td>4교시</td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                        </tr>
+                        <tr>
+                            <td>5교시</td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                        </tr>
+                        <tr>
+                            <td>6교시</td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                        </tr>
+                        <tr>
+                            <td>7교시</td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                            <td contenteditable="true"></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -805,13 +876,21 @@
                 <table class="calendar">
                     <thead>
                         <tr>
-                            <th>일</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>토</th>
+                            <th>일</th>
+                            <th>월</th>
+                            <th>화</th>
+                            <th>수</th>
+                            <th>목</th>
+                            <th>금</th>
+                            <th>토</th>
                         </tr>
                     </thead>
-                    <tbody id="calendar-body"></tbody>
+                    <tbody id="calendar-body">
+                    </tbody>
                 </table>
             </div>
         </div>
+        
         <div class="community-container">
             <div class="community-header">
                 <h2>커뮤니티</h2>
@@ -820,7 +899,7 @@
             <div class="post-form" style="display: none;">
                 <input type="text" id="post-title" placeholder="제목">
                 <textarea id="post-content" placeholder="내용"></textarea>
-                <button class="action-button" onclick="submitPost()">게시</button>
+                <button onclick="submitPost()">게시</button>
             </div>
             <div class="post-list">
                 <table>
@@ -832,18 +911,18 @@
                             <th style="width: 10%;">조회수</th>
                         </tr>
                     </thead>
-                    <tbody id="post-list-body"></tbody>
+                    <tbody id="post-list-body">
+                    </tbody>
                 </table>
             </div>
-        </div>
-        <div class="post-detail-container">
-            <button class="back-button" onclick="switchTab('community')">뒤로</button>
-            <div class="post-detail-content">
+            <div class="post-detail">
+                <button class="back-button" onclick="hidePostDetail()">뒤로</button>
                 <h2 id="detail-title"></h2>
                 <div class="meta" id="detail-meta"></div>
                 <div class="content" id="detail-content"></div>
             </div>
         </div>
+
         <div class="settings-container">
             <div class="settings-profile">
                 <div class="profile-image" onclick="document.getElementById('profile-image-input').click()">
@@ -856,7 +935,7 @@
                         <button class="edit-button" onclick="editField('user-name')">✏️</button>
                     </h2>
                     <p>
-                        <span id="user-email">user@example.com</span>
+                        <span id="user-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="59382d2521243d193c21283429353c773a3634">[email&#160;protected]</a></span>
                         <button class="edit-button" onclick="editField('user-email')">✏️</button>
                     </p>
                 </div>
@@ -864,7 +943,7 @@
             <div class="main-settings">
                 <ul class="settings-list">
                     <li class="settings-item" data-section="notifications">
-                        🔔 알림 설정
+                        알림 설정
                         <i class="accordion-toggle">›</i>
                         <div class="accordion-content" id="notifications-content">
                             <ul>
@@ -909,13 +988,12 @@
                         </div>
                     </li>
                     <li class="settings-item" data-section="theme">
-                        🎨 테마 설정
+                        테마 설정
                         <i class="accordion-toggle">›</i>
                         <div class="accordion-content" id="theme-content">
                             <ul>
-                                <li>
+                                <li onclick="toggleDarkMode()">
                                     다크모드 전환
-                                    <button class="action-button" onclick="toggleDarkMode()">전환</button>
                                 </li>
                                 <li>
                                     <div class="font-size-control">
@@ -938,22 +1016,18 @@
                         </div>
                     </li>
                     <li class="settings-item" data-section="data">
-                        💾 데이터 관리
+                        데이터 관리
                         <i class="accordion-toggle">›</i>
                         <div class="accordion-content" id="data-content">
                             <ul>
-                                <li>
+                                <li onclick="exportData()">
                                     데이터 내보내기
-                                    <button class="action-button" onclick="exportData()">내보내기</button>
                                 </li>
-                                <li>
+                                <li onclick="importData()">
                                     데이터 가져오기
-                                    <button class="action-button" onclick="document.getElementById('import-file').click()">가져오기</button>
-                                    <input type="file" id="import-file" accept=".json" style="display: none;" onchange="importData()">
                                 </li>
-                                <li>
+                                <li onclick="resetData()">
                                     데이터 초기화
-                                    <button class="action-button" onclick="resetData()">초기화</button>
                                 </li>
                                 <li>
                                     자동 저장
@@ -966,7 +1040,7 @@
                         </div>
                     </li>
                     <li class="settings-item" data-section="sync">
-                        ☁️ 백업 및 동기화
+                        백업 및 동기화
                         <i class="accordion-toggle">›</i>
                         <div class="accordion-content" id="sync-content">
                             <ul>
@@ -977,9 +1051,8 @@
                                         <span class="toggle-slider"></span>
                                     </label>
                                 </li>
-                                <li>
+                                <li onclick="manualBackup()">
                                     수동 백업
-                                    <button class="action-button" onclick="manualBackup()">백업</button>
                                 </li>
                                 <li>
                                     클라우드 동기화
@@ -995,44 +1068,38 @@
                         </div>
                     </li>
                     <li class="settings-item" data-section="privacy">
-                        🔒 개인정보 설정
+                        개인정보 설정
                         <i class="accordion-toggle">›</i>
                         <div class="accordion-content" id="privacy-content">
                             <ul>
-                                <li>
+                                <li onclick="showTerms()">
                                     개인정보 수집·이용 동의서
-                                    <button class="action-button" onclick="showTerms()">보기</button>
                                 </li>
-                                <li>
+                                <li onclick="showLocationSettings()">
                                     위치 정보 설정
-                                    <button class="action-button" onclick="showLocationSettings()">설정</button>
                                 </li>
-                                <li>
+                                <li onclick="showAccountSettings()">
                                     계정 정보 관리
-                                    <button class="action-button" onclick="showAccountSettings()">관리</button>
                                 </li>
                             </ul>
                         </div>
                     </li>
                     <li class="settings-item" data-section="help">
-                        ❓ 도움말
+                        도움말
                         <i class="accordion-toggle">›</i>
                         <div class="accordion-content" id="help-content">
                             <ul>
-                                <li>
+                                <li onclick="showFAQ()">
                                     자주 찾는 도움말
-                                    <button class="action-button" onclick="showFAQ()">보기</button>
                                 </li>
-                                <li>
+                                <li onclick="showContact()">
                                     문의하기
-                                    <button class="action-button" onclick="showContact()">문의</button>
                                 </li>
-                                <li>
+                                <li onclick="showUserGuide()">
                                     사용 가이드
-                                    <button class="action-button" onclick="showUserGuide()">가이드</button>
                                 </li>
                                 <li>
-                                    버전 정보: v1.0.0
+                                    버전 정보: bEtA tEsT!
                                 </li>
                             </ul>
                         </div>
@@ -1041,11 +1108,14 @@
             </div>
         </div>
     </div>
+    
     <div class="mobile-bottom-tabs">
         <button class="mobile-tab-button active" onclick="switchTab('main')">📅</button>
         <button class="mobile-tab-button" onclick="switchTab('community')">📋</button>
         <button class="mobile-tab-button" onclick="switchTab('settings')">⚙️</button>
     </div>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
     <script>
         // 번역 데이터
         const translations = {
@@ -1083,6 +1153,7 @@
                 manualBackup: "수동 백업",
                 cloudSync: "클라우드 동기화",
                 lastSync: "마지막 동기화",
+                backupComplete: "데이터 복원이 완료되었습니다.",
                 privacyPolicy: "개인정보 수집·이용 동의서",
                 locationSettings: "위치 정보 설정",
                 accountSettings: "계정 정보 관리",
@@ -1099,17 +1170,7 @@
                 postListAuthor: "작성자",
                 postListDate: "작성일",
                 postListViews: "조회수",
-                back: "뒤로",
-                locationEnabled: "위치 정보 사용",
-                locationNote: "※ 위치 정보는 사용자의 동의 하에 수집되며, 서비스 제공 목적으로만 사용됩니다.",
-                accountName: "이름",
-                accountEmail: "이메일",
-                passwordChange: "비밀번호 변경",
-                currentPassword: "현재 비밀번호",
-                newPassword: "새 비밀번호",
-                confirmPassword: "새 비밀번호 확인",
-                deleteAccount: "계정 삭제",
-                confirmDelete: "계정을 삭제하면 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다. 계속하시겠습니까?"
+                back: "뒤로"
             },
             en: {
                 timetable: "Timetable",
@@ -1145,6 +1206,7 @@
                 manualBackup: "Manual Backup",
                 cloudSync: "Cloud Sync",
                 lastSync: "Last Sync",
+                backupComplete: "Data restoration completed.",
                 privacyPolicy: "Privacy Policy",
                 locationSettings: "Location Settings",
                 accountSettings: "Account Settings",
@@ -1161,17 +1223,7 @@
                 postListAuthor: "Author",
                 postListDate: "Date",
                 postListViews: "Views",
-                back: "Back",
-                locationEnabled: "Use Location",
-                locationNote: "※ Location data is collected with user consent and used only for service provision.",
-                accountName: "Name",
-                accountEmail: "Email",
-                passwordChange: "Change Password",
-                currentPassword: "Current Password",
-                newPassword: "New Password",
-                confirmPassword: "Confirm New Password",
-                deleteAccount: "Delete Account",
-                confirmDelete: "Deleting your account will permanently remove all data and cannot be undone. Continue?"
+                back: "Back"
             },
             ja: {
                 timetable: "時間割",
@@ -1207,6 +1259,7 @@
                 manualBackup: "手動バックアップ",
                 cloudSync: "クラウド同期",
                 lastSync: "最終同期",
+                backupComplete: "データの復元が完了しました。",
                 privacyPolicy: "プライバシーポリシー",
                 locationSettings: "位置情報設定",
                 accountSettings: "アカウント設定",
@@ -1223,17 +1276,7 @@
                 postListAuthor: "投稿者",
                 postListDate: "投稿日",
                 postListViews: "閲覧数",
-                back: "戻る",
-                locationEnabled: "位置情報の使用",
-                locationNote: "※ 位置情報はユーザーの同意のもと収集され、サービス提供目的でのみ使用されます。",
-                accountName: "名前",
-                accountEmail: "メール",
-                passwordChange: "パスワード変更",
-                currentPassword: "現在のパスワード",
-                newPassword: "新しいパスワード",
-                confirmPassword: "新しいパスワードの確認",
-                deleteAccount: "アカウント削除",
-                confirmDelete: "アカウントを削除すると、すべてのデータが永久に削除され、復元できません。続けますか？"
+                back: "戻る"
             },
             zh: {
                 timetable: "课程表",
@@ -1269,6 +1312,7 @@
                 manualBackup: "手动备份",
                 cloudSync: "云同步",
                 lastSync: "上次同步",
+                backupComplete: "数据恢复完成。",
                 privacyPolicy: "隐私政策",
                 locationSettings: "位置设置",
                 accountSettings: "账户设置",
@@ -1285,17 +1329,7 @@
                 postListAuthor: "作者",
                 postListDate: "日期",
                 postListViews: "浏览量",
-                back: "返回",
-                locationEnabled: "使用位置信息",
-                locationNote: "※ 位置信息在用户同意下收集，仅用于服务提供。",
-                accountName: "姓名",
-                accountEmail: "电子邮件",
-                passwordChange: "更改密码",
-                currentPassword: "当前密码",
-                newPassword: "新密码",
-                confirmPassword: "确认新密码",
-                deleteAccount: "删除账户",
-                confirmDelete: "删除账户将永久删除所有数据，无法恢复。继续吗？"
+                back: "返回"
             }
         };
 
@@ -1320,23 +1354,12 @@
             document.querySelector('.tab-button[onclick="switchTab(\'community\')"]').title = t.community;
             document.querySelector('.tab-button[onclick="switchTab(\'settings\')"]').title = t.settings;
             document.getElementById('search-input').placeholder = t.searchPlaceholder;
-            document.querySelector('.community-header h2').textContent = t.communityHeader;
-            document.querySelector('.post-form-button').textContent = t.writePost;
-            document.getElementById('post-title').placeholder = t.postTitle;
-            document.getElementById('post-content').placeholder = t.postContent;
-            document.querySelector('.post-form button').textContent = t.submitPost;
-            const postListHeaders = document.querySelectorAll('.post-list th');
-            postListHeaders[0].textContent = t.postListTitle;
-            postListHeaders[1].textContent = t.postListAuthor;
-            postListHeaders[2].textContent = t.postListDate;
-            postListHeaders[3].textContent = t.postListViews;
-            document.querySelector('.back-button').textContent = t.back;
-
+            
             const settingsItems = document.querySelectorAll('.settings-item');
             settingsItems.forEach(item => {
                 const section = item.dataset.section;
                 if (section && t[section]) {
-                    item.childNodes[1].textContent = ' ' + t[section];
+                    item.childNodes[0].textContent = t[section];
                 }
             });
 
@@ -1396,90 +1419,46 @@
                 items[0].childNodes[0].textContent = t.faq;
                 items[1].childNodes[0].textContent = t.contact;
                 items[2].childNodes[0].textContent = t.userGuide;
-                items[3].childNodes[0].textContent = t.version + ': v1.0.0';
+                items[3].childNodes[0].textContent = t.version + ': bEtA tEsT!';
             }
-        }
 
-        // 커뮤니티 기능
-        function showPostForm() {
-            const postForm = document.querySelector('.post-form');
-            postForm.style.display = postForm.style.display === 'block' ? 'none' : 'block';
-        }
-
-        function submitPost() {
-            const title = document.getElementById('post-title').value.trim();
-            const content = document.getElementById('post-content').value.trim();
-            if (!title || !content) {
-                alert('제목과 내용을 입력해주세요.');
-                return;
+            const communityHeader = document.querySelector('.community-header h2');
+            if (communityHeader) communityHeader.textContent = t.communityHeader;
+            const postFormButton = document.querySelector('.post-form-button');
+            if (postFormButton) postFormButton.textContent = t.writePost;
+            const postTitleInput = document.getElementById('post-title');
+            if (postTitleInput) postTitleInput.placeholder = t.postTitle;
+            const postContentInput = document.getElementById('post-content');
+            if (postContentInput) postContentInput.placeholder = t.postContent;
+            const submitPostButton = document.querySelector('.post-form button');
+            if (submitPostButton) submitPostButton.textContent = t.submitPost;
+            const postListHeaders = document.querySelectorAll('.post-list th');
+            if (postListHeaders.length >= 4) {
+                postListHeaders[0].textContent = t.postListTitle;
+                postListHeaders[1].textContent = t.postListAuthor;
+                postListHeaders[2].textContent = t.postListDate;
+                postListHeaders[3].textContent = t.postListViews;
             }
-            const posts = JSON.parse(localStorage.getItem('posts') || '[]');
-            const newPost = {
-                id: Date.now(),
-                title,
-                content,
-                author: document.getElementById('user-name').textContent || '익명',
-                date: new Date().toISOString().split('T')[0],
-                views: 0
-            };
-            posts.push(newPost);
-            localStorage.setItem('posts', JSON.stringify(posts));
-            document.getElementById('post-title').value = '';
-            document.getElementById('post-content').value = '';
-            showPostForm();
-            loadPosts();
+            const backButton = document.querySelector('.back-button');
+            if (backButton) backButton.textContent = t.back;
         }
 
-        function loadPosts() {
-            const postListBody = document.getElementById('post-list-body');
-            const posts = JSON.parse(localStorage.getItem('posts') || '[]');
-            postListBody.innerHTML = '';
-            posts.forEach(post => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${post.title}</td>
-                    <td>${post.author}</td>
-                    <td>${post.date}</td>
-                    <td>${post.views}</td>
-                `;
-                row.onclick = () => showPostDetail(post.id);
-                postListBody.appendChild(row);
-            });
-        }
-
-        function showPostDetail(postId) {
-            const posts = JSON.parse(localStorage.getItem('posts') || '[]');
-            const post = posts.find(p => p.id === postId);
-            if (post) {
-                post.views++;
-                localStorage.setItem('posts', JSON.stringify(posts));
-                document.getElementById('detail-title').textContent = post.title;
-                document.getElementById('detail-meta').textContent = `작성자: ${post.author} | 작성일: ${post.date} | 조회수: ${post.views}`;
-                document.getElementById('detail-content').textContent = post.content;
-                switchTab('post-detail');
-            }
-        }
-
-        // 페이지 로드 시 초기화
+        // 페이지 로드 시 번역 적용
         window.addEventListener('load', function() {
             const savedLanguage = localStorage.getItem('language') || 'ko';
-            changeLanguage(savedLanguage);
+            currentLanguage = savedLanguage;
+            const languageSelect = document.querySelector('.language-select');
+            if (languageSelect) {
+                languageSelect.value = savedLanguage;
+            }
+            updateTranslations();
             loadPosts();
-            createCalendar();
-            if (localStorage.getItem('darkMode') === 'true') {
-                document.body.classList.add('dark-mode');
-            }
-            const savedFontSize = localStorage.getItem('fontSize');
-            if (savedFontSize) {
-                document.body.style.fontSize = savedFontSize + 'px';
-            }
         });
 
-        // 시간표 및 캘린더
         const schools = [
-            "서울고등학교", "부산고등학교", "대구고등학교", "인천고등학교",
-            "광주고등학교", "대전고등학교", "울산고등학교", "세종고등학교"
+            "가락중학교", "가산중학교", "가원중학교", "가재울중학교", "강남중학교", "강동중학교", "강명중학교", "강북중학교", "강빛중학교", "강신중학교", "강일중학교", "강현중학교", "개봉중학교", "개운중학교", "개웅중학교", "개원중학교", "개포중학교", "거원중학교", "건국대학교 사범대학 부속중학교", "경서중학교", "경성중학교", "경수중학교", "경신중학교", "경원중학교", "경인중학교", "경일중학교", "경희여자중학교", "경희중학교", "고덕중학교", "고려대학교 사범대학 부속중학교", "고명중학교", "고척중학교", "공릉중학교", "공항중학교", "관악중학교", "광남중학교", "광성중학교", "광신중학교", "광양중학교", "광운중학교", "광장중학교", "광진중학교", "광희중학교", "구로중학교", "구룡중학교", "구산중학교", "구암중학교", "구의중학교", "구일중학교", "국사봉중학교", "금옥중학교", "금호여자중학교", "길음중학교", "난곡중학교", "난우중학교", "남강중학교", "남대문중학교", "남서울중학교", "남성중학교", "내곡중학교", "노곡중학교", "노원중학교", "노일중학교", "녹천중학교", "단국대학교 사범대학 부속중학교", "당곡중학교", "당산서중학교", "당산중학교", "대경중학교", "대광중학교", "대림중학교", "대명중학교", "대방중학교", "대성중학교", "대신중학교", "대영중학교", "대왕중학교", "대원국제중학교", "대청중학교", "대치중학교", "덕산중학교", "덕성여자중학교", "덕수중학교", "덕원중학교", "도곡중학교", "도봉중학교", "동구여자중학교", "동국대학교 사범대학 부속 가람중학교", "동국대학교 사범대학 부속중학교", "동대문중학교", "동덕여자중학교", "동도중학교", "동마중학교", "동명여자중학교", "동북중학교", "동성중학교", "동신중학교", "동양중학교", "동원중학교", "동일중학교", "동작중학교", "둔촌중학교", "등명중학교", "등원중학교", "등촌중학교", "마곡중학교", "마곡하늬중학교", "마장중학교", "마포중학교", "면목중학교", "명덕여자중학교", "명일중학교", "명지중학교", "목동중학교", "목운중학교", "목일중학교", "무학중학교", "문래중학교", "문성중학교", "문일중학교", "문정중학교", "문창중학교", "문현중학교", "미성중학교", "반포중학교", "방배중학교", "방산중학교", "방원중학교", "방이중학교", "방학중학교", "방화중학교", "배명중학교", "배문중학교", "배재중학교", "배화여자중학교", "백석중학교", "백운중학교", "번동중학교", "보성여자중학교", "보성중학교", "보인중학교", "봉림중학교", "봉영여자중학교", "봉원중학교", "봉은중학교", "봉화중학교", "북서울중학교", "북악중학교", "불광중학교", "불암중학교", "사당중학교", "삼각산중학교", "삼선중학교", "삼성중학교", "삼정중학교", "상경중학교", "상계제일중학교", "상계중학교", "상도중학교", "상명대학교 사범대학 부속여자중학교", "상명중학교", "상봉중학교", "상신중학교", "상암중학교", "상원중학교", "상일중학교", "상현중학교", "서라벌중학교", "서문여자중학교", "서연중학교", "서운중학교", "서울대학교 사범대학 부설여자중학교", "서울대학교 사범대학 부설중학교", "서울문영여자중학교", "서울여자중학교", "서울체육중학교", "서일중학교", "서초중학교", "석관중학교", "석촌중학교", "선덕중학교", "선린중학교", "선유중학교", "선일여자중학교", "선정중학교", "성남중학교", "성내중학교", "성덕여자중학교", "성보중학교", "성사중학교", "성산중학교", "성서중학교", "성수중학교", "성신여자중학교", "성심여자중학교", "성암여자중학교", "성원중학교", "성일중학교", "성재중학교", "세곡중학교", "세륜중학교", "세일중학교", "세화여자중학교", "솔샘중학교", "송곡중학교", "송례중학교", "송정중학교", "송파중학교", "수락중학교", "수명중학교", "수서중학교", "수송중학교", "수유중학교", "숙명여자중학교", "숭곡중학교", "숭문중학교", "숭실중학교", "숭의여자중학교", "숭인중학교", "시흥중학교", "신관중학교", "신광여자중학교", "신구중학교", "신길중학교", "신남중학교", "신도림중학교", "신도봉중학교", "신도중학교", "신동중학교", "신림중학교", "신명중학교", "신목중학교", "신반포중학교", "신방학중학교", "신사중학교", "신상중학교", "신서중학교", "신수중학교", "신암중학교", "신양중학교", "신연중학교", "신원중학교", "신월중학교", "신일중학교", "신정여자중학교", "신창중학교", "신천중학교", "신현중학교", "신화중학교", "아주중학교", "아현중학교", "안천중학교", "압구정중학교", "양강중학교", "양동중학교", "양서중학교", "양정중학교", "양진중학교", "양천중학교", "양화중학교", "언남중학교", "언북중학교", "언주중학교", "여의도중학교", "역삼중학교", "연북중학교", "연서중학교", "연신중학교", "연천중학교", "연희중학교", "염경중학교", "염광중학교", "염창중학교", "영남중학교", "영도중학교", "영동중학교", "영등포중학교", "영락중학교", "영란여자중학교", "영림중학교", "영서중학교", "영원중학교", "영파여자중학교", "영훈국제중학교", "예일여자중학교", "오금중학교", "오남중학교", "오류중학교", "오륜중학교", "오산중학교", "오주중학교", "옥정중학교", "온곡중학교", "용강중학교", "용곡중학교", "용마중학교", "용문중학교", "용산중학교", "우신중학교", "위례솔중학교", "원묵중학교", "원촌중학교", "월계중학교", "월곡중학교", "월촌중학교", "윤중중학교", "은성중학교", "은평중학교", "을지중학교", "이수중학교", "이화여자대학교 사범대학 부속 이화·금란중학교", "인수중학교", "인왕중학교", "인창중학교", "인헌중학교", "일신여자중학교", "자양중학교", "잠신중학교", "잠실중학교", "장승중학교", "장안중학교", "장원중학교", "장위중학교", "장충중학교", "장평중학교", "재현중학교", "전농중학교", "전동중학교", "전일중학교", "정신여자중학교", "정원여자중학교", "정의여자중학교", "정화여자중학교", "종암중학교", "중계중학교", "중동중학교", "중랑중학교", "중암중학교", "중앙대학교 사범대학 부속중학교", "중앙여자중학교", "중앙중학교", "중원중학교", "중평중학교", "중화중학교", "증산중학교", "진관중학교", "진선여자중학교", "창덕여자중학교", "창동중학교", "창문여자중학교", "창북중학교", "창일중학교", "창천중학교", "천왕중학교", "천일중학교", "천호중학교", "청담중학교", "청량중학교", "청운중학교", "청원중학교", "충암중학교", "하계중학교", "한강중학교", "한산중학교", "한성여자중학교", "한성중학교", "한양대학교 사범대학 부속중학교", "한양중학교", "한영중학교", "한울중학교", "한천중학교", "항동중학교", "해누리중학교", "행당중학교", "휘원여자중학교", "홍은중학교", "홍익대학교 사범대학 부속여자중학교", "홍익대학교 사범대학 부속중학교", "화계중학교", "화곡중학교", "화원중학교", "환일중학교", "효문중학교", "휘경여자중학교", "휘경중학교", "휘문중학교"
         ];
+
         const schoolList = document.getElementById('school-list');
         const timetableCells = document.querySelectorAll('.timetable td[contenteditable="true"]');
         let currentClass = "1반";
@@ -1618,16 +1597,17 @@
             });
         });
 
-        // 탭 전환
+        createCalendar();
+
         function switchTab(tabName) {
             document.querySelectorAll('.tab-button, .mobile-tab-button').forEach(button => {
                 button.classList.remove('active');
             });
-            document.querySelector(`.tab-button[onclick="switchTab('${tabName}')"]`).classList.add('active');
-            document.querySelectorAll('.main-container, .community-container, .post-detail-container, .settings-container').forEach(container => {
+            event.currentTarget.classList.add('active');
+            document.querySelectorAll('.main-container, .community-container, .settings-container').forEach(container => {
                 container.classList.remove('active');
             });
-            document.querySelector(`.${tabName}-container`).classList.add('active');
+            document.querySelector('.' + tabName + '-container').classList.add('active');
             if (tabName === 'community') {
                 loadPosts();
             }
@@ -1646,10 +1626,13 @@
             });
         }
 
-        // 설정 관련 함수
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
             localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+        }
+
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
         }
 
         function toggleAccordion(section) {
@@ -1686,9 +1669,32 @@
             localStorage.setItem('fontSize', newSize);
         }
 
+        const savedFontSize = localStorage.getItem('fontSize');
+        if (savedFontSize) {
+            document.body.style.fontSize = savedFontSize + 'px';
+        }
+
         function resetFontSize() {
             document.body.style.fontSize = '16px';
-            localStorage.setItem('fontSize', 16);
+            localStorage.setItem('fontSize', '16');
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('profile-preview');
+                    preview.src = e.target.result;
+                    localStorage.setItem('profileImage', e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        const savedProfileImage = localStorage.getItem('profileImage');
+        if (savedProfileImage) {
+            document.getElementById('profile-preview').src = savedProfileImage;
         }
 
         function editField(fieldId) {
@@ -1699,162 +1705,504 @@
             input.value = currentValue;
             input.className = 'edit-input';
             input.onblur = function() {
-                element.textContent = input.value || currentValue;
-                localStorage.setItem(fieldId, input.value || currentValue);
-                input.replaceWith(element);
+                element.textContent = this.value;
+                localStorage.setItem(fieldId, this.value);
             };
-            input.onkeydown = function(e) {
+            input.onkeypress = function(e) {
                 if (e.key === 'Enter') {
-                    input.blur();
+                    this.blur();
                 }
             };
-            element.replaceWith(input);
+            element.textContent = '';
+            element.appendChild(input);
             input.focus();
         }
 
-        function handleImageUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('profile-preview').src = e.target.result;
-                    localStorage.setItem('profileImage', e.target.result);
-                };
-                reader.readAsDataURL(file);
+        const savedUserName = localStorage.getItem('user-name');
+        const savedUserEmail = localStorage.getItem('user-email');
+        if (savedUserName) document.getElementById('user-name').textContent = savedUserName;
+        if (savedUserEmail) document.getElementById('user-email').textContent = savedUserEmail;
+
+        function showTerms() {
+            const terms = `
+                <div class="terms-container">
+                    <h2>개인정보 수집·이용 동의서</h2>
+                    <p>귀하는 본 동의서를 충분히 읽어보신 후, 개인정보 수집·이용에 대해 동의 또는 거부하실 수 있습니다. 다만, 필수항목에 대한 수집·이용에 동의하지 않으실 경우, 서비스 이용에 제한이 있을 수 있습니다.</p>
+                    <h3>1. 개인정보 수집·이용 목적</h3>
+                    <p>회사는 다음의 목적을 위하여 개인정보를 수집 및 이용합니다.</p>
+                    <ul>
+                        <li>회원 가입 및 본인 확인</li>
+                        <li>서비스 제공 및 계약의 이행</li>
+                        <li>고객 문의 응대 및 민원 처리</li>
+                        <li>고지사항 전달 및 공지사항 안내</li>
+                        <li>맞춤형 서비스 제공 및 통계 분석</li>
+                        <li>마케팅 및 프로모션 안내 (선택 시)</li>
+                    </ul>
+                    <h3>2. 수집하는 개인정보 항목</h3>
+                    <p>가. 필수 항목</p>
+                    <ul>
+                        <li>성명, 생년월일, 성별, 연락처(전화번호, 이메일), 주소</li>
+                        <li>서비스 이용기록, 접속 로그, 쿠키, IP 주소, 기기정보</li>
+                    </ul>
+                    <p>나. 선택 항목</p>
+                    <ul>
+                        <li>직업, 관심 분야, 프로모션 수신 여부, 기타 사용자가 자발적으로 제공한 정보</li>
+                    </ul>
+                    <p>※ 선택항목에 대한 동의를 거부하더라도 서비스 이용에 제한은 없습니다.</p>
+                    <h3>3. 개인정보 보유 및 이용 기간</h3>
+                    <p>회사는 원칙적으로 개인정보 수집·이용 목적이 달성된 후에는 해당 정보를 지체 없이 파기합니다. 다만, 관계 법령에 따라 보존이 필요한 경우에는 해당 기간 동안 보관합니다.</p>
+                    <table>
+                        <tr>
+                            <th>항목</th>
+                            <th>보유 기간</th>
+                            <th>근거 법령</th>
+                        </tr>
+                        <tr>
+                            <td>계약 또는 청약 철회 관련 기록</td>
+                            <td>5년</td>
+                            <td>전자상거래 등에서의 소비자 보호에 관한 법률</td>
+                        </tr>
+                        <tr>
+                            <td>대금결제 및 재화 등의 공급에 관한 기록</td>
+                            <td>5년</td>
+                            <td>전자상거래 등에서의 소비자 보호에 관한 법률</td>
+                        </tr>
+                        <tr>
+                            <td>소비자의 불만 또는 분쟁 처리에 관한 기록</td>
+                            <td>3년</td>
+                            <td>전자상거래 등에서의 소비자 보호에 관한 법률</td>
+                        </tr>
+                        <tr>
+                            <td>접속에 관한 로그기록</td>
+                            <td>3개월</td>
+                            <td>통신비밀보호법</td>
+                        </tr>
+                    </table>
+                    <h3>4. 개인정보의 제3자 제공</h3>
+                    <p>회사는 원칙적으로 귀하의 개인정보를 외부에 제공하지 않습니다. 단, 아래의 경우에는 예외로 합니다.</p>
+                    <ul>
+                        <li>정보주체로부터 별도의 동의를 받은 경우</li>
+                        <li>법령에 근거하여 제공이 요구되는 경우</li>
+                    </ul>
+
+                    <h3>5. 개인정보 처리의 위탁</h3>
+                    <p>회사는 원활한 서비스 제공을 위하여 아래와 같이 개인정보 처리 업무를 외부 전문업체에 위탁할 수 있습니다.</p>
+
+                    <h3>6. 동의 거부 권리 및 불이익 안내</h3>
+                    <p>귀하는 개인정보 수집·이용에 대한 동의를 거부할 권리가 있으며, 동의 거부 시 일부 서비스 이용에 제한이 있을 수 있습니다.</p>
+
+                    <p>이 페이지를 이용함으로서 위 내용을 충분히 읽고 이해하였으며, 개인정보 수집·이용에 동의하는것으로 간주합니다.</p>
+                </div>
+            `;
+            
+            const submenu = document.getElementById('privacy');
+            const existingTerms = submenu.querySelector('.terms-container');
+            if (existingTerms) {
+                existingTerms.remove();
+            } else {
+                submenu.insertAdjacentHTML('beforeend', terms);
             }
         }
 
+        // 알림 설정
         function toggleNotification(type) {
-            localStorage.setItem(`notification-${type}`, document.getElementById(`${type}-notification`).checked);
+            const checkbox = document.getElementById(`${type}-notification`);
+            localStorage.setItem(`${type}Notification`, checkbox.checked);
         }
 
+        // 알림음 변경
         function changeNotificationSound(sound) {
             localStorage.setItem('notificationSound', sound);
         }
 
+        // 언어 변경
+        function changeLanguage(lang) {
+            localStorage.setItem('language', lang);
+            // 실제로는 여기에 언어 변경 로직이 들어가야 함
+        }
+
+        // 데이터 관리
         function exportData() {
-            const data = {
-                timetables: JSON.parse(localStorage.getItem('timetables') || '{}'),
-                posts: JSON.parse(localStorage.getItem('posts') || '[]'),
-                settings: {
-                    language: localStorage.getItem('language'),
-                    darkMode: localStorage.getItem('darkMode'),
-                    fontSize: localStorage.getItem('fontSize'),
-                    userName: localStorage.getItem('user-name'),
-                    userEmail: localStorage.getItem('user-email'),
-                    profileImage: localStorage.getItem('profileImage')
+            // 시간표 데이터 수집
+            const timetableData = {};
+            for (const school in timetables) {
+                if (Object.keys(timetables[school]).some(cls => timetables[school][cls].some(cell => cell.trim() !== ''))) {
+                    timetableData[school] = {};
+                    for (const cls in timetables[school]) {
+                        const classData = timetables[school][cls];
+                        if (classData.some(cell => cell.trim() !== '')) {
+                            timetableData[school][cls] = classData;
+                        }
+                    }
                 }
+            }
+
+            // 캘린더 데이터 수집
+            const calendarData = {};
+            const calendarCells = document.querySelectorAll('.calendar tbody td');
+            calendarCells.forEach(cell => {
+                const dateNumber = cell.querySelector('.date-number').textContent;
+                const memo = cell.querySelector('.memo').value;
+                if (dateNumber && memo.trim() !== '') {
+                    calendarData[dateNumber] = memo;
+                }
+            });
+
+            const data = {
+                userInfo: {
+                    name: document.getElementById('user-name').textContent,
+                    email: document.getElementById('user-email').textContent,
+                    profileImage: localStorage.getItem('profileImage')
+                },
+                settings: {
+                    darkMode: document.body.classList.contains('dark-mode'),
+                    fontSize: localStorage.getItem('fontSize'),
+                    notifications: {
+                        push: localStorage.getItem('pushNotification') === 'true',
+                        email: localStorage.getItem('emailNotification') === 'true',
+                        timetable: localStorage.getItem('timetableNotification') === 'true',
+                        exam: localStorage.getItem('examNotification') === 'true'
+                    },
+                    language: localStorage.getItem('language'),
+                    notificationSound: localStorage.getItem('notificationSound'),
+                    autoSave: localStorage.getItem('autoSave') === 'true',
+                    autoBackup: localStorage.getItem('autoBackup') === 'true',
+                    cloudSync: localStorage.getItem('cloudSync') === 'true'
+                },
+                currentState: {
+                    selectedSchool: currentSchool,
+                    selectedClass: currentClass
+                },
+                timetableData: timetableData,
+                calendarData: calendarData,
+                lastSync: new Date().toISOString()
             };
+
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'schooltalktalk_backup.json';
+            a.download = `timetable_backup_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
             a.click();
+            document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }
 
         function importData() {
-            const file = document.getElementById('import-file').files[0];
-            if (!file) {
-                alert('파일을 선택해주세요.');
-                return;
-            }
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
                     const data = JSON.parse(e.target.result);
-                    localStorage.setItem('timetables', JSON.stringify(data.timetables || {}));
-                    localStorage.setItem('posts', JSON.stringify(data.posts || []));
-                    if (data.settings) {
-                        localStorage.setItem('language', data.settings.language || 'ko');
-                        localStorage.setItem('darkMode', data.settings.darkMode || 'false');
-                        localStorage.setItem('fontSize', data.settings.fontSize || '16');
-                        localStorage.setItem('user-name', data.settings.userName || '사용자 이름');
-                        localStorage.setItem('user-email', data.settings.userEmail || 'user@example.com');
-                        localStorage.setItem('profileImage', data.settings.profileImage || '');
+                    
+                    // 사용자 정보 복원
+                    if (data.userInfo) {
+                        document.getElementById('user-name').textContent = data.userInfo.name;
+                        document.getElementById('user-email').textContent = data.userInfo.email;
+                        if (data.userInfo.profileImage) {
+                            document.getElementById('profile-preview').src = data.userInfo.profileImage;
+                            localStorage.setItem('profileImage', data.userInfo.profileImage);
+                        }
                     }
-                    alert('데이터 가져오기 성공!');
-                    window.location.reload();
-                } catch (error) {
-                    alert('잘못된 파일 형식입니다.');
-                }
+
+                    // 설정 복원
+                    if (data.settings) {
+                        if (data.settings.darkMode) document.body.classList.add('dark-mode');
+                        if (data.settings.fontSize) document.body.style.fontSize = data.settings.fontSize + 'px';
+                        if (data.settings.language) localStorage.setItem('language', data.settings.language);
+                        if (data.settings.notificationSound) localStorage.setItem('notificationSound', data.settings.notificationSound);
+                        if (data.settings.autoSave) localStorage.setItem('autoSave', data.settings.autoSave);
+                        if (data.settings.autoBackup) localStorage.setItem('autoBackup', data.settings.autoBackup);
+                        if (data.settings.cloudSync) localStorage.setItem('cloudSync', data.settings.cloudSync);
+                    }
+
+                    // 시간표 데이터 복원
+                    if (data.timetableData) {
+                        timetables = data.timetableData;
+                        if (data.currentState) {
+                            currentSchool = data.currentState.selectedSchool;
+                            currentClass = data.currentState.selectedClass;
+                            document.getElementById('search-input').value = currentSchool;
+                            document.getElementById('class-select').value = currentClass;
+                            loadTimetable();
+                        }
+                    }
+
+                    // 캘린더 데이터 복원
+                    if (data.calendarData) {
+                        const calendarCells = document.querySelectorAll('.calendar tbody td');
+                        calendarCells.forEach(cell => {
+                            const dateNumber = cell.querySelector('.date-number').textContent;
+                            if (dateNumber && data.calendarData[dateNumber]) {
+                                cell.querySelector('.memo').value = data.calendarData[dateNumber];
+                            }
+                        });
+                    }
+
+                    // 마지막 동기화 시간 업데이트
+                    if (data.lastSync) {
+                        document.getElementById('last-sync').textContent = new Date(data.lastSync).toLocaleString();
+                        localStorage.setItem('lastSync', data.lastSync);
+                    }
+
+                    alert('데이터 복원이 완료되었습니다.');
+                };
+                reader.readAsText(file);
             };
-            reader.readAsText(file);
+            input.click();
         }
 
         function resetData() {
-            if (confirm(translations[currentLanguage].confirmReset)) {
+            if (confirm('모든 데이터를 초기화하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
                 localStorage.clear();
-                window.location.reload();
+                location.reload();
             }
         }
 
+        // 자동 저장 설정
         function toggleAutoSave() {
-            const enabled = document.getElementById('auto-save').checked;
-            localStorage.setItem('autoSave', enabled);
-            // 실제 구현 시, 자동 저장 로직 추가 가능
+            const checkbox = document.getElementById('auto-save');
+            localStorage.setItem('autoSave', checkbox.checked);
         }
 
+        // 백업 설정
         function toggleAutoBackup() {
-            const enabled = document.getElementById('auto-backup').checked;
-            localStorage.setItem('autoBackup', enabled);
-            // 실제 구현 시, 주기적 백업 로직 추가 가능
+            const checkbox = document.getElementById('auto-backup');
+            localStorage.setItem('autoBackup', checkbox.checked);
         }
 
         function manualBackup() {
             exportData();
+            document.getElementById('last-sync').textContent = new Date().toLocaleString();
         }
 
+        // 클라우드 동기화
         function toggleCloudSync() {
-            const enabled = document.getElementById('cloud-sync').checked;
-            localStorage.setItem('cloudSync', enabled);
-            if (enabled) {
-                document.getElementById('last-sync').textContent = new Date().toLocaleString();
-                localStorage.setItem('lastSync', new Date().toISOString());
-            }
+            const checkbox = document.getElementById('cloud-sync');
+            localStorage.setItem('cloudSync', checkbox.checked);
         }
 
-        function showTerms() {
-            const termsContent = `
+        // 페이지 로드 시 설정 복원
+        window.addEventListener('load', function() {
+            // 알림 설정 복원
+            ['push', 'email', 'timetable', 'exam'].forEach(type => {
+                const saved = localStorage.getItem(`${type}Notification`);
+                if (saved !== null) {
+                    document.getElementById(`${type}-notification`).checked = saved === 'true';
+                }
+            });
+
+            // 자동 저장 설정 복원
+            const autoSave = localStorage.getItem('autoSave');
+            if (autoSave !== null) {
+                document.getElementById('auto-save').checked = autoSave === 'true';
+            }
+
+            // 자동 백업 설정 복원
+            const autoBackup = localStorage.getItem('autoBackup');
+            if (autoBackup !== null) {
+                document.getElementById('auto-backup').checked = autoBackup === 'true';
+            }
+
+            // 클라우드 동기화 설정 복원
+            const cloudSync = localStorage.getItem('cloudSync');
+            if (cloudSync !== null) {
+                document.getElementById('cloud-sync').checked = cloudSync === 'true';
+            }
+
+            // 마지막 동기화 시간 표시
+            const lastSync = localStorage.getItem('lastSync');
+            if (lastSync) {
+                document.getElementById('last-sync').textContent = lastSync;
+            }
+        });
+
+        // 자주 찾는 도움말 표시
+        function showFAQ() {
+            const faqContent = `
                 <div class="terms-container">
-                    <h2>${translations[currentLanguage].privacyPolicy}</h2>
-                    <p>School Talk Talk은 사용자의 개인정보를 보호하기 위해 최선을 다하고 있습니다.</p>
-                    <ul>
-                        <li>수집 정보: 이름, 이메일, 프로필 이미지</li>
-                        <li>사용 목적: 서비스 제공, 사용자 식별</li>
-                        <li>보관 기간: 계정 삭제 시 즉시 파기</li>
-                    </ul>
-                    <p>자세한 내용은 <a href="https://example.com/terms" target="_blank">여기</a>를 참조하세요.</p>
+                    <h2>자주 찾는 도움말</h2>
+                    
+                    <div class="faq-item">
+                        <h3>Q. 시간표를 어떻게 저장하나요?</h3>
+                        <p>A. 시간표는 자동으로 저장됩니다. 수정한 내용은 즉시 저장되며, 페이지를 새로고침하거나 다시 방문해도 데이터가 유지됩니다.</p>
+                    </div>
+
+                    <div class="faq-item">
+                        <h3>Q. 다크모드는 어떻게 켜나요?</h3>
+                        <p>A. 설정 > 테마 설정 > 다크모드 전환을 통해 다크모드를 활성화할 수 있습니다. 설정은 자동으로 저장됩니다.</p>
+                    </div>
+
+                    <div class="faq-item">
+                        <h3>Q. 데이터를 백업하는 방법이 있나요?</h3>
+                        <p>A. 설정 > 백업 및 동기화 > 수동 백업을 통해 현재 데이터를 백업할 수 있습니다. 백업 파일은 JSON 형식으로 저장됩니다.</p>
+                    </div>
+
+                    <div class="faq-item">
+                        <h3>Q. 캘린더에 메모를 작성할 수 있나요?</h3>
+                        <p>A. 네, 캘린더의 각 날짜 칸에 메모를 작성할 수 있습니다. 작성한 메모는 자동으로 저장됩니다.</p>
+                    </div>
+
+                    <div class="faq-item">
+                        <h3>Q. 알림 설정은 어떻게 하나요?</h3>
+                        <p>A. 설정 > 알림 설정에서 푸시 알림, 이메일 알림, 시간표 변경 알림 등을 설정할 수 있습니다.</p>
+                    </div>
+
+                    <div class="faq-item">
+                        <h3>Q. 언어를 변경할 수 있나요?</h3>
+                        <p>A. 설정 > 테마 설정 > 언어 설정에서 한국어, 영어, 일본어, 중국어 중 선택할 수 있습니다.</p>
+                    </div>
                 </div>
             `;
-            const privacyContent = document.getElementById('privacy-content');
-            const existingContent = privacyContent.querySelector('.terms-container');
+            
+            const submenu = document.getElementById('help');
+            const existingContent = submenu.querySelector('.terms-container');
             if (existingContent) {
                 existingContent.remove();
+            } else {
+                submenu.insertAdjacentHTML('beforeend', faqContent);
             }
-            privacyContent.insertAdjacentHTML('beforeend', termsContent);
         }
 
+        // 문의하기 표시
+        function showContact() {
+            const contactContent = `
+                <div class="terms-container">
+                    <h2>문의하기</h2>
+                    <p>문의사항이 있으시면 아래 연락처로 연락주세요.</p>
+                    
+                    <div class="contact-info">
+                        <h3>이메일</h3>
+                        <p>seojunji62@gmail.com</p>
+                        
+                        <h3>주소</h3>
+                        <p>추가예정</p>
+                        
+                        <h3>문의 시간</h3>
+                        <p>평일: 09:00 - 18:00</p>
+                        <p>주말 및 공휴일: 휴무</p>
+                    </div>
+
+                    <div class="contact-note">
+                        <p>※ 이메일 문의 시 답변은 1-2일 정도 소요될 수 있습니다.</p>
+                        <p>※ 주말 및 공휴일 문의는 다음 영업일에 처리됩니다.</p>
+                    </div>
+                </div>
+            `;
+            
+            const submenu = document.getElementById('help');
+            const existingContent = submenu.querySelector('.terms-container');
+            if (existingContent) {
+                existingContent.remove();
+            } else {
+                submenu.insertAdjacentHTML('beforeend', contactContent);
+            }
+        }
+
+        // 사용 가이드 표시
+        function showUserGuide() {
+            const guideContent = `
+                <div class="terms-container">
+                    <h2>사용 가이드</h2>
+                    
+                    <div class="guide-section">
+                        <h3>1. 시작하기</h3>
+                        <p>시간표 관리 프로그램을 시작하기 전에 다음 사항을 확인해주세요:</p>
+                        <ul>
+                            <li>최신 버전의 웹 브라우저 사용 (Chrome, Firefox, Safari, Edge 등)</li>
+                            <li>인터넷 연결 상태 확인</li>
+                            <li>JavaScript 활성화</li>
+                        </ul>
+                    </div>
+
+                    <div class="guide-section">
+                        <h3>2. 기본 기능</h3>
+                        <h4>2.1 시간표 관리</h4>
+                        <ul>
+                            <li>학교 검색: 상단 검색창에서 학교를 검색할 수 있습니다.</li>
+                            <li>반 선택: 드롭다운 메뉴에서 반을 선택할 수 있습니다.</li>
+                            <li>시간표 편집: 각 셀을 클릭하여 수업 내용을 입력할 수 있습니다.</li>
+                        </ul>
+
+                        <h4>2.2 캘린더</h4>
+                        <ul>
+                            <li>메모 작성: 각 날짜 칸에 메모를 작성할 수 있습니다.</li>
+                            <li>자동 저장: 작성한 메모는 자동으로 저장됩니다.</li>
+                        </ul>
+                    </div>
+
+                    <div class="guide-section">
+                        <h3>3. 설정</h3>
+                        <h4>3.1 테마 설정</h4>
+                        <ul>
+                            <li>다크모드: 눈의 피로를 줄이기 위한 다크모드를 사용할 수 있습니다.</li>
+                            <li>폰트 크기: 화면에서 보기 편한 폰트 크기를 설정할 수 있습니다.</li>
+                            <li>언어 설정: 한국어, 영어, 일본어, 중국어 중 선택할 수 있습니다.</li>
+                        </ul>
+
+                        <h4>3.2 알림 설정</h4>
+                        <ul>
+                            <li>푸시 알림: 중요한 일정에 대한 푸시 알림을 받을 수 있습니다.</li>
+                            <li>이메일 알림: 이메일로 알림을 받을 수 있습니다.</li>
+                            <li>알림음 설정: 알림음 종류를 선택할 수 있습니다.</li>
+                        </ul>
+                    </div>
+
+                    <div class="guide-section">
+                        <h3>4. 데이터 관리</h3>
+                        <ul>
+                            <li>데이터 내보내기: 현재 데이터를 백업할 수 있습니다.</li>
+                            <li>데이터 가져오기: 백업한 데이터를 복원할 수 있습니다.</li>
+                            <li>자동 저장: 모든 변경사항은 자동으로 저장됩니다.</li>
+                        </ul>
+                    </div>
+
+                    <div class="guide-section">
+                        <h3>5. 문제 해결</h3>
+                        <ul>
+                            <li>페이지가 제대로 로드되지 않는 경우: 브라우저 캐시를 삭제하고 다시 시도해주세요.</li>
+                            <li>데이터가 저장되지 않는 경우: 인터넷 연결을 확인하고 다시 시도해주세요.</li>
+                            <li>기타 문제 발생 시: 문의하기를 통해 연락주세요.</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            const submenu = document.getElementById('help');
+            const existingContent = submenu.querySelector('.terms-container');
+            if (existingContent) {
+                existingContent.remove();
+            } else {
+                submenu.insertAdjacentHTML('beforeend', guideContent);
+            }
+        }
+
+        // 위치 정보 설정 표시
         function showLocationSettings() {
             const locationContent = `
                 <div class="terms-container">
-                    <h2>${translations[currentLanguage].locationSettings}</h2>
+                    <h2>위치 정보 설정</h2>
                     <p>위치 정보를 사용하여 다음과 같은 서비스를 제공합니다:</p>
                     <ul>
                         <li>근처 학교 검색</li>
                         <li>날씨 정보 제공</li>
                         <li>지역별 공지사항</li>
                     </ul>
+
                     <div class="location-controls">
                         <label class="toggle-switch">
                             <input type="checkbox" id="location-enabled" onchange="toggleLocation()">
                             <span class="toggle-slider"></span>
                         </label>
-                        <span>${translations[currentLanguage].locationEnabled}</span>
+                        <span>위치 정보 사용</span>
                     </div>
+
                     <div class="location-note">
-                        <p>${translations[currentLanguage].locationNote}</p>
+                        <p>※ 위치 정보는 사용자의 동의 하에 수집되며, 서비스 제공 목적으로만 사용됩니다.</p>
                         <p>※ 위치 정보 사용을 중지하더라도 기본 서비스 이용에는 제한이 없습니다.</p>
                     </div>
                 </div>
@@ -1870,7 +2218,7 @@
         }
 
         // 계정 정보 관리 표시
-        function showAccountSettings() {AccountSettings() {
+        function showAccountSettings() {
             const accountContent = `
                 <div class="terms-container">
                     <h2>계정 정보 관리</h2>
