@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>시간표 관리</title>
+    <title>Shool Talk Talk</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js"></script>
     <style>
         body {
             font-family: 'Malgun Gothic', sans-serif;
@@ -14,453 +16,328 @@
             background-color: #ffffff;
             color: #333333;
             transition: background-color 0.3s, color 0.3s;
+            font-size: 16px;
         }
+
         body.dark-mode {
             background-color: #1a1a1a;
             color: #ffffff;
         }
+
         .vertical-tabs {
             width: 60px;
-            background-color: #f5f5f5;
+            background-color: #f8f8f8;
             display: flex;
             flex-direction: column;
             align-items: center;
             padding-top: 20px;
             transition: background-color 0.3s;
         }
+
         body.dark-mode .vertical-tabs {
-            background-color: #2b2b2b;
+            background-color: #2a2a2a;
         }
+
         .tab-button {
             width: 40px;
             height: 40px;
-            margin-bottom: 10px;
+            margin: 10px 0;
             border: none;
-            border-radius: 8px;
-            background-color: #e0e0e0;
-            color: #333333;
+            background: none;
+            font-size: 24px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.2s, color 0.2s;
+            transition: background-color 0.2s;
         }
-        body.dark-mode .tab-button {
-            background-color: #3f3f3f;
-            color: #ffffff;
-        }
+
         .tab-button:hover {
-            background-color: #d0d0d0;
+            background-color: #e0e0e0;
+            border-radius: 5px;
         }
+
         body.dark-mode .tab-button:hover {
-            background-color: #4f4f4f;
+            background-color: #3f3f3f;
         }
+
         .tab-button.active {
             background-color: #0078d4;
             color: #ffffff;
+            border-radius: 5px;
         }
+
         .content-area {
-            flex: 1;
+            flex-grow: 1;
             padding: 20px;
-            background-color: #f5f5f5;
-            transition: background-color 0.3s;
+            overflow-y: auto;
         }
-        body.dark-mode .content-area {
-            background-color: #2b2b2b;
-        }
-        .main-container, .empty-container, .settings-container {
-            display: none;
+
+        .main-container,
+        .community-container,
+        .settings-container {
             max-width: 1200px;
             margin: 0 auto;
             background-color: #ffffff;
             border-radius: 10px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 20px;
             transition: background-color 0.3s;
         }
+
         body.dark-mode .main-container,
-        body.dark-mode .empty-container,
+        body.dark-mode .community-container,
         body.dark-mode .settings-container {
             background-color: #333333;
         }
+
         .main-container.active,
-        .empty-container.active,
+        .community-container.active,
         .settings-container.active {
             display: block;
         }
-        .settings-profile {
-            padding: 20px;
-            background-color: #fff;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 10px;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        body.dark-mode .settings-profile {
-            background-color: #333;
-            color: #fff;
-        }
-        .profile-image {
-            width: 60px;
-            height: 60px;
-            background-color: #e1e1e1;
-            border-radius: 50%;
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-        }
-        .profile-image input[type="file"] {
+
+        .main-container,
+        .community-container,
+        .settings-container {
             display: none;
         }
-        .profile-image img {
+
+        .timetable-section,
+        .calendar-section {
+            margin-bottom: 40px;
+        }
+
+        .timetable-section h2,
+        .calendar-section h2,
+        .community-header h2,
+        .settings-container h2 {
+            margin-top: 0;
+        }
+
+        .school-search-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .school-search {
+            flex-grow: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        body.dark-mode .school-search {
+            background-color: #2a2a2a;
+            color: #fff;
+            border-color: #444;
+        }
+
+        .school-search:focus {
+            outline: none;
+            border-color: #0078d4;
+        }
+
+        .school-list {
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            width: calc(100% - 110px);
+            z-index: 10;
+            margin-top: 5px;
+            transition: background-color 0.3s;
+        }
+
+        body.dark-mode .school-list {
+            background-color: #2a2a2a;
+            border-color: #444;
+        }
+
+        .school-list div {
+            padding: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .school-list div:hover {
+            background-color: #f5f5f5;
+        }
+
+        body.dark-mode .school-list div:hover {
+            background-color: #3f3f3f;
+        }
+
+        select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        body.dark-mode select {
+            background-color: #2a2a2a;
+            color: #fff;
+            border-color: #444;
+        }
+
+        table {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            border-collapse: collapse;
+            margin-top: 10px;
         }
-        .profile-info h2, .profile-info p {
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        body.dark-mode th,
+        body.dark-mode td {
+            border-color: #444;
+        }
+
+        th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        body.dark-mode th {
+            background-color: #333;
+        }
+
+        td[contenteditable="true"] {
+            cursor: text;
+            background-color: #fff;
+            transition: background-color 0.3s;
+        }
+
+        body.dark-mode td[contenteditable="true"] {
+            background-color: #2a2a2a;
+        }
+
+        td[contenteditable="true"]:hover {
+            background-color: #f8f8f8;
+        }
+
+        body.dark-mode td[contenteditable="true"]:hover {
+            background-color: #3f3f3f;
+        }
+
+        .calendar-section table td {
+            height: 100px;
+            vertical-align: top;
+            position: relative;
+        }
+
+        .calendar-section table td textarea {
+            width: 100%;
+            height: 80%;
+            border: none;
+            background: none;
+            resize: none;
+            padding: 5px;
+            font-size: 14px;
             color: inherit;
+            transition: background-color 0.3s, color 0.3s;
         }
-        .settings-list {
+
+        .calendar-section table td textarea:focus {
+            outline: none;
+            background-color: #f8f8f8;
+        }
+
+        body.dark-mode .calendar-section table td textarea:focus {
+            background-color: #3f3f3f;
+        }
+
+        .settings-container ul {
             list-style: none;
             padding: 0;
             margin: 0;
         }
-        .settings-item {
-            padding: 15px 20px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+
+        .settings-container ul li {
+            padding: 12px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.2s;
         }
-        body.dark-mode .settings-item {
-            border-bottom: 1px solid #444;
-        }
-        .settings-item:hover {
-            background-color: #f8f8f8;
-        }
-        body.dark-mode .settings-item:hover {
-            background-color: #444;
-        }
-        .settings-item i {
-            color: #999;
-        }
-        .empty-container {
-            display: none;
-            height: 100%;
-            align-items: center;
-            justify-content: center;
-        }
-        .empty-container.active {
-            display: flex;
-        }
-        .empty-message {
-            color: #666;
-            font-size: 1.2em;
-        }
-        .main-container {
-            display: flex;
-            max-width: 1200px;
-            margin: 0 auto;
-            gap: 20px;
-            display: none;
-        }
-        .main-container.active {
-            display: flex;
-        }
-        .settings-container {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            display: none;
-        }
-        body.dark-mode .settings-container {
-            background-color: #333333;
-        }
-        .settings-container.active {
-            display: block;
-        }
-        .empty-container {
-            display: none;
-            height: 100%;
-            align-items: center;
-            justify-content: center;
-        }
-        .empty-container.active {
-            display: flex;
-        }
-        .left-container, .right-container {
-            flex: 1;
-            min-width: 400px;
-        }
-        .right-container {
-            padding-top: 60px; /* 검색창 높이만큼 상단 패딩 추가 */
-        }
-        .top-controls {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            align-items: center;
-            height: 40px; /* 검색창 영역 높이 지정 */
-        }
-        .search-container {
-            position: relative;
-            flex: 1;
-        }
-        #search-input {
-            width: 100%;
-            padding: 8px;
-            font-size: 14px;
-        }
-        #class-select {
-            padding: 8px;
-            font-size: 14px;
-        }
-        #school-list {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            max-height: 300px;
-            overflow-y: auto;
-            background: white;
-            border: 1px solid #ddd;
-            border-top: none;
-            z-index: 1000;
-        }
-        #school-list a {
-            display: block;
-            padding: 8px;
-            text-decoration: none;
-            color: black;
-        }
-        #school-list a:hover {
-            background-color: #f0f0f0;
-        }
-        .timetable, .calendar {
-            width: 100%;
-            border-collapse: collapse;
-            table-layout: fixed;
-            height: 700px;
-        }
-        .timetable thead th, .calendar thead th {
-            height: 40px;
-            padding: 8px;
-            text-align: center;
+
+        .settings-container ul li:hover {
             background-color: #f5f5f5;
-            border: 1px solid #ddd;
-            font-weight: bold;
-            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
         }
-        body.dark-mode .timetable thead th,
-        body.dark-mode .calendar thead th {
-            background-color: #333;
-            color: #fff;
-            border-color: #555;
+
+        body.dark-mode .settings-container ul li:hover {
+            background-color: #3f3f3f;
         }
-        .timetable tbody td {
-            height: calc((700px - 40px) / 7);
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-        }
-        body.dark-mode .timetable tbody td {
-            background-color: #2a2a2a;
-            color: #fff;
-            border-color: #444;
-        }
-        .calendar tbody td {
-            height: calc((700px - 40px) / 6);
-            border: 1px solid #ddd;
-            vertical-align: top;
-            width: calc(100% / 7);
-            padding: 0;
-            position: relative;
-            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-        }
-        body.dark-mode .calendar tbody td {
-            background-color: #2a2a2a;
-            color: #fff;
-            border-color: #444;
-        }
-        .calendar .date-number {
-            padding: 5px;
-            font-weight: bold;
-            background-color: #f5f5f5;
-            margin-bottom: 5px;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        body.dark-mode .calendar .date-number {
-            background-color: #333;
-            color: #fff;
-        }
-        .calendar .memo {
-            padding: 5px;
-            height: calc(100% - 30px);
-            width: 100%;
-            box-sizing: border-box;
-            border: none;
-            resize: none;
-            font-family: inherit;
-            font-size: inherit;
-            background: transparent;
-            color: inherit;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .calendar .memo:focus {
-            outline: none;
-            background-color: #f8f8f8;
-        }
-        body.dark-mode .calendar .memo:focus {
-            background-color: #333;
-        }
-        .timetable td[contenteditable="true"] {
-            background-color: #fff;
-            cursor: text;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        body.dark-mode .timetable td[contenteditable="true"] {
-            background-color: #2a2a2a;
-            color: #fff;
-        }
-        .timetable td[contenteditable="true"]:hover {
-            background-color: #f8f8f8;
-        }
-        body.dark-mode .timetable td[contenteditable="true"]:hover {
-            background-color: #333;
-        }
-        .timetable td[contenteditable="true"]:focus {
-            outline: 2px solid #007bff;
-            outline-offset: -2px;
-        }
-        body.dark-mode .timetable td[contenteditable="true"]:focus {
-            outline-color: #0078d4;
-        }
+
         .submenu {
             display: none;
-            background-color: #f9f9f9;
-            border-left: 4px solid #0078d4;
-        }
-        body.dark-mode .submenu {
-            background-color: #2a2a2a;
-        }
-        .submenu.active {
-            display: block;
-        }
-        .submenu-item {
-            padding: 12px 20px 12px 40px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-        }
-        body.dark-mode .submenu-item {
-            border-bottom: 1px solid #444;
-        }
-        .submenu-item:hover {
-            background-color: #f0f0f0;
-        }
-        body.dark-mode .submenu-item:hover {
-            background-color: #333;
-        }
-        .back-button {
-            padding: 15px 20px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            color: #0078d4;
-        }
-        body.dark-mode .back-button {
-            border-bottom: 1px solid #444;
-        }
-        .back-button:hover {
-            background-color: #f8f8f8;
-        }
-        body.dark-mode .back-button:hover {
-            background-color: #444;
-        }
-        .profile-edit {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        .edit-button {
-            background: none;
-            border: none;
-            color: #0078d4;
-            cursor: pointer;
-            font-size: 1.2em;
-        }
-        .edit-input {
-            border: 1px solid #ddd;
-            padding: 5px;
-            border-radius: 4px;
-            width: 200px;
-        }
-        .font-size-control {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px;
-        }
-        .font-size-button {
-            padding: 5px 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background: none;
-            cursor: pointer;
-            color: inherit;
-        }
-        body.dark-mode .font-size-button {
-            border-color: #555;
-        }
-        .reset-button {
-            margin-left: auto;
-            padding: 5px 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background: none;
-            cursor: pointer;
-            color: #0078d4;
-        }
-        body.dark-mode .reset-button {
-            border-color: #555;
-        }
-        .terms-container {
-            max-height: 400px;
-            overflow-y: auto;
             padding: 20px;
-            background-color: #f9f9f9;
-            border-radius: 8px;
-            margin: 10px;
         }
-        body.dark-mode .terms-container {
+
+        .submenu button {
+            margin-bottom: 20px;
+            padding: 8px 16px;
+            background-color: #0078d4;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .submenu button:hover {
+            background-color: #005a9e;
+        }
+
+        .submenu input,
+        .submenu select {
+            margin-bottom: 10px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: calc(100% - 18px);
+            background-color: #fff;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        body.dark-mode .submenu input,
+        body.dark-mode .submenu select {
             background-color: #2a2a2a;
+            color: #fff;
+            border-color: #444;
         }
-        .toggle-switch {
+
+        .submenu p {
+            margin: 10px 0;
+        }
+
+        .switch {
             position: relative;
             display: inline-block;
-            width: 50px;
-            height: 24px;
+            width: 40px;
+            height: 20px;
         }
-        .toggle-switch input {
+
+        .switch input {
             opacity: 0;
             width: 0;
             height: 0;
         }
-        .toggle-slider {
+
+        .slider {
             position: absolute;
             cursor: pointer;
             top: 0;
@@ -468,415 +345,388 @@
             right: 0;
             bottom: 0;
             background-color: #ccc;
-            transition: .4s;
-            border-radius: 24px;
+            transition: 0.4s;
+            border-radius: 20px;
         }
-        .toggle-slider:before {
+
+        .slider:before {
             position: absolute;
             content: "";
             height: 16px;
             width: 16px;
-            left: 4px;
-            bottom: 4px;
+            left: 2px;
+            bottom: 2px;
             background-color: white;
-            transition: .4s;
+            transition: 0.4s;
             border-radius: 50%;
         }
-        input:checked + .toggle-slider {
+
+        input:checked + .slider {
             background-color: #0078d4;
         }
-        input:checked + .toggle-slider:before {
-            transform: translateX(26px);
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
         }
-        .language-select {
-            padding: 8px;
+
+        .mobile-bottom-tabs {
+            display: none;
+            justify-content: space-around;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #f8f8f8;
+            padding: 10px 0;
+            transition: background-color 0.3s;
+        }
+
+        body.dark-mode .mobile-bottom-tabs {
+            background-color: #2a2a2a;
+        }
+
+        .mobile-tab-button {
+            width: 50px;
+            height: 50px;
+            border: none;
+            background: none;
+            font-size: 24px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .mobile-tab-button.active {
+            background-color: #0078d4;
+            color: #ffffff;
+            border-radius: 50%;
+        }
+
+        .community-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .write-post-button {
+            padding: 8px 16px;
+            background-color: #0078d4;
+            color: #ffffff;
+            border: none;
             border-radius: 4px;
-            border: 1px solid #ddd;
-            background-color: white;
-            color: inherit;
+            cursor: pointer;
+            transition: background-color 0.2s;
         }
-        body.dark-mode .language-select {
+
+        .write-post-button:hover {
+            background-color: #005a9e;
+        }
+
+        .post-list {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .post-list th,
+        .post-list td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        body.dark-mode .post-list th,
+        body.dark-mode .post-list td {
+            border-bottom: 1px solid #444;
+        }
+
+        .post-list th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+
+        body.dark-mode .post-list th {
             background-color: #333;
-            border-color: #555;
         }
-        .notification-sound {
+
+        .post-list tr:hover {
+            background-color: #f8f8f8;
+            cursor: pointer;
+        }
+
+        body.dark-mode .post-list tr:hover {
+            background-color: #444;
+        }
+
+        .post-title {
+            max-width: 50%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .post-preview {
+            max-width: 30%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .post-modal,
+        .sync-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .post-modal.active,
+        .sync-modal.active {
+            display: flex;
+        }
+
+        .post-modal-content,
+        .sync-modal-content {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
+        }
+
+        body.dark-mode .post-modal-content,
+        body.dark-mode .sync-modal-content {
+            background-color: #333333;
+        }
+
+        .post-modal-content h2,
+        .sync-modal-content h2 {
+            margin-top: 0;
+        }
+
+        .post-modal-content input,
+        .post-modal-content textarea {
             width: 100%;
             padding: 8px;
-            border-radius: 4px;
+            margin-bottom: 10px;
             border: 1px solid #ddd;
-            background-color: white;
-            color: inherit;
+            border-radius: 4px;
+            box-sizing: border-box;
+            background-color: #fff;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
         }
-        body.dark-mode .notification-sound {
-            background-color: #333;
-            border-color: #555;
+
+        body.dark-mode .post-modal-content input,
+        body.dark-mode .post-modal-content textarea {
+            background-color: #2a2a2a;
+            color: #fff;
+            border-color: #444;
         }
-        
-        /* 반응형 디자인 */
+
+        .post-modal-content textarea {
+            height: 200px;
+            resize: vertical;
+        }
+
+        .post-modal-buttons,
+        .sync-modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .modal-button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .modal-button.submit {
+            background-color: #0078d4;
+            color: #ffffff;
+        }
+
+        .modal-button.submit:hover {
+            background-color: #005a9e;
+        }
+
+        .modal-button.cancel {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        body.dark-mode .modal-button.cancel {
+            background-color: #3f3f3f;
+            color: #ffffff;
+        }
+
+        .modal-button.cancel:hover {
+            background-color: #d0d0d0;
+        }
+
+        body.dark-mode .modal-button.cancel:hover {
+            background-color: #4f4f4f;
+        }
+
+        .sync-button {
+            padding: 8px 16px;
+            background-color: #28a745;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .sync-button:hover {
+            background-color: #218838;
+        }
+
+        .sync-modal-content p {
+            margin: 0 0 20px;
+        }
+
+        .sync-modal-content button {
+            padding: 8px 16px;
+            background-color: #0078d4;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .sync-modal-content button:hover {
+            background-color: #005a9e;
+        }
+
         @media screen and (max-width: 768px) {
-            /* 모바일 스타일 */
-            body {
-                flex-direction: column;
-                padding-bottom: 100px;
-            }
-            
             .vertical-tabs {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                height: 80px;
-                background-color: #f5f5f5;
-                display: flex;
-                flex-direction: row;
-                justify-content: space-around;
-                align-items: center;
-                padding: 0;
-                z-index: 1000;
-                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+                display: none;
             }
-            
-            body.dark-mode .vertical-tabs {
-                background-color: #2b2b2b;
-                box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
-            }
-            
-            .tab-button {
-                width: 60px;
-                height: 60px;
-                margin: 0;
-                border-radius: 50%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                font-size: 24px;
-            }
-            
+
             .content-area {
                 padding: 10px;
-                padding-bottom: 90px;
             }
-            
-            .main-container {
+
+            .main-container,
+            .community-container,
+            .settings-container {
+                padding: 15px;
+            }
+
+            .school-search-container {
                 flex-direction: column;
+                align-items: stretch;
             }
-            
-            .left-container, .right-container {
-                min-width: 100%;
-                margin-bottom: 20px;
+
+            .school-search,
+            select {
+                width: 100%;
+                margin-bottom: 10px;
             }
-            
-            .top-controls {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-                margin-bottom: 20px;
-                height: auto;
-            }
-            
-            .search-container {
+
+            .school-list {
                 width: 100%;
             }
-            
-            #class-select {
-                width: 100%;
-                padding: 10px;
+
+            table {
+                font-size: 14px;
             }
-            
-            .timetable, .calendar {
-                height: auto;
-                min-height: 300px;
+
+            th,
+            td {
+                padding: 8px;
             }
-            
-            .timetable tbody td {
-                height: 50px;
-                font-size: 12px;
-                padding: 4px;
-            }
-            
-            .calendar tbody td {
+
+            .calendar-section table td {
                 height: 80px;
             }
-            
+
+            .calendar-section table td textarea {
+                font-size: 12px;
+            }
+
+            .mobile-bottom-tabs {
+                display: flex;
+            }
+
+            .post-list th,
+            .post-list td {
+                padding: 8px;
+                font-size: 14px;
+            }
+
+            .post-title {
+                max-width: 40%;
+            }
+
+            .post-preview {
+                max-width: 20%;
+            }
+
+            .post-modal-content,
+            .sync-modal-content {
+                width: 95%;
+                padding: 15px;
+            }
+
+            .post-modal-content textarea {
+                height: 150px;
+            }
+
+            .settings-container ul li {
+                padding: 8px;
+                font-size: 14px;
+            }
+        }
+
+        @media screen and (min-width: 769px) and (max-width: 1024px) {
+            .main-container,
+            .community-container,
             .settings-container {
                 max-width: 100%;
             }
-            
-            .settings-profile {
-                flex-direction: row;
-                text-align: left;
-                padding: 30px;
-            }
-            
-            .profile-image {
-                width: 100px;
-                height: 100px;
-                margin: 0;
-            }
-            
-            .profile-info {
-                margin-top: 0;
-                margin-left: 20px;
-            }
-            
-            .profile-info h2 {
-                font-size: 1.5em;
-                margin-bottom: 10px;
-            }
-            
-            .profile-info p {
-                font-size: 1.1em;
-            }
-            
-            .submenu {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                z-index: 1000;
-                overflow-y: auto;
-            }
-            
-            .back-button {
-                position: sticky;
-                top: 0;
-                background-color: inherit;
-                z-index: 1001;
-            }
-            
-            .mobile-bottom-tabs {
-                display: flex;
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                height: 90px;
-                background-color: #f5f5f5;
-                flex-direction: row;
-                justify-content: space-around;
-                align-items: center;
-                z-index: 1000;
-                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-                padding: 0 20px;
-            }
-            
-            body.dark-mode .mobile-bottom-tabs {
-                background-color: #2b2b2b;
-                box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
-            }
-            
-            .mobile-tab-button {
-                width: 70px;
-                height: 70px;
-                border-radius: 50%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                font-size: 28px;
-                background-color: #e0e0e0;
-                color: #333333;
-                border: none;
-                cursor: pointer;
-                transition: background-color 0.2s, color 0.2s;
-                margin: 0 5px;
-            }
-            
-            body.dark-mode .mobile-tab-button {
-                background-color: #3f3f3f;
-                color: #ffffff;
-            }
-            
-            .mobile-tab-button:hover {
-                background-color: #d0d0d0;
-            }
-            
-            body.dark-mode .mobile-tab-button:hover {
-                background-color: #4f4f4f;
-            }
-            
-            .mobile-tab-button.active {
-                background-color: #0078d4;
-                color: #ffffff;
-            }
-            
-            .content-area {
-                padding-bottom: 100px;
-            }
-        }
-        
-        @media screen and (min-width: 769px) and (max-width: 1024px) {
-            /* 태블릿 스타일 */
-            .main-container {
-                flex-direction: column;
-            }
-            
-            .left-container, .right-container {
-                min-width: 100%;
-                margin-bottom: 20px;
-            }
-            
-            .timetable, .calendar {
-                height: 500px;
-            }
-            
-            .settings-container {
-                max-width: 90%;
-            }
-        }
-        
-        @media screen and (min-width: 1025px) {
-            /* 데스크톱 스타일 */
-            .main-container {
-                flex-direction: row;
-            }
-            
-            .left-container, .right-container {
-                min-width: 400px;
-            }
-            
-            .timetable, .calendar {
-                height: 700px;
-            }
-        }
-        
-        /* 모바일 메뉴 토글 버튼 */
-        .mobile-menu-toggle {
-            display: none;
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background-color: #0078d4;
-            color: white;
-            border: none;
-            cursor: pointer;
-            z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        
-        @media screen and (max-width: 768px) {
-            .mobile-menu-toggle {
-                display: block;
-            }
-            
-            .vertical-tabs {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                background-color: inherit;
-                z-index: 999;
-                display: none;
-            }
-            
-            .vertical-tabs.active {
-                display: flex;
-            }
-        }
 
-        /* 모바일 하단 탭 */
-        .mobile-bottom-tabs {
-            display: none;
-        }
-
-        @media screen and (max-width: 768px) {
-            /* 모바일 스타일 */
-            body {
-                padding-bottom: 100px; /* 하단 탭 높이를 위한 여백 증가 */
-            }
-            
-            .mobile-bottom-tabs {
-                display: flex;
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                width: 100%;
+            .calendar-section table td {
                 height: 90px;
-                background-color: #f5f5f5;
-                flex-direction: row;
-                justify-content: space-around;
-                align-items: center;
-                z-index: 1000;
-                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-                padding: 0 20px;
-            }
-            
-            body.dark-mode .mobile-bottom-tabs {
-                background-color: #2b2b2b;
-                box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
-            }
-            
-            .mobile-tab-button {
-                width: 70px;
-                height: 70px;
-                border-radius: 50%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                font-size: 28px;
-                background-color: #e0e0e0;
-                color: #333333;
-                border: none;
-                cursor: pointer;
-                transition: background-color 0.2s, color 0.2s;
-                margin: 0 5px;
-            }
-            
-            body.dark-mode .mobile-tab-button {
-                background-color: #3f3f3f;
-                color: #ffffff;
-            }
-            
-            .mobile-tab-button:hover {
-                background-color: #d0d0d0;
-            }
-            
-            body.dark-mode .mobile-tab-button:hover {
-                background-color: #4f4f4f;
-            }
-            
-            .mobile-tab-button.active {
-                background-color: #0078d4;
-                color: #ffffff;
-            }
-            
-            .content-area {
-                padding-bottom: 100px;
             }
         }
     </style>
 </head>
 <body>
     <div class="vertical-tabs">
-        <button class="tab-button active" onclick="switchTab('main')">📅</button>
-        <button class="tab-button" onclick="switchTab('empty')">📋</button>
-        <button class="tab-button" onclick="switchTab('settings')">⚙️</button>
+        <button class="tab-button active" onclick="switchTab('main')" title="시간표">📅</button>
+        <button class="tab-button" onclick="switchTab('community')" title="커뮤니티">📋</button>
+        <button class="tab-button" onclick="switchTab('settings')" title="설정">⚙️</button>
     </div>
+
     <div class="content-area">
         <div class="main-container active">
-            <div class="left-container">
-                <div class="top-controls">
-                    <div class="search-container">
-                        <input type="text" id="search-input" placeholder="학교 검색" oninput="filterSchools()">
-                        <div id="school-list"></div>
-                    </div>
-                    <select id="class-select" onchange="switchClass(this.value)">
-                        <option value="1반">1반</option>
-                        <option value="2반">2반</option>
-                        <option value="3반">3반</option>
-                        <option value="4반">4반</option>
+            <div class="timetable-section">
+                <h2>시간표</h2>
+                <div class="school-search-container">
+                    <input type="text" class="school-search" placeholder="학교 검색..." oninput="searchSchool(this.value)">
+                    <div class="school-list" style="display: none;"></div>
+                    <select onchange="switchClass(this.value)">
+                        <option value="1">1반</option>
+                        <option value="2">2반</option>
+                        <option value="3">3반</option>
+                        <option value="4">4반</option>
                     </select>
                 </div>
-                <table class="timetable">
+                <table>
                     <thead>
                         <tr>
-                            <th>교시</th>
+                            <th>시간</th>
                             <th>월</th>
                             <th>화</th>
                             <th>수</th>
@@ -885,67 +735,19 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1교시</td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                        </tr>
-                        <tr>
-                            <td>2교시</td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                        </tr>
-                        <tr>
-                            <td>3교시</td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                        </tr>
-                        <tr>
-                            <td>4교시</td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                        </tr>
-                        <tr>
-                            <td>5교시</td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                        </tr>
-                        <tr>
-                            <td>6교시</td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                        </tr>
-                        <tr>
-                            <td>7교시</td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                        </tr>
+                        <tr><td>1</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+                        <tr><td>2</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+                        <tr><td>3</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+                        <tr><td>4</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+                        <tr><td>5</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+                        <tr><td>6</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+                        <tr><td>7</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
                     </tbody>
                 </table>
             </div>
-            <div class="right-container">
-                <table class="calendar">
+            <div class="calendar-section">
+                <h2>캘린더</h2>
+                <table>
                     <thead>
                         <tr>
                             <th>일</th>
@@ -957,1500 +759,706 @@
                             <th>토</th>
                         </tr>
                     </thead>
-                    <tbody id="calendar-body">
-                    </tbody>
+                    <tbody id="calendar-body"></tbody>
                 </table>
             </div>
         </div>
-        
-        
-<div class="community-container active">
-    <div class="community">
-        <div class="community-header">
-            <h2>커뮤니티 게시판</h2>
-            <button class="post-button" onclick="showPostForm()">글쓰기</button>
-        </div>
-        <ul id="post-list" class="post-list">
-            <!-- 게시글이 여기에 표시됩니다 -->
-        </ul>
-        <div id="post-form" class="post-form" style="display: none;">
-            <textarea id="post-content" placeholder="내용을 입력하세요..."></textarea>
-            <div class="form-buttons">
-                <button onclick="submitPost()">등록</button>
-                <button onclick="cancelPost()">취소</button>
-            </div>
-        </div>
-    </div>
-</div>
 
+        <div class="community-container">
+            <div class="community-header">
+                <h2>커뮤니티</h2>
+                <button class="write-post-button" onclick="openPostModal()">글쓰기</button>
+            </div>
+            <table class="post-list">
+                <thead>
+                    <tr>
+                        <th style="width: 50%;">제목</th>
+                        <th style="width: 20%;">작성자</th>
+                        <th style="width: 20%;">작성 시간</th>
+                        <th style="width: 10%;">미리보기</th>
+                    </tr>
+                </thead>
+                <tbody id="post-list-body"></tbody>
+            </table>
+        </div>
 
         <div class="settings-container">
-            <div class="settings-profile">
-                <div class="profile-image" onclick="document.getElementById('profile-image-input').click()">
-                    <input type="file" id="profile-image-input" accept="image/*" onchange="handleImageUpload(event)">
-                    <img id="profile-preview" src="" alt="프로필 이미지">
-                </div>
-                <div class="profile-info">
-                    <h2>
-                        <span id="user-name">사용자 이름</span>
-                        <button class="edit-button" onclick="editField('user-name')">✏️</button>
-                    </h2>
-                    <p>
-                        <span id="user-email">user@example.com</span>
-                        <button class="edit-button" onclick="editField('user-email')">✏️</button>
-                    </p>
+            <ul>
+                <li onclick="showSubmenu('profile')">프로필</li>
+                <li onclick="showSubmenu('notifications')">알림</li>
+                <li onclick="showSubmenu('theme')">테마</li>
+                <li onclick="showSubmenu('data')">데이터 관리</li>
+                <li onclick="showSubmenu('backup')">백업 및 동기화</li>
+                <li onclick="showSubmenu('privacy')">개인정보</li>
+                <li onclick="showSubmenu('help')">도움말</li>
+                <li><button class="sync-button" onclick="syncData()">데이터 동기화</button></li>
+            </ul>
+            <div class="submenu profile">
+                <button onclick="hideSubmenu()">뒤로</button>
+                <h3>프로필</h3>
+                <p>이름: <span id="user-name">사용자</span></p>
+                <p>이메일: <input type="email" id="user-email" placeholder="이메일을 입력하세요"></p>
+                <p>프로필 이미지: <input type="file" id="profile-image" accept="image/*"></p>
+            </div>
+            <div class="submenu notifications">
+                <button onclick="hideSubmenu()">뒤로</button>
+                <h3>알림</h3>
+                <p><label><input type="checkbox" id="push-notifications"> 푸시 알림</label></p>
+                <p><label><input type="checkbox" id="email-notifications"> 이메일 알림</label></p>
+                <p><label><input type="checkbox" id="timetable-changes"> 시간표 변경 알림</label></p>
+                <p><label><input type="checkbox" id="exam-schedule"> 시험 일정 알림</label></p>
+            </div>
+            <div class="submenu theme">
+                <button onclick="hideSubmenu()">뒤로</button>
+                <h3>테마</h3>
+                <p><label><input type="checkbox" id="dark-mode" onchange="toggleDarkMode()"> 다크 모드</label></p>
+                <p>폰트 크기: <select id="font-size" onchange="changeFontSize(this.value)">
+                    <option value="14">14px</option>
+                    <option value="16" selected>16px</option>
+                    <option value="18">18px</option>
+                </select></p>
+                <p>언어: <select class="language-select" onchange="changeLanguage(this.value)">
+                    <option value="ko">한국어</option>
+                    <option value="en">English</option>
+                    <option value="ja">日本語</option>
+                    <option value="zh">中文</option>
+                </select></p>
+            </div>
+            <div class="submenu data">
+                <button onclick="hideSubmenu()">뒤로</button>
+                <h3>데이터 관리</h3>
+                <p><button onclick="exportData()">데이터 내보내기</button></p>
+                <p><input type="file" id="import-file" accept=".json"><button onclick="importData()">데이터 가져오기</button></p>
+                <p><button onclick="resetData()">데이터 초기화</button></p>
+                <p><label><input type="checkbox" id="auto-save"> 자동 저장</label></p>
+            </div>
+            <div class="submenu backup">
+                <button onclick="hideSubmenu()">뒤로</button>
+                <h3>백업 및 동기화</h3>
+                <p><label><input type="checkbox" id="auto-backup"> 자동 백업</label></p>
+                <p><button onclick="manualBackup()">수동 백업</button></p>
+                <p><label><input type="checkbox" id="cloud-sync"> 클라우드 동기화</label></p>
+            </div>
+            <div class="submenu privacy">
+                <button onclick="hideSubmenu()">뒤로</button>
+                <h3>개인정보</h3>
+                <p><button onclick="viewTerms()">약관 보기</button></p>
+                <p><label><input type="checkbox" id="location-sharing"> 위치 정보 공유</label></p>
+                <p><button onclick="changePassword()">비밀번호 변경</button></p>
+                <p><button onclick="deleteAccount()">계정 삭제</button></p>
+            </div>
+            <div class="submenu help">
+                <button onclick="hideSubmenu()">뒤로</button>
+                <h3>도움말</h3>
+                <p><button onclick="viewFAQ()">FAQ</button></p>
+                <p><button onclick="contactSupport()">문의하기</button></p>
+                <p><button onclick="viewGuide()">사용 가이드</button></p>
+                <p>버전: 1.0.0</p>
+            </div>
+        </div>
+
+        <div class="post-modal" id="post-modal">
+            <div class="post-modal-content">
+                <h2>새 게시글 작성</h2>
+                <input type="text" id="post-title" placeholder="제목을 입력하세요">
+                <textarea id="post-content" placeholder="내용을 입력하세요"></textarea>
+                <div class="post-modal-buttons">
+                    <button class="modal-button cancel" onclick="closePostModal()">취소</button>
+                    <button class="modal-button submit" onclick="submitPost()">게시</button>
                 </div>
             </div>
-            <div class="main-settings">
-                <ul class="settings-list">
-                    <li class="settings-item" onclick="showSubmenu('notifications')">
-                        알림 설정
-                        <i>›</i>
-                    </li>
-                    <li class="settings-item" onclick="showSubmenu('theme')">
-                        테마 설정
-                        <i>›</i>
-                    </li>
-                    <li class="settings-item" onclick="showSubmenu('data')">
-                        데이터 관리
-                        <i>›</i>
-                    </li>
-                    <li class="settings-item" onclick="showSubmenu('sync')">
-                        백업 및 동기화
-                        <i>›</i>
-                    </li>
-                    <li class="settings-item" onclick="showSubmenu('privacy')">
-                        개인정보 설정
-                        <i>›</i>
-                    </li>
-                    <li class="settings-item" onclick="showSubmenu('help')">
-                        도움말
-                        <i>›</i>
-                    </li>
-                </ul>
-            </div>
-            <div class="submenu" id="notifications">
-                <div class="back-button" onclick="hideSubmenu('notifications')">
-                    <i>‹</i> 알림 설정
-                </div>
-                <ul class="settings-list">
-                    <li class="submenu-item">
-                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                            푸시 알림
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="push-notification" onchange="toggleNotification('push')">
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                    </li>
-                    <li class="submenu-item">
-                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                            이메일 알림
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="email-notification" onchange="toggleNotification('email')">
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                    </li>
-                    <li class="submenu-item">
-                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                            시간표 변경 알림
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="timetable-notification" onchange="toggleNotification('timetable')">
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                    </li>
-                    <li class="submenu-item">
-                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                            시험 일정 알림
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="exam-notification" onchange="toggleNotification('exam')">
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                    </li>
-                    <li class="submenu-item">
-                        <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
-                            알림음 설정
-                            <select class="notification-sound" onchange="changeNotificationSound(this.value)">
-                                <option value="default">기본 알림음</option>
-                                <option value="bell">벨 소리</option>
-                                <option value="chime">차임벨</option>
-                                <option value="ding">딩동</option>
-                            </select>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-            <div class="submenu" id="theme">
-                <div class="back-button" onclick="hideSubmenu('theme')">
-                    <i>‹</i> 테마 설정
-                </div>
-                <ul class="settings-list">
-                    <li class="submenu-item" onclick="toggleDarkMode()">
-                        다크모드 전환
-                        <i>›</i>
-                    </li>
-                    <li class="submenu-item">
-                        <div class="font-size-control">
-                            폰트 크기
-                            <button class="font-size-button" onclick="changeFontSize(-1)">A-</button>
-                            <button class="font-size-button" onclick="changeFontSize(1)">A+</button>
-                            <button class="reset-button" onclick="resetFontSize()">초기화</button>
-                        </div>
-                    </li>
-                    <li class="submenu-item">
-                        <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
-                            언어 설정
-                            <select class="language-select" onchange="changeLanguage(this.value)">
-                                <option value="ko">한국어</option>
-                                <option value="en">English</option>
-                                <option value="ja">日本語</option>
-                                <option value="zh">中文</option>
-                            </select>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-            <div class="submenu" id="data">
-                <div class="back-button" onclick="hideSubmenu('data')">
-                    <i>‹</i> 데이터 관리
-                </div>
-                <ul class="settings-list">
-                    <li class="submenu-item" onclick="exportData()">
-                        데이터 내보내기
-                        <i>›</i>
-                    </li>
-                    <li class="submenu-item" onclick="importData()">
-                        데이터 가져오기
-                        <i>›</i>
-                    </li>
-                    <li class="submenu-item" onclick="resetData()">
-                        데이터 초기화
-                        <i>›</i>
-                    </li>
-                    <li class="submenu-item">
-                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                            자동 저장
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="auto-save" onchange="toggleAutoSave()">
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-            <div class="submenu" id="sync">
-                <div class="back-button" onclick="hideSubmenu('sync')">
-                    <i>‹</i> 백업 및 동기화
-                </div>
-                <ul class="settings-list">
-                    <li class="submenu-item">
-                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                            자동 백업
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="auto-backup" onchange="toggleAutoBackup()">
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                    </li>
-                    <li class="submenu-item" onclick="manualBackup()">
-                        수동 백업
-                        <i>›</i>
-                    </li>
-                    <li class="submenu-item">
-                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                            클라우드 동기화
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="cloud-sync" onchange="toggleCloudSync()">
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                    </li>
-                    <li class="submenu-item">
-                        마지막 동기화: <span id="last-sync">-</span>
-                    </li>
-                </ul>
-            </div>
-            <div class="submenu" id="privacy">
-                <div class="back-button" onclick="hideSubmenu('privacy')">
-                    <i>‹</i> 개인정보 설정
-                </div>
-                <ul class="settings-list">
-                    <li class="submenu-item" onclick="showTerms()">
-                        개인정보 수집·이용 동의서
-                        <i>›</i>
-                    </li>
-                    <li class="submenu-item" onclick="showLocationSettings()">
-                        위치 정보 설정
-                        <i>›</i>
-                    </li>
-                    <li class="submenu-item" onclick="showAccountSettings()">
-                        계정 정보 관리
-                        <i>›</i>
-                    </li>
-                </ul>
-            </div>
-            <div class="submenu" id="help">
-                <div class="back-button" onclick="hideSubmenu('help')">
-                    <i>‹</i> 도움말
-                </div>
-                <ul class="settings-list">
-                    <li class="submenu-item" onclick="showFAQ()">
-                        자주 찾는 도움말
-                        <i>›</i>
-                    </li>
-                    <li class="submenu-item" onclick="showContact()">
-                        문의하기
-                        <i>›</i>
-                    </li>
-                    <li class="submenu-item" onclick="showUserGuide()">
-                        사용 가이드
-                        <i>›</i>
-                    </li>
-                    <li class="submenu-item">
-                        버전 정보: bEtA tEsT!
-                        <i>›</i>
-                    </li>
-                </ul>
+        </div>
+
+        <div class="sync-modal" id="sync-modal">
+            <div class="sync-modal-content">
+                <p id="sync-message"></p>
+                <button onclick="closeSyncModal()">확인</button>
             </div>
         </div>
     </div>
-    
-    <!-- 모바일 하단 탭 -->
+
     <div class="mobile-bottom-tabs">
-        <button class="mobile-tab-button active" onclick="switchTab('main')">📅</button>
-        <button class="mobile-tab-button" onclick="switchTab('empty')">📋</button>
-        <button class="mobile-tab-button" onclick="switchTab('settings')">⚙️</button>
+        <button class="mobile-tab-button active" onclick="switchTab('main')" title="시간표">📅</button>
+        <button class="mobile-tab-button" onclick="switchTab('community')" title="커뮤니티">📋</button>
+        <button class="mobile-tab-button" onclick="switchTab('settings')" title="설정">⚙️</button>
     </div>
 
     <script>
-        // 번역 데이터
+        // Firebase 초기화
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        db.enablePersistence();
+
+        // SHA-256 해시 함수
+        async function sha256(str) {
+            const msgBuffer = new TextEncoder().encode(str);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
         const translations = {
             ko: {
-                // 메인 메뉴
                 timetable: "시간표",
                 calendar: "캘린더",
                 settings: "설정",
-                searchPlaceholder: "학교 검색",
-                classSelect: "반 선택",
-                
-                // 설정 메뉴
-                notifications: "알림 설정",
-                theme: "테마 설정",
+                community: "커뮤니티",
+                writePost: "글쓰기",
+                newPost: "새 게시글 작성",
+                postTitle: "제목을 입력하세요",
+                postContent: "내용을 입력하세요",
+                submit: "게시",
+                cancel: "취소",
+                noPosts: "게시글이 없습니다.",
+                syncData: "데이터 동기화",
+                syncSuccess: "데이터 동기화 성공!",
+                syncFail: "동기화 실패: 이메일을 입력하거나 네트워크를 확인하세요.",
+                enterEmail: "먼저 이메일을 입력해주세요.",
+                profile: "프로필",
+                notifications: "알림",
+                theme: "테마",
                 data: "데이터 관리",
-                sync: "백업 및 동기화",
-                privacy: "개인정보 설정",
-                help: "도움말",
-                
-                // 알림 설정
-                pushNotification: "푸시 알림",
-                emailNotification: "이메일 알림",
-                timetableNotification: "시간표 변경 알림",
-                examNotification: "시험 일정 알림",
-                notificationSound: "알림음 설정",
-                defaultSound: "기본 알림음",
-                bellSound: "벨 소리",
-                chimeSound: "차임벨",
-                dingSound: "딩동",
-                
-                // 테마 설정
-                darkMode: "다크모드 전환",
-                fontSize: "폰트 크기",
-                language: "언어 설정",
-                reset: "초기화",
-                
-                // 데이터 관리
-                exportData: "데이터 내보내기",
-                importData: "데이터 가져오기",
-                resetData: "데이터 초기화",
-                autoSave: "자동 저장",
-                confirmReset: "모든 데이터를 초기화하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
-                
-                // 백업 및 동기화
-                autoBackup: "자동 백업",
-                manualBackup: "수동 백업",
-                cloudSync: "클라우드 동기화",
-                lastSync: "마지막 동기화",
-                backupComplete: "데이터 복원이 완료되었습니다.",
-                
-                // 개인정보 설정
-                privacyPolicy: "개인정보 수집·이용 동의서",
-                locationSettings: "위치 정보 설정",
-                accountSettings: "계정 정보 관리",
-                
-                // 도움말
-                faq: "자주 찾는 도움말",
-                contact: "문의하기",
-                userGuide: "사용 가이드",
-                version: "버전 정보"
+                backup: "백업 및 동기화",
+                privacy: "개인정보",
+                help: "도움말"
             },
             en: {
-                // Main menu
                 timetable: "Timetable",
                 calendar: "Calendar",
                 settings: "Settings",
-                searchPlaceholder: "Search school",
-                classSelect: "Select class",
-                
-                // Settings menu
+                community: "Community",
+                writePost: "Write Post",
+                newPost: "New Post",
+                postTitle: "Enter title",
+                postContent: "Enter content",
+                submit: "Submit",
+                cancel: "Cancel",
+                noPosts: "No posts available.",
+                syncData: "Sync Data",
+                syncSuccess: "Data synced successfully!",
+                syncFail: "Sync failed: Please enter an email or check your network.",
+                enterEmail: "Please enter an email first.",
+                profile: "Profile",
                 notifications: "Notifications",
                 theme: "Theme",
                 data: "Data Management",
-                sync: "Backup & Sync",
+                backup: "Backup & Sync",
                 privacy: "Privacy",
-                help: "Help",
-                
-                // Notification settings
-                pushNotification: "Push Notifications",
-                emailNotification: "Email Notifications",
-                timetableNotification: "Timetable Change Alerts",
-                examNotification: "Exam Schedule Alerts",
-                notificationSound: "Notification Sound",
-                defaultSound: "Default Sound",
-                bellSound: "Bell",
-                chimeSound: "Chime",
-                dingSound: "Ding",
-                
-                // Theme settings
-                darkMode: "Dark Mode",
-                fontSize: "Font Size",
-                language: "Language",
-                reset: "Reset",
-                
-                // Data management
-                exportData: "Export Data",
-                importData: "Import Data",
-                resetData: "Reset Data",
-                autoSave: "Auto Save",
-                confirmReset: "Are you sure you want to reset all data? This action cannot be undone.",
-                
-                // Backup & sync
-                autoBackup: "Auto Backup",
-                manualBackup: "Manual Backup",
-                cloudSync: "Cloud Sync",
-                lastSync: "Last Sync",
-                backupComplete: "Data restoration completed.",
-                
-                // Privacy settings
-                privacyPolicy: "Privacy Policy",
-                locationSettings: "Location Settings",
-                accountSettings: "Account Settings",
-                
-                // Help
-                faq: "FAQ",
-                contact: "Contact",
-                userGuide: "User Guide",
-                version: "Version"
+                help: "Help"
             },
             ja: {
-                // メインメニュー
                 timetable: "時間割",
                 calendar: "カレンダー",
                 settings: "設定",
-                searchPlaceholder: "学校を検索",
-                classSelect: "クラスを選択",
-                
-                // 設定メニュー
-                notifications: "通知設定",
-                theme: "テーマ設定",
+                community: "コミュニティ",
+                writePost: "投稿を書く",
+                newPost: "新しい投稿",
+                postTitle: "タイトルを入力",
+                postContent: "内容を入力",
+                submit: "投稿",
+                cancel: "キャンセル",
+                noPosts: "投稿がありません。",
+                syncData: "データ同期",
+                syncSuccess: "データ同期に成功しました！",
+                syncFail: "同期失敗：メールアドレスを入力するか、ネットワークを確認してください。",
+                enterEmail: "まずメールアドレスを入力してください。",
+                profile: "プロフィール",
+                notifications: "通知",
+                theme: "テーマ",
                 data: "データ管理",
-                sync: "バックアップと同期",
-                privacy: "プライバシー設定",
-                help: "ヘルプ",
-                
-                // 通知設定
-                pushNotification: "プッシュ通知",
-                emailNotification: "メール通知",
-                timetableNotification: "時間割変更通知",
-                examNotification: "試験日程通知",
-                notificationSound: "通知音設定",
-                defaultSound: "デフォルト音",
-                bellSound: "ベル音",
-                chimeSound: "チャイム音",
-                dingSound: "ディング音",
-                
-                // テーマ設定
-                darkMode: "ダークモード",
-                fontSize: "フォントサイズ",
-                language: "言語設定",
-                reset: "リセット",
-                
-                // データ管理
-                exportData: "データのエクスポート",
-                importData: "データのインポート",
-                resetData: "データのリセット",
-                autoSave: "自動保存",
-                confirmReset: "すべてのデータをリセットしますか？この操作は元に戻せません。",
-                
-                // バックアップと同期
-                autoBackup: "自動バックアップ",
-                manualBackup: "手動バックアップ",
-                cloudSync: "クラウド同期",
-                lastSync: "最終同期",
-                backupComplete: "データの復元が完了しました。",
-                
-                // プライバシー設定
-                privacyPolicy: "プライバシーポリシー",
-                locationSettings: "位置情報設定",
-                accountSettings: "アカウント設定",
-                
-                // ヘルプ
-                faq: "よくある質問",
-                contact: "お問い合わせ",
-                userGuide: "ユーザーガイド",
-                version: "バージョン情報"
+                backup: "バックアップと同期",
+                privacy: "プライバシー",
+                help: "ヘルプ"
             },
             zh: {
-                // 主菜单
                 timetable: "课程表",
                 calendar: "日历",
                 settings: "设置",
-                searchPlaceholder: "搜索学校",
-                classSelect: "选择班级",
-                
-                // 设置菜单
-                notifications: "通知设置",
-                theme: "主题设置",
+                community: "社区",
+                writePost: "写帖子",
+                newPost: "新帖子",
+                postTitle: "输入标题",
+                postContent: "输入内容",
+                submit: "提交",
+                cancel: "取消",
+                noPosts: "暂无帖子。",
+                syncData: "数据同步",
+                syncSuccess: "数据同步成功！",
+                syncFail: "同步失败：请输入邮箱或检查网络。",
+                enterEmail: "请先输入邮箱。",
+                profile: "个人资料",
+                notifications: "通知",
+                theme: "主题",
                 data: "数据管理",
-                sync: "备份与同步",
-                privacy: "隐私设置",
-                help: "帮助",
-                
-                // 通知设置
-                pushNotification: "推送通知",
-                emailNotification: "邮件通知",
-                timetableNotification: "课程表变更通知",
-                examNotification: "考试日程通知",
-                notificationSound: "通知音设置",
-                defaultSound: "默认提示音",
-                bellSound: "铃声",
-                chimeSound: "钟声",
-                dingSound: "叮咚声",
-                
-                // 主题设置
-                darkMode: "深色模式",
-                fontSize: "字体大小",
-                language: "语言设置",
-                reset: "重置",
-                
-                // 数据管理
-                exportData: "导出数据",
-                importData: "导入数据",
-                resetData: "重置数据",
-                autoSave: "自动保存",
-                confirmReset: "确定要重置所有数据吗？此操作无法撤销。",
-                
-                // 备份与同步
-                autoBackup: "自动备份",
-                manualBackup: "手动备份",
-                cloudSync: "云同步",
-                lastSync: "上次同步",
-                backupComplete: "数据恢复完成。",
-                
-                // 隐私设置
-                privacyPolicy: "隐私政策",
-                locationSettings: "位置设置",
-                accountSettings: "账户设置",
-                
-                // 帮助
-                faq: "常见问题",
-                contact: "联系我们",
-                userGuide: "用户指南",
-                version: "版本信息"
+                backup: "备份与同步",
+                privacy: "隐私",
+                help: "帮助"
             }
         };
 
-        // 현재 언어 설정
         let currentLanguage = localStorage.getItem('language') || 'ko';
+        let currentSchool = '';
+        let currentClass = '1';
+        let timetables = JSON.parse(localStorage.getItem('timetables')) || {};
 
-        // 언어 변경 함수
-        function changeLanguage(lang) {
-            currentLanguage = lang;
-            localStorage.setItem('language', lang);
-            updateTranslations();
-            
-            // 언어 선택 드롭다운 업데이트
-            const languageSelect = document.querySelector('.language-select');
-            if (languageSelect) {
-                languageSelect.value = lang;
-            }
-        }
-
-        // 번역 업데이트 함수
         function updateTranslations() {
             const t = translations[currentLanguage];
-            
-            // 메인 메뉴
             document.querySelector('.tab-button[onclick="switchTab(\'main\')"]').title = t.timetable;
-            document.querySelector('.tab-button[onclick="switchTab(\'empty\')"]').title = t.calendar;
+            document.querySelector('.tab-button[onclick="switchTab(\'community\')"]').title = t.community;
             document.querySelector('.tab-button[onclick="switchTab(\'settings\')"]').title = t.settings;
-            document.getElementById('search-input').placeholder = t.searchPlaceholder;
-            
-            // 설정 메뉴
-            document.querySelector('.settings-item[onclick="showSubmenu(\'notifications\')"]').textContent = t.notifications;
-            document.querySelector('.settings-item[onclick="showSubmenu(\'theme\')"]').textContent = t.theme;
-            document.querySelector('.settings-item[onclick="showSubmenu(\'data\')"]').textContent = t.data;
-            document.querySelector('.settings-item[onclick="showSubmenu(\'sync\')"]').textContent = t.sync;
-            document.querySelector('.settings-item[onclick="showSubmenu(\'privacy\')"]').textContent = t.privacy;
-            document.querySelector('.settings-item[onclick="showSubmenu(\'help\')"]').textContent = t.help;
-            
-            // 알림 설정
-            document.querySelector('#notifications .back-button').textContent = `‹ ${t.notifications}`;
-            document.querySelector('#push-notification').parentElement.previousSibling.textContent = t.pushNotification;
-            document.querySelector('#email-notification').parentElement.previousSibling.textContent = t.emailNotification;
-            document.querySelector('#timetable-notification').parentElement.previousSibling.textContent = t.timetableNotification;
-            document.querySelector('#exam-notification').parentElement.previousSibling.textContent = t.examNotification;
-            
-            // 테마 설정
-            document.querySelector('#theme .back-button').textContent = `‹ ${t.theme}`;
-            document.querySelector('.submenu-item[onclick="toggleDarkMode()"]').textContent = t.darkMode;
-            document.querySelector('.font-size-control').previousSibling.textContent = t.fontSize;
-            document.querySelector('.reset-button').textContent = t.reset;
-            
-            // 데이터 관리
-            document.querySelector('#data .back-button').textContent = `‹ ${t.data}`;
-            document.querySelector('.submenu-item[onclick="exportData()"]').textContent = t.exportData;
-            document.querySelector('.submenu-item[onclick="importData()"]').textContent = t.importData;
-            document.querySelector('.submenu-item[onclick="resetData()"]').textContent = t.resetData;
-            document.querySelector('#auto-save').parentElement.previousSibling.textContent = t.autoSave;
-            
-            // 백업 및 동기화
-            document.querySelector('#sync .back-button').textContent = `‹ ${t.sync}`;
-            document.querySelector('#auto-backup').parentElement.previousSibling.textContent = t.autoBackup;
-            document.querySelector('.submenu-item[onclick="manualBackup()"]').textContent = t.manualBackup;
-            document.querySelector('#cloud-sync').parentElement.previousSibling.textContent = t.cloudSync;
-            document.querySelector('#last-sync').previousSibling.textContent = t.lastSync;
-            
-            // 개인정보 설정
-            document.querySelector('#privacy .back-button').textContent = `‹ ${t.privacy}`;
-            document.querySelector('.submenu-item[onclick="showTerms()"]').textContent = t.privacyPolicy;
-            
-            // 도움말
-            document.querySelector('#help .back-button').textContent = `‹ ${t.help}`;
+            document.querySelector('.mobile-tab-button[onclick="switchTab(\'main\')"]').title = t.timetable;
+            document.querySelector('.mobile-tab-button[onclick="switchTab(\'community\')"]').title = t.community;
+            document.querySelector('.mobile-tab-button[onclick="switchTab(\'settings\')"]').title = t.settings;
+            document.querySelector('.timetable-section h2').textContent = t.timetable;
+            document.querySelector('.calendar-section h2').textContent = t.calendar;
+            document.querySelector('.community-container h2').textContent = t.community;
+            document.querySelector('.write-post-button').textContent = t.writePost;
+            document.querySelector('.post-modal-content h2').textContent = t.newPost;
+            document.getElementById('post-title').placeholder = t.postTitle;
+            document.getElementById('post-content').placeholder = t.postContent;
+            document.querySelector('.modal-button.submit').textContent = t.submit;
+            document.querySelector('.modal-button.cancel').textContent = t.cancel;
+            document.querySelector('.sync-button').textContent = t.syncData;
+            document.querySelector('.settings-container h2').textContent = t.settings;
+            document.querySelectorAll('.settings-container ul li')[0].textContent = t.profile;
+            document.querySelectorAll('.settings-container ul li')[1].textContent = t.notifications;
+            document.querySelectorAll('.settings-container ul li')[2].textContent = t.theme;
+            document.querySelectorAll('.settings-container ul li')[3].textContent = t.data;
+            document.querySelectorAll('.settings-container ul li')[4].textContent = t.backup;
+            document.querySelectorAll('.settings-container ul li')[5].textContent = t.privacy;
+            document.querySelectorAll('.settings-container ul li')[6].textContent = t.help;
+            renderPostList();
         }
 
-        // 페이지 로드 시 번역 적용
-        window.addEventListener('load', function() {
-            // 저장된 언어 설정 적용
+        window.addEventListener('load', function () {
             const savedLanguage = localStorage.getItem('language') || 'ko';
             currentLanguage = savedLanguage;
-            
-            // 언어 선택 드롭다운의 기본값 설정
             const languageSelect = document.querySelector('.language-select');
-            if (languageSelect) {
-                languageSelect.value = savedLanguage;
+            if (languageSelect) languageSelect.value = savedLanguage;
+            const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+            if (savedDarkMode) {
+                document.body.classList.add('dark-mode');
+                document.getElementById('dark-mode').checked = true;
             }
-            
+            const savedFontSize = localStorage.getItem('fontSize') || '16';
+            document.body.style.fontSize = savedFontSize + 'px';
+            document.getElementById('font-size').value = savedFontSize;
+            createCalendar();
+            loadTimetable();
             updateTranslations();
+            const savedEmail = localStorage.getItem('userEmail');
+            if (savedEmail) {
+                document.getElementById('user-email').value = savedEmail;
+                syncData(true);
+            }
+            renderPostList();
         });
 
+        async function syncData(auto = false) {
+            const email = document.getElementById('user-email').value.trim();
+            const syncModal = document.getElementById('sync-modal');
+            const syncMessage = document.getElementById('sync-message');
+            const t = translations[currentLanguage];
+
+            if (!email) {
+                syncMessage.textContent = t.enterEmail;
+                syncModal.classList.add('active');
+                return;
+            }
+
+            try {
+                const emailHash = await sha256(email);
+                localStorage.setItem('userEmail', email);
+
+                const localData = {
+                    timetables: JSON.parse(localStorage.getItem('timetables')) || {},
+                    calendar: JSON.parse(localStorage.getItem('calendar')) || {},
+                    posts: JSON.parse(localStorage.getItem('communityPosts')) || [],
+                    settings: JSON.parse(localStorage.getItem('settings')) || {}
+                };
+
+                await db.collection('users').doc(emailHash).set(localData, { merge: true });
+
+                const doc = await db.collection('users').doc(emailHash).get();
+                if (doc.exists) {
+                    const cloudData = doc.data();
+                    localStorage.setItem('timetables', JSON.stringify(cloudData.timetables || {}));
+                    localStorage.setItem('calendar', JSON.stringify(cloudData.calendar || {}));
+                    localStorage.setItem('communityPosts', JSON.stringify(cloudData.posts || []));
+                    localStorage.setItem('settings', JSON.stringify(cloudData.settings || {}));
+                    loadTimetable();
+                    createCalendar();
+                }
+
+                if (!auto) {
+                    syncMessage.textContent = t.syncSuccess;
+                    syncModal.classList.add('active');
+                }
+                renderPostList();
+            } catch (e) {
+                console.error('동기화 오류:', e);
+                if (!auto) {
+                    syncMessage.textContent = t.syncFail;
+                    syncModal.classList.add('active');
+                }
+            }
+        }
+
+        function closeSyncModal() {
+            document.getElementById('sync-modal').classList.remove('active');
+        }
+
+        async function renderPostList() {
+            const postListBody = document.getElementById('post-list-body');
+            const posts = JSON.parse(localStorage.getItem('communityPosts')) || [];
+            const t = translations[currentLanguage];
+
+            postListBody.innerHTML = '';
+            if (posts.length === 0) {
+                postListBody.innerHTML = `<tr><td colspan="4" style="text-align: center;">${t.noPosts}</td></tr>`;
+                return;
+            }
+
+            posts.forEach(post => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="post-title">${post.title}</td>
+                    <td>${post.author}</td>
+                    <td>${new Date(post.timestamp).toLocaleString()}</td>
+                    <td class="post-preview">${post.content.substring(0, 20)}${post.content.length > 20 ? '...' : ''}</td>
+                `;
+                row.onclick = () => showPostDetail(post.id);
+                postListBody.appendChild(row);
+            });
+        }
+
+        function openPostModal() {
+            document.getElementById('post-modal').classList.add('active');
+            document.getElementById('post-title').value = '';
+            document.getElementById('post-content').value = '';
+        }
+
+        function closePostModal() {
+            document.getElementById('post-modal').classList.remove('active');
+        }
+
+        async function submitPost() {
+            const title = document.getElementById('post-title').value.trim();
+            const content = document.getElementById('post-content').value.trim();
+            const author = document.getElementById('user-name').textContent || '익명';
+            const email = document.getElementById('user-email').value.trim();
+
+            if (!title || !content) {
+                alert('제목과 내용을 모두 입력해주세요.');
+                return;
+            }
+
+            const posts = JSON.parse(localStorage.getItem('communityPosts')) || [];
+            const newPost = {
+                id: Date.now().toString(),
+                title,
+                content,
+                author,
+                timestamp: new Date().toISOString()
+            };
+
+            posts.push(newPost);
+            localStorage.setItem('communityPosts', JSON.stringify(posts));
+
+            if (email) {
+                const emailHash = await sha256(email);
+                await db.collection('users').doc(emailHash).set({
+                    posts
+                }, { merge: true });
+            }
+
+            closePostModal();
+            renderPostList();
+        }
+
+        function showPostDetail(postId) {
+            const posts = JSON.parse(localStorage.getItem('communityPosts')) || [];
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+
+            const modal = document.getElementById('post-modal');
+            const modalContent = document.querySelector('.post-modal-content');
+            modalContent.innerHTML = `
+                <h2>${post.title}</h2>
+                <p><strong>작성자:</strong> ${post.author}</p>
+                <p><strong>작성 시간:</strong> ${new Date(post.timestamp).toLocaleString()}</p>
+                <p>${post.content.replace(/\n/g, '<br>')}</p>
+                <div class="post-modal-buttons">
+                    <button class="modal-button cancel" onclick="closePostModal()">닫기</button>
+                </div>
+            `;
+            modal.classList.add('active');
+        }
+
         const schools = [
-            "가락중학교", "가산중학교", "가원중학교", "가재울중학교", "강남중학교", "강동중학교", "강명중학교", "강북중학교", "강빛중학교", "강신중학교", "강일중학교", "강현중학교", "개봉중학교", "개운중학교", "개웅중학교", "개원중학교", "개포중학교", "거원중학교", "건국대학교 사범대학 부속중학교", "경서중학교", "경성중학교", "경수중학교", "경신중학교", "경원중학교", "경인중학교", "경일중학교", "경희여자중학교", "경희중학교", "고덕중학교", "고려대학교 사범대학 부속중학교", "고명중학교", "고척중학교", "공릉중학교", "공항중학교", "관악중학교", "광남중학교", "광성중학교", "광신중학교", "광양중학교", "광운중학교", "광장중학교", "광진중학교", "광희중학교", "구로중학교", "구룡중학교", "구산중학교", "구암중학교", "구의중학교", "구일중학교", "국사봉중학교", "금옥중학교", "금호여자중학교", "길음중학교", "난곡중학교", "난우중학교", "남강중학교", "남대문중학교", "남서울중학교", "남성중학교", "내곡중학교", "노곡중학교", "노원중학교", "노일중학교", "녹천중학교", "단국대학교 사범대학 부속중학교", "당곡중학교", "당산서중학교", "당산중학교", "대경중학교", "대광중학교", "대림중학교", "대명중학교", "대방중학교", "대성중학교", "대신중학교", "대영중학교", "대왕중학교", "대원국제중학교", "대청중학교", "대치중학교", "덕산중학교", "덕성여자중학교", "덕수중학교", "덕원중학교", "도곡중학교", "도봉중학교", "동구여자중학교", "동국대학교 사범대학 부속 가람중학교", "동국대학교 사범대학 부속중학교", "동대문중학교", "동덕여자중학교", "동도중학교", "동마중학교", "동명여자중학교", "동북중학교", "동성중학교", "동신중학교", "동양중학교", "동원중학교", "동일중학교", "동작중학교", "둔촌중학교", "등명중학교", "등원중학교", "등촌중학교", "마곡중학교", "마곡하늬중학교", "마장중학교", "마포중학교", "면목중학교", "명덕여자중학교", "명일중학교", "명지중학교", "목동중학교", "목운중학교", "목일중학교", "무학중학교", "문래중학교", "문성중학교", "문일중학교", "문정중학교", "문창중학교", "문현중학교", "미성중학교", "반포중학교", "방배중학교", "방산중학교", "방원중학교", "방이중학교", "방학중학교", "방화중학교", "배명중학교", "배문중학교", "배재중학교", "배화여자중학교", "백석중학교", "백운중학교", "번동중학교", "보성여자중학교", "보성중학교", "보인중학교", "봉림중학교", "봉영여자중학교", "봉원중학교", "봉은중학교", "봉화중학교", "북서울중학교", "북악중학교", "불광중학교", "불암중학교", "사당중학교", "삼각산중학교", "삼선중학교", "삼성중학교", "삼정중학교", "상경중학교", "상계제일중학교", "상계중학교", "상도중학교", "상명대학교 사범대학 부속여자중학교", "상명중학교", "상봉중학교", "상신중학교", "상암중학교", "상원중학교", "상일중학교", "상현중학교", "서라벌중학교", "서문여자중학교", "서연중학교", "서운중학교", "서울대학교 사범대학 부설여자중학교", "서울대학교 사범대학 부설중학교", "서울문영여자중학교", "서울여자중학교", "서울체육중학교", "서일중학교", "서초중학교", "석관중학교", "석촌중학교", "선덕중학교", "선린중학교", "선유중학교", "선일여자중학교", "선정중학교", "성남중학교", "성내중학교", "성덕여자중학교", "성보중학교", "성사중학교", "성산중학교", "성서중학교", "성수중학교", "성신여자중학교", "성심여자중학교", "성암여자중학교", "성원중학교", "성일중학교", "성재중학교", "세곡중학교", "세륜중학교", "세일중학교", "세화여자중학교", "솔샘중학교", "송곡중학교", "송례중학교", "송정중학교", "송파중학교", "수락중학교", "수명중학교", "수서중학교", "수송중학교", "수유중학교", "숙명여자중학교", "숭곡중학교", "숭문중학교", "숭실중학교", "숭의여자중학교", "숭인중학교", "시흥중학교", "신관중학교", "신광여자중학교", "신구중학교", "신길중학교", "신남중학교", "신도림중학교", "신도봉중학교", "신도중학교", "신동중학교", "신림중학교", "신명중학교", "신목중학교", "신반포중학교", "신방학중학교", "신사중학교", "신상중학교", "신서중학교", "신수중학교", "신암중학교", "신양중학교", "신연중학교", "신원중학교", "신월중학교", "신일중학교", "신정여자중학교", "신창중학교", "신천중학교", "신현중학교", "신화중학교", "아주중학교", "아현중학교", "안천중학교", "압구정중학교", "양강중학교", "양동중학교", "양서중학교", "양정중학교", "양진중학교", "양천중학교", "양화중학교", "언남중학교", "언북중학교", "언주중학교", "여의도중학교", "역삼중학교", "연북중학교", "연서중학교", "연신중학교", "연천중학교", "연희중학교", "염경중학교", "염광중학교", "염창중학교", "영남중학교", "영도중학교", "영동중학교", "영등포중학교", "영락중학교", "영란여자중학교", "영림중학교", "영서중학교", "영원중학교", "영파여자중학교", "영훈국제중학교", "예일여자중학교", "오금중학교", "오남중학교", "오류중학교", "오륜중학교", "오산중학교", "오주중학교", "옥정중학교", "온곡중학교", "용강중학교", "용곡중학교", "용마중학교", "용문중학교", "용산중학교", "우신중학교", "위례솔중학교", "원묵중학교", "원촌중학교", "월계중학교", "월곡중학교", "월촌중학교", "윤중중학교", "은성중학교", "은평중학교", "을지중학교", "이수중학교", "이화여자대학교 사범대학 부속 이화·금란중학교", "인수중학교", "인왕중학교", "인창중학교", "인헌중학교", "일신여자중학교", "자양중학교", "잠신중학교", "잠실중학교", "장승중학교", "장안중학교", "장원중학교", "장위중학교", "장충중학교", "장평중학교", "재현중학교", "전농중학교", "전동중학교", "전일중학교", "정신여자중학교", "정원여자중학교", "정의여자중학교", "정화여자중학교", "종암중학교", "중계중학교", "중동중학교", "중랑중학교", "중암중학교", "중앙대학교 사범대학 부속중학교", "중앙여자중학교", "중앙중학교", "중원중학교", "중평중학교", "중화중학교", "증산중학교", "진관중학교", "진선여자중학교", "창덕여자중학교", "창동중학교", "창문여자중학교", "창북중학교", "창일중학교", "창천중학교", "천왕중학교", "천일중학교", "천호중학교", "청담중학교", "청량중학교", "청운중학교", "청원중학교", "충암중학교", "하계중학교", "한강중학교", "한산중학교", "한성여자중학교", "한성중학교", "한양대학교 사범대학 부속중학교", "한양중학교", "한영중학교", "한울중학교", "한천중학교", "항동중학교", "해누리중학교", "행당중학교", "휘원여자중학교", "홍은중학교", "홍익대학교 사범대학 부속여자중학교", "홍익대학교 사범대학 부속중학교", "화계중학교", "화곡중학교", "화원중학교", "환일중학교", "효문중학교", "휘경여자중학교", "휘경중학교", "휘문중학교"
+            "서울고등학교",
+            "부산고등학교",
+            "대구고등학교",
+            "인천고등학교",
+            "광주고등학교",
+            "대전고등학교",
+            "울산고등학교",
+            "세종고등학교"
         ];
 
-        const schoolList = document.getElementById('school-list');
-        const timetableCells = document.querySelectorAll('.timetable td[contenteditable="true"]');
-        let currentClass = "1반";
-        let currentSchool = "";
-        
-        const timetables = {};
-        
+        function searchSchool(query) {
+            const schoolList = document.querySelector('.school-list');
+            schoolList.innerHTML = '';
+            if (query) {
+                const filteredSchools = schools.filter(school => school.toLowerCase().includes(query.toLowerCase()));
+                filteredSchools.forEach(school => {
+                    const div = document.createElement('div');
+                    div.textContent = school;
+                    div.onclick = () => selectSchool(school);
+                    schoolList.appendChild(div);
+                });
+                schoolList.style.display = filteredSchools.length ? 'block' : 'none';
+            } else {
+                schoolList.style.display = 'none';
+            }
+        }
+
         function selectSchool(school) {
             currentSchool = school;
-            if (!timetables[school]) {
-                timetables[school] = {
-                    "1반": Array(timetableCells.length).fill(""),
-                    "2반": Array(timetableCells.length).fill(""),
-                    "3반": Array(timetableCells.length).fill(""),
-                    "4반": Array(timetableCells.length).fill("")
-                };
-            }
+            document.querySelector('.school-search').value = school;
+            document.querySelector('.school-list').style.display = 'none';
+            loadTimetable();
+        }
+
+        function switchClass(classNum) {
+            currentClass = classNum;
             loadTimetable();
         }
 
         function loadTimetable() {
-            if (currentSchool && timetables[currentSchool]) {
-                timetableCells.forEach((cell, index) => {
-                    cell.innerText = timetables[currentSchool][currentClass][index];
+            if (!currentSchool || !currentClass) return;
+            const timetable = timetables[currentSchool]?.[currentClass] || Array(7).fill().map(() => Array(5).fill(''));
+            const tbody = document.querySelector('tbody');
+            tbody.querySelectorAll('tr').forEach((row, period) => {
+                row.querySelectorAll('td:not(:first-child)').forEach((cell, day) => {
+                    cell.textContent = timetable[period][day];
                 });
-            }
-        }
-
-        function switchClass(newClass) {
-            if (currentSchool) {
-                timetableCells.forEach((cell, index) => {
-                    timetables[currentSchool][currentClass][index] = cell.innerText;
-                });
-            }
-            currentClass = newClass;
-            loadTimetable();
-        }
-
-        schools.forEach(school => {
-            const option = document.createElement('a');
-            option.href = "#";
-            option.textContent = school;
-            option.onclick = function(e) {
-                e.preventDefault();
-                document.getElementById("search-input").value = school;
-                schoolList.style.display = "none";
-                selectSchool(school);
-            };
-            schoolList.appendChild(option);
-        });
-
-        timetableCells.forEach(cell => {
-            cell.addEventListener('blur', function() {
-                if (currentSchool) {
-                    const index = Array.from(timetableCells).indexOf(cell);
-                    timetables[currentSchool][currentClass][index] = cell.innerText;
-                }
             });
-        });
-
-        function filterSchools() {
-            const input = document.getElementById("search-input");
-            const filter = input.value.toLowerCase();
-            const options = schoolList.getElementsByTagName("a");
-            
-            if (filter === "") {
-                schoolList.style.display = "none";
-                return;
-            }
-
-            schoolList.style.display = "block";
-            
-            let visible = false;
-            for (let i = 0; i < options.length; i++) {
-                const option = options[i];
-                const text = option.textContent || option.innerText;
-                if (text.toLowerCase().includes(filter)) {
-                    option.style.display = "block";
-                    visible = true;
-                } else {
-                    option.style.display = "none";
-                }
-            }
-            
-            if (!visible) {
-                schoolList.style.display = "none";
-            }
-        }
-
-        function createCalendar(year = new Date().getFullYear(), month = new Date().getMonth()) {
-            const calendarBody = document.getElementById('calendar-body');
-            const firstDay = new Date(year, month, 1);
-            const lastDay = new Date(year, month + 1, 0);
-            const startDay = firstDay.getDay();
-            const totalDays = lastDay.getDate();
-            
-            let date = 1;
-            let calendar = '';
-            
-            for (let i = 0; i < 6; i++) {
-                let row = '<tr>';
-                for (let j = 0; j < 7; j++) {
-                    if (i === 0 && j < startDay) {
-                        row += '<td><div class="date-number"></div><textarea class="memo"></textarea></td>';
-                    } else if (date > totalDays) {
-                        row += '<td><div class="date-number"></div><textarea class="memo"></textarea></td>';
-                    } else {
-                        row += `<td><div class="date-number">${date}</div><textarea class="memo"></textarea></td>`;
-                        date++;
+            tbody.querySelectorAll('td[contenteditable="true"]').forEach(cell => {
+                cell.onblur = () => saveTimetable();
+                cell.onkeydown = (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        cell.blur();
                     }
-                }
-                row += '</tr>';
-                calendar += row;
-                if (date > totalDays) {
-                    break;
-                }
-            }
-            
-            calendarBody.innerHTML = calendar;
+                };
+                cell.onpaste = (e) => {
+                    e.preventDefault();
+                    const text = (e.clipboardData || window.clipboardData).getData('text').replace(/[\n\r]/g, '');
+                    document.execCommand('insertText', false, text);
+                };
+            });
         }
 
-        document.getElementById("search-input").addEventListener("focus", function() {
-            if (this.value !== "") {
-                schoolList.style.display = "block";
-            }
-        });
+        function saveTimetable() {
+            if (!currentSchool || !currentClass) return;
+            if (!timetables[currentSchool]) timetables[currentSchool] = {};
+            if (!timetables[currentSchool][currentClass]) timetables[currentSchool][currentClass] = Array(7).fill().map(() => Array(5).fill(''));
+            const tbody = document.querySelector('tbody');
+            tbody.querySelectorAll('tr').forEach((row, period) => {
+                row.querySelectorAll('td:not(:first-child)').forEach((cell, day) => {
+                    timetables[currentSchool][currentClass][period][day] = cell.textContent.trim();
+                });
+            });
+            localStorage.setItem('timetables', JSON.stringify(timetables));
+        }
 
-        document.getElementById("search-input").addEventListener("blur", function() {
-            setTimeout(() => {
-                schoolList.style.display = "none";
-            }, 200);
-        });
+        function createCalendar() {
+            const tbody = document.getElementById('calendar-body');
+            tbody.innerHTML = '';
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth();
+            const firstDay = new Date(year, month, 1).getDay();
+            const lastDate = new Date(year, month + 1, 0).getDate();
+            let date = 1;
+            const savedCalendar = JSON.parse(localStorage.getItem('calendar')) || {};
 
-        document.querySelectorAll('.timetable td[contenteditable="true"]').forEach(cell => {
-            cell.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
+            for (let i = 0; i < 6; i++) {
+                const row = document.createElement('tr');
+                for (let j = 0; j < 7; j++) {
+                    const cell = document.createElement('td');
+                    if (i === 0 && j < firstDay || date > lastDate) {
+                        row.appendChild(cell);
+                        continue;
+                    }
+                    cell.textContent = date;
+                    const textarea = document.createElement('textarea');
+                    const key = `${year}-${month + 1}-${date}`;
+                    textarea.value = savedCalendar[key] || '';
+                    textarea.onblur = () => {
+                        savedCalendar[key] = textarea.value.trim();
+                        localStorage.setItem('calendar', JSON.stringify(savedCalendar));
+                    };
+                    cell.appendChild(textarea);
+                    row.appendChild(cell);
+                    date++;
                 }
-            });
-            cell.addEventListener('paste', function(e) {
-                e.preventDefault();
-                const text = (e.originalEvent || e).clipboardData.getData('text/plain');
-                document.execCommand('insertText', false, text.replace(/[\r\n]/g, ' '));
-            });
-        });
-
-        createCalendar();
+                tbody.appendChild(row);
+                if (date > lastDate) break;
+            }
+        }
 
         function switchTab(tabName) {
             document.querySelectorAll('.tab-button, .mobile-tab-button').forEach(button => {
                 button.classList.remove('active');
             });
-            
             event.currentTarget.classList.add('active');
-            
-            // 모든 컨테이너 숨기기
-            document.querySelectorAll('.main-container, .empty-container, .settings-container').forEach(container => {
+            document.querySelectorAll('.main-container, .community-container, .settings-container').forEach(container => {
                 container.classList.remove('active');
             });
-            
-            // 선택된 탭의 컨테이너 표시
-            const selectedContainer = document.querySelector('.' + tabName + '-container');
-            if (selectedContainer) {
-                selectedContainer.classList.add('active');
-            }
-            
-            // 모바일 탭 상태 동기화
+            document.querySelector('.' + tabName + '-container').classList.add('active');
             syncMobileTabs();
+            if (tabName === 'community') renderPostList();
         }
 
-        // 다크모드 전환 함수
+        function syncMobileTabs() {
+            document.querySelectorAll('.mobile-tab-button').forEach(button => {
+                button.classList.remove('active');
+                if (button.getAttribute('onclick') === document.querySelector('.tab-button.active').getAttribute('onclick')) {
+                    button.classList.add('active');
+                }
+            });
+        }
+
+        function showSubmenu(submenuName) {
+            document.querySelectorAll('.submenu').forEach(submenu => {
+                submenu.style.display = 'none';
+            });
+            document.querySelector(`.submenu.${submenuName}`).style.display = 'block';
+        }
+
+        function hideSubmenu() {
+            document.querySelectorAll('.submenu').forEach(submenu => {
+                submenu.style.display = 'none';
+            });
+        }
+
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
             localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
         }
 
-        // 페이지 로드 시 다크모드 상태 확인
-        if (localStorage.getItem('darkMode') === 'true') {
-            document.body.classList.add('dark-mode');
+        function changeFontSize(size) {
+            document.body.style.fontSize = size + 'px';
+            localStorage.setItem('fontSize', size);
         }
 
-        function showSubmenu(id) {
-            document.querySelector('.main-settings').style.display = 'none';
-            document.getElementById(id).classList.add('active');
-        }
-        
-        function hideSubmenu(id) {
-            document.querySelector('.main-settings').style.display = 'block';
-            document.getElementById(id).classList.remove('active');
-        }
-
-        // 폰트 크기 조절
-        function changeFontSize(delta) {
-            const currentSize = parseInt(getComputedStyle(document.body).fontSize);
-            const newSize = Math.max(12, Math.min(24, currentSize + delta));
-            document.body.style.fontSize = newSize + 'px';
-            localStorage.setItem('fontSize', newSize);
-        }
-
-        // 페이지 로드 시 저장된 폰트 크기 적용
-        const savedFontSize = localStorage.getItem('fontSize');
-        if (savedFontSize) {
-            document.body.style.fontSize = savedFontSize + 'px';
-        }
-
-        // 폰트 크기 초기화
-        function resetFontSize() {
-            document.body.style.fontSize = '16px';
-            localStorage.setItem('fontSize', '16');
-        }
-
-        // 프로필 이미지 업로드
-        function handleImageUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const preview = document.getElementById('profile-preview');
-                    preview.src = e.target.result;
-                    localStorage.setItem('profileImage', e.target.result);
-                }
-                reader.readAsDataURL(file);
-            }
-        }
-
-        // 페이지 로드 시 저장된 프로필 이미지 적용
-        const savedProfileImage = localStorage.getItem('profileImage');
-        if (savedProfileImage) {
-            document.getElementById('profile-preview').src = savedProfileImage;
-        }
-
-        // 사용자 정보 수정
-        function editField(fieldId) {
-            const element = document.getElementById(fieldId);
-            const currentValue = element.textContent;
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.value = currentValue;
-            input.className = 'edit-input';
-            
-            input.onblur = function() {
-                element.textContent = this.value;
-                localStorage.setItem(fieldId, this.value);
-            };
-            
-            input.onkeypress = function(e) {
-                if (e.key === 'Enter') {
-                    this.blur();
-                }
-            };
-            
-            element.textContent = '';
-            element.appendChild(input);
-            input.focus();
-        }
-
-        // 페이지 로드 시 저장된 사용자 정보 적용
-        const savedUserName = localStorage.getItem('user-name');
-        const savedUserEmail = localStorage.getItem('user-email');
-        if (savedUserName) document.getElementById('user-name').textContent = savedUserName;
-        if (savedUserEmail) document.getElementById('user-email').textContent = savedUserEmail;
-
-        // 약관 표시
-        function showTerms() {
-            const terms = `
-                <div class="terms-container">
-                    <h2>개인정보 수집·이용 동의서</h2>
-                    <p>귀하는 본 동의서를 충분히 읽어보신 후, 개인정보 수집·이용에 대해 동의 또는 거부하실 수 있습니다. 다만, 필수항목에 대한 수집·이용에 동의하지 않으실 경우, 서비스 이용에 제한이 있을 수 있습니다.</p>
-
-                    <h3>1. 개인정보 수집·이용 목적</h3>
-                    <p>회사는 다음의 목적을 위하여 개인정보를 수집 및 이용합니다.</p>
-                    <ul>
-                        <li>회원 가입 및 본인 확인</li>
-                        <li>서비스 제공 및 계약의 이행</li>
-                        <li>고객 문의 응대 및 민원 처리</li>
-                        <li>고지사항 전달 및 공지사항 안내</li>
-                        <li>맞춤형 서비스 제공 및 통계 분석</li>
-                        <li>마케팅 및 프로모션 안내 (선택 시)</li>
-                    </ul>
-
-                    <h3>2. 수집하는 개인정보 항목</h3>
-                    <p>가. 필수 항목</p>
-                    <ul>
-                        <li>성명, 생년월일, 성별, 연락처(전화번호, 이메일), 주소</li>
-                        <li>서비스 이용기록, 접속 로그, 쿠키, IP 주소, 기기정보</li>
-                    </ul>
-                    <p>나. 선택 항목</p>
-                    <ul>
-                        <li>직업, 관심 분야, 프로모션 수신 여부, 기타 사용자가 자발적으로 제공한 정보</li>
-                    </ul>
-                    <p>※ 선택항목에 대한 동의를 거부하더라도 서비스 이용에 제한은 없습니다.</p>
-
-                    <h3>3. 개인정보 보유 및 이용 기간</h3>
-                    <p>회사는 원칙적으로 개인정보 수집·이용 목적이 달성된 후에는 해당 정보를 지체 없이 파기합니다. 다만, 관계 법령에 따라 보존이 필요한 경우에는 해당 기간 동안 보관합니다.</p>
-                    <table>
-                        <tr>
-                            <th>항목</th>
-                            <th>보유 기간</th>
-                            <th>근거 법령</th>
-                        </tr>
-                        <tr>
-                            <td>계약 또는 청약 철회 관련 기록</td>
-                            <td>5년</td>
-                            <td>전자상거래 등에서의 소비자 보호에 관한 법률</td>
-                        </tr>
-                        <tr>
-                            <td>대금결제 및 재화 등의 공급에 관한 기록</td>
-                            <td>5년</td>
-                            <td>전자상거래 등에서의 소비자 보호에 관한 법률</td>
-                        </tr>
-                        <tr>
-                            <td>소비자의 불만 또는 분쟁 처리에 관한 기록</td>
-                            <td>3년</td>
-                            <td>전자상거래 등에서의 소비자 보호에 관한 법률</td>
-                        </tr>
-                        <tr>
-                            <td>접속에 관한 로그기록</td>
-                            <td>3개월</td>
-                            <td>통신비밀보호법</td>
-                        </tr>
-                    </table>
-
-                    <h3>4. 개인정보의 제3자 제공</h3>
-                    <p>회사는 원칙적으로 귀하의 개인정보를 외부에 제공하지 않습니다. 단, 아래의 경우에는 예외로 합니다.</p>
-                    <ul>
-                        <li>정보주체로부터 별도의 동의를 받은 경우</li>
-                        <li>법령에 근거하여 제공이 요구되는 경우</li>
-                    </ul>
-
-                    <h3>5. 개인정보 처리의 위탁</h3>
-                    <p>회사는 원활한 서비스 제공을 위하여 아래와 같이 개인정보 처리 업무를 외부 전문업체에 위탁할 수 있습니다.</p>
-
-                    <h3>6. 동의 거부 권리 및 불이익 안내</h3>
-                    <p>귀하는 개인정보 수집·이용에 대한 동의를 거부할 권리가 있으며, 동의 거부 시 일부 서비스 이용에 제한이 있을 수 있습니다.</p>
-
-                    <p>이 페이지를 이용함으로서 위 내용을 충분히 읽고 이해하였으며, 개인정보 수집·이용에 동의하는것으로 간주합니다.</p>
-                </div>
-            `;
-            
-            const submenu = document.getElementById('privacy');
-            const existingTerms = submenu.querySelector('.terms-container');
-            if (existingTerms) {
-                existingTerms.remove();
-            } else {
-                submenu.insertAdjacentHTML('beforeend', terms);
-            }
-        }
-
-        // 알림 설정
-        function toggleNotification(type) {
-            const checkbox = document.getElementById(`${type}-notification`);
-            localStorage.setItem(`${type}Notification`, checkbox.checked);
-        }
-
-        // 알림음 변경
-        function changeNotificationSound(sound) {
-            localStorage.setItem('notificationSound', sound);
-        }
-
-        // 언어 변경
         function changeLanguage(lang) {
+            currentLanguage = lang;
             localStorage.setItem('language', lang);
-            // 실제로는 여기에 언어 변경 로직이 들어가야 함
+            updateTranslations();
         }
 
-        // 데이터 관리
         function exportData() {
-            // 시간표 데이터 수집
-            const timetableData = {};
-            for (const school in timetables) {
-                if (Object.keys(timetables[school]).some(cls => timetables[school][cls].some(cell => cell.trim() !== ''))) {
-                    timetableData[school] = {};
-                    for (const cls in timetables[school]) {
-                        const classData = timetables[school][cls];
-                        if (classData.some(cell => cell.trim() !== '')) {
-                            timetableData[school][cls] = classData;
-                        }
-                    }
-                }
-            }
-
-            // 캘린더 데이터 수집
-            const calendarData = {};
-            const calendarCells = document.querySelectorAll('.calendar tbody td');
-            calendarCells.forEach(cell => {
-                const dateNumber = cell.querySelector('.date-number').textContent;
-                const memo = cell.querySelector('.memo').value;
-                if (dateNumber && memo.trim() !== '') {
-                    calendarData[dateNumber] = memo;
-                }
-            });
-
             const data = {
-                userInfo: {
-                    name: document.getElementById('user-name').textContent,
-                    email: document.getElementById('user-email').textContent,
-                    profileImage: localStorage.getItem('profileImage')
-                },
-                settings: {
-                    darkMode: document.body.classList.contains('dark-mode'),
-                    fontSize: localStorage.getItem('fontSize'),
-                    notifications: {
-                        push: localStorage.getItem('pushNotification') === 'true',
-                        email: localStorage.getItem('emailNotification') === 'true',
-                        timetable: localStorage.getItem('timetableNotification') === 'true',
-                        exam: localStorage.getItem('examNotification') === 'true'
-                    },
-                    language: localStorage.getItem('language'),
-                    notificationSound: localStorage.getItem('notificationSound'),
-                    autoSave: localStorage.getItem('autoSave') === 'true',
-                    autoBackup: localStorage.getItem('autoBackup') === 'true',
-                    cloudSync: localStorage.getItem('cloudSync') === 'true'
-                },
-                currentState: {
-                    selectedSchool: currentSchool,
-                    selectedClass: currentClass
-                },
-                timetableData: timetableData,
-                calendarData: calendarData,
+                timetables: JSON.parse(localStorage.getItem('timetables')) || {},
+                calendar: JSON.parse(localStorage.getItem('calendar')) || {},
+                posts: JSON.parse(localStorage.getItem('communityPosts')) || [],
+                settings: JSON.parse(localStorage.getItem('settings')) || {},
                 lastSync: new Date().toISOString()
             };
-
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `timetable_backup_${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
+            a.download = 'shooltalktalk_backup.json';
             a.click();
-            document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }
 
         function importData() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            input.onchange = function(e) {
-                const file = e.target.files[0];
-                const reader = new FileReader();
-                reader.onload = function(e) {
+            const fileInput = document.getElementById('import-file');
+            const file = fileInput.files[0];
+            if (!file) {
+                alert('파일을 선택해주세요.');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
                     const data = JSON.parse(e.target.result);
-                    
-                    // 사용자 정보 복원
-                    if (data.userInfo) {
-                        document.getElementById('user-name').textContent = data.userInfo.name;
-                        document.getElementById('user-email').textContent = data.userInfo.email;
-                        if (data.userInfo.profileImage) {
-                            document.getElementById('profile-preview').src = data.userInfo.profileImage;
-                            localStorage.setItem('profileImage', data.userInfo.profileImage);
-                        }
-                    }
-
-                    // 설정 복원
-                    if (data.settings) {
-                        if (data.settings.darkMode) document.body.classList.add('dark-mode');
-                        if (data.settings.fontSize) document.body.style.fontSize = data.settings.fontSize + 'px';
-                        if (data.settings.language) localStorage.setItem('language', data.settings.language);
-                        if (data.settings.notificationSound) localStorage.setItem('notificationSound', data.settings.notificationSound);
-                        if (data.settings.autoSave) localStorage.setItem('autoSave', data.settings.autoSave);
-                        if (data.settings.autoBackup) localStorage.setItem('autoBackup', data.settings.autoBackup);
-                        if (data.settings.cloudSync) localStorage.setItem('cloudSync', data.settings.cloudSync);
-                    }
-
-                    // 시간표 데이터 복원
-                    if (data.timetableData) {
-                        timetables = data.timetableData;
-                        if (data.currentState) {
-                            currentSchool = data.currentState.selectedSchool;
-                            currentClass = data.currentState.selectedClass;
-                            document.getElementById('search-input').value = currentSchool;
-                            document.getElementById('class-select').value = currentClass;
-                            loadTimetable();
-                        }
-                    }
-
-                    // 캘린더 데이터 복원
-                    if (data.calendarData) {
-                        const calendarCells = document.querySelectorAll('.calendar tbody td');
-                        calendarCells.forEach(cell => {
-                            const dateNumber = cell.querySelector('.date-number').textContent;
-                            if (dateNumber && data.calendarData[dateNumber]) {
-                                cell.querySelector('.memo').value = data.calendarData[dateNumber];
-                            }
-                        });
-                    }
-
-                    // 마지막 동기화 시간 업데이트
-                    if (data.lastSync) {
-                        document.getElementById('last-sync').textContent = new Date(data.lastSync).toLocaleString();
-                        localStorage.setItem('lastSync', data.lastSync);
-                    }
-
-                    alert('데이터 복원이 완료되었습니다.');
-                };
-                reader.readAsText(file);
+                    localStorage.setItem('timetables', JSON.stringify(data.timetables || {}));
+                    localStorage.setItem('calendar', JSON.stringify(data.calendar || {}));
+                    localStorage.setItem('communityPosts', JSON.stringify(data.posts || []));
+                    localStorage.setItem('settings', JSON.stringify(data.settings || {}));
+                    alert('데이터 가져오기 성공!');
+                    loadTimetable();
+                    createCalendar();
+                    renderPostList();
+                } catch (error) {
+                    alert('잘못된 파일 형식입니다.');
+                }
             };
-            input.click();
+            reader.readAsText(file);
         }
 
         function resetData() {
-            if (confirm('모든 데이터를 초기화하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+            if (confirm('모든 데이터를 초기화하시겠습니까?')) {
                 localStorage.clear();
-                location.reload();
+                timetables = {};
+                currentSchool = '';
+                currentClass = '1';
+                loadTimetable();
+                createCalendar();
+                renderPostList();
+                localStorage.setItem('language', currentLanguage);
+                localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+                localStorage.setItem('fontSize', document.body.style.fontSize.replace('px', '') || '16');
             }
-        }
-
-        // 자동 저장 설정
-        function toggleAutoSave() {
-            const checkbox = document.getElementById('auto-save');
-            localStorage.setItem('autoSave', checkbox.checked);
-        }
-
-        // 백업 설정
-        function toggleAutoBackup() {
-            const checkbox = document.getElementById('auto-backup');
-            localStorage.setItem('autoBackup', checkbox.checked);
         }
 
         function manualBackup() {
             exportData();
-            document.getElementById('last-sync').textContent = new Date().toLocaleString();
         }
 
-        // 클라우드 동기화
-        function toggleCloudSync() {
-            const checkbox = document.getElementById('cloud-sync');
-            localStorage.setItem('cloudSync', checkbox.checked);
+        function viewTerms() {
+            alert('약관을 표시합니다.');
         }
 
-        // 페이지 로드 시 설정 복원
-        window.addEventListener('load', function() {
-            // 알림 설정 복원
-            ['push', 'email', 'timetable', 'exam'].forEach(type => {
-                const saved = localStorage.getItem(`${type}Notification`);
-                if (saved !== null) {
-                    document.getElementById(`${type}-notification`).checked = saved === 'true';
-                }
-            });
-
-            // 자동 저장 설정 복원
-            const autoSave = localStorage.getItem('autoSave');
-            if (autoSave !== null) {
-                document.getElementById('auto-save').checked = autoSave === 'true';
-            }
-
-            // 자동 백업 설정 복원
-            const autoBackup = localStorage.getItem('autoBackup');
-            if (autoBackup !== null) {
-                document.getElementById('auto-backup').checked = autoBackup === 'true';
-            }
-
-            // 클라우드 동기화 설정 복원
-            const cloudSync = localStorage.getItem('cloudSync');
-            if (cloudSync !== null) {
-                document.getElementById('cloud-sync').checked = cloudSync === 'true';
-            }
-
-            // 마지막 동기화 시간 표시
-            const lastSync = localStorage.getItem('lastSync');
-            if (lastSync) {
-                document.getElementById('last-sync').textContent = lastSync;
-            }
-        });
-
-        // 자주 찾는 도움말 표시
-        function showFAQ() {
-            const faqContent = `
-                <div class="terms-container">
-                    <h2>자주 찾는 도움말</h2>
-                    
-                    <div class="faq-item">
-                        <h3>Q. 시간표를 어떻게 저장하나요?</h3>
-                        <p>A. 시간표는 자동으로 저장됩니다. 수정한 내용은 즉시 저장되며, 페이지를 새로고침하거나 다시 방문해도 데이터가 유지됩니다.</p>
-                    </div>
-
-                    <div class="faq-item">
-                        <h3>Q. 다크모드는 어떻게 켜나요?</h3>
-                        <p>A. 설정 > 테마 설정 > 다크모드 전환을 통해 다크모드를 활성화할 수 있습니다. 설정은 자동으로 저장됩니다.</p>
-                    </div>
-
-                    <div class="faq-item">
-                        <h3>Q. 데이터를 백업하는 방법이 있나요?</h3>
-                        <p>A. 설정 > 백업 및 동기화 > 수동 백업을 통해 현재 데이터를 백업할 수 있습니다. 백업 파일은 JSON 형식으로 저장됩니다.</p>
-                    </div>
-
-                    <div class="faq-item">
-                        <h3>Q. 캘린더에 메모를 작성할 수 있나요?</h3>
-                        <p>A. 네, 캘린더의 각 날짜 칸에 메모를 작성할 수 있습니다. 작성한 메모는 자동으로 저장됩니다.</p>
-                    </div>
-
-                    <div class="faq-item">
-                        <h3>Q. 알림 설정은 어떻게 하나요?</h3>
-                        <p>A. 설정 > 알림 설정에서 푸시 알림, 이메일 알림, 시간표 변경 알림 등을 설정할 수 있습니다.</p>
-                    </div>
-
-                    <div class="faq-item">
-                        <h3>Q. 언어를 변경할 수 있나요?</h3>
-                        <p>A. 설정 > 테마 설정 > 언어 설정에서 한국어, 영어, 일본어, 중국어 중 선택할 수 있습니다.</p>
-                    </div>
-                </div>
-            `;
-            
-            const submenu = document.getElementById('help');
-            const existingContent = submenu.querySelector('.terms-container');
-            if (existingContent) {
-                existingContent.remove();
-            } else {
-                submenu.insertAdjacentHTML('beforeend', faqContent);
-            }
+        function contactSupport() {
+            alert('문의하기 창을 엽니다.');
         }
 
-        // 문의하기 표시
-        function showContact() {
-            const contactContent = `
-                <div class="terms-container">
-                    <h2>문의하기</h2>
-                    <p>문의사항이 있으시면 아래 연락처로 연락주세요.</p>
-                    
-                    <div class="contact-info">
-                        <h3>이메일</h3>
-                        <p>seojunji62@gmail.com</p>
-                        
-                        <h3>주소</h3>
-                        <p>추가예정</p>
-                        
-                        <h3>문의 시간</h3>
-                        <p>평일: 09:00 - 18:00</p>
-                        <p>주말 및 공휴일: 휴무</p>
-                    </div>
-
-                    <div class="contact-note">
-                        <p>※ 이메일 문의 시 답변은 1-2일 정도 소요될 수 있습니다.</p>
-                        <p>※ 주말 및 공휴일 문의는 다음 영업일에 처리됩니다.</p>
-                    </div>
-                </div>
-            `;
-            
-            const submenu = document.getElementById('help');
-            const existingContent = submenu.querySelector('.terms-container');
-            if (existingContent) {
-                existingContent.remove();
-            } else {
-                submenu.insertAdjacentHTML('beforeend', contactContent);
-            }
+        function viewFAQ() {
+            alert('FAQ를 표시합니다.');
         }
 
-        // 사용 가이드 표시
-        function showUserGuide() {
-            const guideContent = `
-                <div class="terms-container">
-                    <h2>사용 가이드</h2>
-                    
-                    <div class="guide-section">
-                        <h3>1. 시작하기</h3>
-                        <p>시간표 관리 프로그램을 시작하기 전에 다음 사항을 확인해주세요:</p>
-                        <ul>
-                            <li>최신 버전의 웹 브라우저 사용 (Chrome, Firefox, Safari, Edge 등)</li>
-                            <li>인터넷 연결 상태 확인</li>
-                            <li>JavaScript 활성화</li>
-                        </ul>
-                    </div>
-
-                    <div class="guide-section">
-                        <h3>2. 기본 기능</h3>
-                        <h4>2.1 시간표 관리</h4>
-                        <ul>
-                            <li>학교 검색: 상단 검색창에서 학교를 검색할 수 있습니다.</li>
-                            <li>반 선택: 드롭다운 메뉴에서 반을 선택할 수 있습니다.</li>
-                            <li>시간표 편집: 각 셀을 클릭하여 수업 내용을 입력할 수 있습니다.</li>
-                        </ul>
-
-                        <h4>2.2 캘린더</h4>
-                        <ul>
-                            <li>메모 작성: 각 날짜 칸에 메모를 작성할 수 있습니다.</li>
-                            <li>자동 저장: 작성한 메모는 자동으로 저장됩니다.</li>
-                        </ul>
-                    </div>
-
-                    <div class="guide-section">
-                        <h3>3. 설정</h3>
-                        <h4>3.1 테마 설정</h4>
-                        <ul>
-                            <li>다크모드: 눈의 피로를 줄이기 위한 다크모드를 사용할 수 있습니다.</li>
-                            <li>폰트 크기: 화면에서 보기 편한 폰트 크기를 설정할 수 있습니다.</li>
-                            <li>언어 설정: 한국어, 영어, 일본어, 중국어 중 선택할 수 있습니다.</li>
-                        </ul>
-
-                        <h4>3.2 알림 설정</h4>
-                        <ul>
-                            <li>푸시 알림: 중요한 일정에 대한 푸시 알림을 받을 수 있습니다.</li>
-                            <li>이메일 알림: 이메일로 알림을 받을 수 있습니다.</li>
-                            <li>알림음 설정: 알림음 종류를 선택할 수 있습니다.</li>
-                        </ul>
-                    </div>
-
-                    <div class="guide-section">
-                        <h3>4. 데이터 관리</h3>
-                        <ul>
-                            <li>데이터 내보내기: 현재 데이터를 백업할 수 있습니다.</li>
-                            <li>데이터 가져오기: 백업한 데이터를 복원할 수 있습니다.</li>
-                            <li>자동 저장: 모든 변경사항은 자동으로 저장됩니다.</li>
-                        </ul>
-                    </div>
-
-                    <div class="guide-section">
-                        <h3>5. 문제 해결</h3>
-                        <ul>
-                            <li>페이지가 제대로 로드되지 않는 경우: 브라우저 캐시를 삭제하고 다시 시도해주세요.</li>
-                            <li>데이터가 저장되지 않는 경우: 인터넷 연결을 확인하고 다시 시도해주세요.</li>
-                            <li>기타 문제 발생 시: 문의하기를 통해 연락주세요.</li>
-                        </ul>
-                    </div>
-                </div>
-            `;
-            
-            const submenu = document.getElementById('help');
-            const existingContent = submenu.querySelector('.terms-container');
-            if (existingContent) {
-                existingContent.remove();
-            } else {
-                submenu.insertAdjacentHTML('beforeend', guideContent);
-            }
+        function viewGuide() {
+            alert('사용 가이드를 표시합니다.');
         }
 
-        // 위치 정보 설정 표시
-        function showLocationSettings() {
-            const locationContent = `
-                <div class="terms-container">
-                    <h2>위치 정보 설정</h2>
-                    <p>위치 정보를 사용하여 다음과 같은 서비스를 제공합니다:</p>
-                    <ul>
-                        <li>근처 학교 검색</li>
-                        <li>날씨 정보 제공</li>
-                        <li>지역별 공지사항</li>
-                    </ul>
-
-                    <div class="location-controls">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="location-enabled" onchange="toggleLocation()">
-                            <span class="toggle-slider"></span>
-                        </label>
-                        <span>위치 정보 사용</span>
-                    </div>
-
-                    <div class="location-note">
-                        <p>※ 위치 정보는 사용자의 동의 하에 수집되며, 서비스 제공 목적으로만 사용됩니다.</p>
-                        <p>※ 위치 정보 사용을 중지하더라도 기본 서비스 이용에는 제한이 없습니다.</p>
-                    </div>
-                </div>
-            `;
-            
-            const submenu = document.getElementById('privacy');
-            const existingContent = submenu.querySelector('.terms-container');
-            if (existingContent) {
-                existingContent.remove();
-            } else {
-                submenu.insertAdjacentHTML('beforeend', locationContent);
-            }
-        }
-
-        // 계정 정보 관리 표시
-        function showAccountSettings() {
-            const accountContent = `
-                <div class="terms-container">
-                    <h2>계정 정보 관리</h2>
-                    
-                    <div class="account-section">
-                        <h3>프로필 정보</h3>
-                        <div class="profile-edit">
-                            <label>이름:</label>
-                            <input type="text" id="account-name" value="${document.getElementById('user-name').textContent}">
-                            <button class="edit-button" onclick="updateAccountInfo('name')">저장</button>
-                        </div>
-                        <div class="profile-edit">
-                            <label>이메일:</label>
-                            <input type="email" id="account-email" value="${document.getElementById('user-email').textContent}">
-                            <button class="edit-button" onclick="updateAccountInfo('email')">저장</button>
-                        </div>
-                    </div>
-
-                    <div class="account-section">
-                        <h3>보안 설정</h3>
-                        <div class="profile-edit">
-                            <label>비밀번호 변경:</label>
-                            <input type="password" id="current-password" placeholder="현재 비밀번호">
-                            <input type="password" id="new-password" placeholder="새 비밀번호">
-                            <input type="password" id="confirm-password" placeholder="새 비밀번호 확인">
-                            <button class="edit-button" onclick="changePassword()">변경</button>
-                        </div>
-                    </div>
-
-                    <div class="account-section">
-                        <h3>계정 삭제</h3>
-                        <p>계정을 삭제하면 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.</p>
-                        <button class="delete-account" onclick="deleteAccount()">계정 삭제</button>
-                    </div>
-                </div>
-            `;
-            
-            const submenu = document.getElementById('privacy');
-            const existingContent = submenu.querySelector('.terms-container');
-            if (existingContent) {
-                existingContent.remove();
-            } else {
-                submenu.insertAdjacentHTML('beforeend', accountContent);
-            }
-        }
-
-        // 위치 정보 토글
-        function toggleLocation() {
-            const checkbox = document.getElementById('location-enabled');
-            localStorage.setItem('locationEnabled', checkbox.checked);
-            if (checkbox.checked) {
-                // 위치 정보 요청
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(
-                        function(position) {
-                            localStorage.setItem('userLocation', JSON.stringify({
-                                latitude: position.coords.latitude,
-                                longitude: position.coords.longitude
-                            }));
-                        },
-                        function(error) {
-                            console.error('위치 정보를 가져올 수 없습니다:', error);
-                        }
-                    );
-                }
-            }
-        }
-
-        // 계정 정보 업데이트
-        function updateAccountInfo(type) {
-            const value = document.getElementById(`account-${type}`).value;
-            if (type === 'name') {
-                document.getElementById('user-name').textContent = value;
-                localStorage.setItem('user-name', value);
-            } else if (type === 'email') {
-                document.getElementById('user-email').textContent = value;
-                localStorage.setItem('user-email', value);
-            }
-            alert('정보가 업데이트되었습니다.');
-        }
-
-        // 비밀번호 변경
         function changePassword() {
-            const currentPassword = document.getElementById('current-password').value;
-            const newPassword = document.getElementById('new-password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
-
-            if (newPassword !== confirmPassword) {
-                alert('새 비밀번호가 일치하지 않습니다.');
-                return;
-            }
-
-            // 실제로는 서버와 통신하여 비밀번호를 변경해야 함
-            alert('비밀번호가 변경되었습니다.');
-            document.getElementById('current-password').value = '';
-            document.getElementById('new-password').value = '';
-            document.getElementById('confirm-password').value = '';
+            alert('비밀번호 변경 창을 엽니다.');
         }
 
-        // 계정 삭제
         function deleteAccount() {
-            if (confirm('정말로 계정을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
-                localStorage.clear();
-                location.reload();
+            if (confirm('계정을 삭제하시겠습니까?')) {
+                alert('계정이 삭제되었습니다.');
             }
         }
 
-        // 모바일 메뉴 토글
         function toggleMobileMenu() {
-            // 제거
-        }
-        
-        // 화면 크기 변경 시 레이아웃 조정
-        window.addEventListener('resize', function() {
-            if (window.innerWidth > 768) {
-                const verticalTabs = document.querySelector('.vertical-tabs');
-                verticalTabs.classList.remove('active');
-            }
-        });
-        
-        // 모바일에서 메뉴 외부 클릭 시 메뉴 닫기 관련 코드 제거
-        document.addEventListener('click', function(event) {
-            // 제거
-        });
-
-        // 모바일 탭 버튼 상태 동기화
-        function syncMobileTabs() {
-            const desktopTabs = document.querySelectorAll('.tab-button');
-            const mobileTabs = document.querySelectorAll('.mobile-tab-button');
-            
-            desktopTabs.forEach((tab, index) => {
-                if (tab.classList.contains('active')) {
-                    mobileTabs[index].classList.add('active');
-                } else {
-                    mobileTabs[index].classList.remove('active');
-                }
-            });
+            // 모바일 메뉴 토글 기능 (미구현)
         }
     </script>
 </body>
-</html> 
+</html>
