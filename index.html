@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shool Talk Talk</title>
+    <!-- 스타일시트: 전체 레이아웃, 다크 모드, 반응형 디자인 정의 -->
     <style>
         body {
             font-family: 'Malgun Gothic', sans-serif;
@@ -796,12 +797,15 @@
     </style>
 </head>
 <body>
+    <!-- 왼쪽 세로 탭: 메인, 커뮤니티, 설정 탭 -->
     <div class="vertical-tabs">
-        <button class="tab-button active" onclick="switchTab('main')">📅</button>
-        <button class="tab-button" onclick="switchTab('community')">📋</button>
-        <button class="tab-button" onclick="switchTab('settings')">⚙️</button>
+        <button class="tab-button active" onclick="switchTab('main')" title="시간표">📅</button>
+        <button class="tab-button" onclick="switchTab('community')" title="커뮤니티">📋</button>
+        <button class="tab-button" onclick="switchTab('settings')" title="설정">⚙️</button>
     </div>
+    <!-- 메인 컨텐츠 영역 -->
     <div class="content-area">
+        <!-- 메인 페이지: 시간표와 달력 -->
         <div class="main-container active">
             <div class="left-container">
                 <div class="top-controls">
@@ -828,62 +832,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1교시</td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                        </tr>
-                        <tr>
-                            <td>2교시</td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                        </tr>
-                        <tr>
-                            <td>3교시</td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                        </tr>
-                        <tr>
-                            <td>4교시</td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                        </tr>
-                        <tr>
-                            <td>5교시</td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                        </tr>
-                        <tr>
-                            <td>6교시</td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                        </tr>
-                        <tr>
-                            <td>7교시</td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                            <td contenteditable="true"></td>
-                        </tr>
+                        <tr><td>1교시</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+                        <tr><td>2교시</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+                        <tr><td>3교시</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+                        <tr><td>4교시</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+                        <tr><td>5교시</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+                        <tr><td>6교시</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+                        <tr><td>7교시</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
                     </tbody>
                 </table>
             </div>
@@ -900,12 +855,11 @@
                             <th>토</th>
                         </tr>
                     </thead>
-                    <tbody id="calendar-body">
-                    </tbody>
+                    <tbody id="calendar-body"></tbody>
                 </table>
             </div>
         </div>
-        
+        <!-- 커뮤니티 페이지: 게시글 목록, 작성 폼, 상세 보기 -->
         <div class="community-container">
             <div class="community-header">
                 <h2>커뮤니티</h2>
@@ -927,8 +881,7 @@
                             <th style="width: 10%;">조회수</th>
                         </tr>
                     </thead>
-                    <tbody id="post-list-body">
-                    </tbody>
+                    <tbody id="post-list-body"></tbody>
                 </table>
             </div>
             <div class="post-detail">
@@ -938,7 +891,7 @@
                 <div class="content" id="detail-content"></div>
             </div>
         </div>
-
+        <!-- 설정 페이지: 프로필, 알림, 테마, 데이터 관리 등 -->
         <div class="settings-container">
             <div class="settings-profile">
                 <div class="profile-image" onclick="document.getElementById('profile-image-input').click()">
@@ -1008,9 +961,7 @@
                         <i class="accordion-toggle">›</i>
                         <div class="accordion-content" id="theme-content">
                             <ul>
-                                <li onclick="toggleDarkMode()">
-                                    다크모드 전환
-                                </li>
+                                <li onclick="toggleDarkMode()">다크모드 전환</li>
                                 <li>
                                     <div class="font-size-control">
                                         폰트 크기
@@ -1036,16 +987,12 @@
                         <i class="accordion-toggle">›</i>
                         <div class="accordion-content" id="data-content">
                             <ul>
-                                <li onclick="exportData()">
-                                    데이터 내보내기
-                                </li>
+                                <li onclick="exportData()">데이터 내보내기</li>
                                 <li class="data-import">
                                     데이터 가져오기
                                     <input type="file" id="import-data" accept=".json" onchange="importData(event)">
                                 </li>
-                                <li onclick="resetData()">
-                                    데이터 초기화
-                                </li>
+                                <li onclick="resetData()">데이터 초기화</li>
                                 <li>
                                     자동 저장
                                     <label class="toggle-switch">
@@ -1068,9 +1015,7 @@
                                         <span class="toggle-slider"></span>
                                     </label>
                                 </li>
-                                <li onclick="manualBackup()">
-                                    수동 백업
-                                </li>
+                                <li onclick="manualBackup()">수동 백업</li>
                                 <li>
                                     클라우드 동기화
                                     <label class="toggle-switch">
@@ -1078,9 +1023,7 @@
                                         <span class="toggle-slider"></span>
                                     </label>
                                 </li>
-                                <li>
-                                    마지막 동기화: <span id="last-sync">-</span>
-                                </li>
+                                <li>마지막 동기화: <span id="last-sync">-</span></li>
                             </ul>
                         </div>
                     </li>
@@ -1089,15 +1032,9 @@
                         <i class="accordion-toggle">›</i>
                         <div class="accordion-content" id="privacy-content">
                             <ul>
-                                <li onclick="showTerms()">
-                                    개인정보 수집·이용 동의서
-                                </li>
-                                <li onclick="showLocationSettings()">
-                                    위치 정보 설정
-                                </li>
-                                <li onclick="showAccountSettings()">
-                                    계정 정보 관리
-                                </li>
+                                <li onclick="showTerms()">개인정보 수집·이용 동의서</li>
+                                <li onclick="showLocationSettings()">위치 정보 설정</li>
+                                <li onclick="showAccountSettings()">계정 정보 관리</li>
                             </ul>
                         </div>
                     </li>
@@ -1106,18 +1043,10 @@
                         <i class="accordion-toggle">›</i>
                         <div class="accordion-content" id="help-content">
                             <ul>
-                                <li onclick="showFAQ()">
-                                    자주 찾는 도움말
-                                </li>
-                                <li onclick="showContact()">
-                                    문의하기
-                                </li>
-                                <li onclick="showUserGuide()">
-                                    사용 가이드
-                                </li>
-                                <li>
-                                    버전 정보: bEtA tEsT!
-                                </li>
+                                <li onclick="showFAQ()">자주 찾는 도움말</li>
+                                <li onclick="showContact()">문의하기</li>
+                                <li onclick="showUserGuide()">사용 가이드</li>
+                                <li>버전 정보: bEtA tEsT!</li>
                             </ul>
                         </div>
                     </li>
@@ -1125,15 +1054,15 @@
             </div>
         </div>
     </div>
-    
+    <!-- 모바일 하단 탭 -->
     <div class="mobile-bottom-tabs">
-        <button class="mobile-tab-button active" onclick="switchTab('main')">📅</button>
-        <button class="mobile-tab-button" onclick="switchTab('community')">📋</button>
-        <button class="mobile-tab-button" onclick="switchTab('settings')">⚙️</button>
+        <button class="mobile-tab-button active" onclick="switchTab('main')" title="시간표">📅</button>
+        <button class="mobile-tab-button" onclick="switchTab('community')" title="커뮤니티">📋</button>
+        <button class="mobile-tab-button" onclick="switchTab('settings')" title="설정">⚙️</button>
     </div>
-
+    <!-- 자바스크립트: 기능 구현 -->
     <script>
-        // 번역 데이터
+        // 번역 데이터: 다국어 지원을 위한 텍스트 정의
         const translations = {
             ko: {
                 timetable: "시간표",
@@ -1191,14 +1120,15 @@
                 exportSuccess: "데이터가 성공적으로 내보내졌습니다.",
                 importSuccess: "데이터가 성공적으로 불러와졌습니다.",
                 importError: "잘못된 파일 형식입니다. JSON 파일을 업로드해주세요.",
-                importInvalid: "유효하지 않은 데이터 형식입니다."
+                importInvalid: "유효하지 않은 데이터 형식입니다.",
+                postNotFound: "게시글을 찾을 수 없습니다."
             }
         };
 
-        // 현재 언어 설정
+        // 현재 언어 설정 변수
         let currentLanguage = 'ko';
 
-        // 언어 변경 함수
+        // 언어 변경: 선택된 언어로 UI 텍스트 업데이트
         function changeLanguage(lang) {
             currentLanguage = lang;
             localStorage.setItem('language', lang);
@@ -1209,7 +1139,7 @@
             }
         }
 
-        // 번역 업데이트 함수
+        // UI 번역 업데이트: 선택된 언어에 따라 텍스트 적용
         function updateTranslations() {
             const t = translations[currentLanguage];
             document.querySelector('.tab-button[onclick="switchTab(\'main\')"]').title = t.timetable;
@@ -1219,7 +1149,6 @@
             document.getElementById('post-title').placeholder = t.postTitle;
             document.getElementById('post-author').placeholder = t.postAuthor;
             document.getElementById('post-content').placeholder = t.postContent;
-            
             const settingsItems = document.querySelectorAll('.settings-item');
             settingsItems.forEach(item => {
                 const section = item.dataset.section;
@@ -1227,7 +1156,6 @@
                     item.childNodes[0].textContent = t[section];
                 }
             });
-
             const notificationsContent = document.getElementById('notifications-content');
             if (notificationsContent) {
                 const items = notificationsContent.querySelectorAll('li');
@@ -1242,7 +1170,6 @@
                 soundSelect.options[2].textContent = t.chimeSound;
                 soundSelect.options[3].textContent = t.dingSound;
             }
-
             const themeContent = document.getElementById('theme-content');
             if (themeContent) {
                 const items = themeContent.querySelectorAll('li');
@@ -1251,7 +1178,6 @@
                 items[1].querySelector('.reset-button').textContent = t.reset;
                 items[2].childNodes[0].textContent = t.language;
             }
-
             const dataContent = document.getElementById('data-content');
             if (dataContent) {
                 const items = dataContent.querySelectorAll('li');
@@ -1260,7 +1186,6 @@
                 items[2].childNodes[0].textContent = t.resetData;
                 items[3].childNodes[0].textContent = t.autoSave;
             }
-
             const syncContent = document.getElementById('sync-content');
             if (syncContent) {
                 const items = syncContent.querySelectorAll('li');
@@ -1269,7 +1194,6 @@
                 items[2].childNodes[0].textContent = t.cloudSync;
                 items[3].childNodes[0].textContent = t.lastSync + ': ';
             }
-
             const privacyContent = document.getElementById('privacy-content');
             if (privacyContent) {
                 const items = privacyContent.querySelectorAll('li');
@@ -1277,7 +1201,6 @@
                 items[1].childNodes[0].textContent = t.locationSettings;
                 items[2].childNodes[0].textContent = t.accountSettings;
             }
-
             const helpContent = document.getElementById('help-content');
             if (helpContent) {
                 const items = helpContent.querySelectorAll('li');
@@ -1286,7 +1209,6 @@
                 items[2].childNodes[0].textContent = t.userGuide;
                 items[3].childNodes[0].textContent = t.version + ': bEtA tEsT!';
             }
-
             const communityHeader = document.querySelector('.community-header h2');
             if (communityHeader) communityHeader.textContent = t.communityHeader;
             const postFormButton = document.querySelector('.post-form-button');
@@ -1306,10 +1228,10 @@
 
         // 페이지 로드 시 초기화
         window.addEventListener('load', function() {
-            changeLanguage('ko'); // 기본 언어를 한국어로 설정
+            changeLanguage('ko'); // 기본 언어: 한국어
             createCalendar(2025, 4); // 2025년 5월 달력 생성
-            loadPosts();
-            restoreSettings();
+            loadPosts(); // 게시글 목록 로드
+            restoreSettings(); // 저장된 설정 복원
             if (localStorage.getItem('darkMode') === 'true') {
                 document.body.classList.add('dark-mode');
             }
@@ -1323,17 +1245,19 @@
             if (savedUserEmail) document.getElementById('user-email').textContent = savedUserEmail;
         });
 
-        // 학교 목록
+        // 학교 목록: 서울시 중학교 데이터
         const schools = [
             "가락중학교", "가산중학교", "가원중학교", "가재울중학교", "강남중학교", "강동중학교", "강명중학교", "강북중학교", "강빛중학교", "강신중학교", "강일중학교", "강현중학교", "개봉중학교", "개운중학교", "개웅중학교", "개원중학교", "개포중학교", "거원중학교", "건국대학교 사범대학 부속중학교", "경서중학교", "경성중학교", "경수중학교", "경신중학교", "경원중학교", "경인중학교", "경일중학교", "경희여자중학교", "경희중학교", "고덕중학교", "고려대학교 사범대학 부속중학교", "고명중학교", "고척중학교", "공릉중학교", "공항중학교", "관악중학교", "광남중학교", "광성중학교", "광신중학교", "광양중학교", "광운중학교", "광장중학교", "광진중학교", "광희중학교", "구로중학교", "구룡중학교", "구산중학교", "구암중학교", "구의중학교", "구일중학교", "국사봉중학교", "금옥중학교", "금호여자중학교", "길음중학교", "난곡중학교", "난우중학교", "남강중학교", "남대문중학교", "남서울중학교", "남성중학교", "내곡중학교", "노곡중학교", "노원중학교", "노일중학교", "녹천중학교", "단국대학교 사범대학 부속중학교", "당곡중학교", "당산서중학교", "당산중학교", "대경중학교", "대광중학교", "대림중학교", "대명중학교", "대방중학교", "대성중학교", "대신중학교", "대영중학교", "대왕중학교", "대원국제중학교", "대청중학교", "대치중학교", "덕산중학교", "덕성여자중학교", "덕수중학교", "덕원중학교", "도곡중학교", "도봉중학교", "동구여자중학교", "동국대학교 사범대학 부속 가람중학교", "동국대학교 사범대학 부속중학교", "동대문중학교", "동덕여자중학교", "동도중학교", "동마중학교", "동명여자중학교", "동북중학교", "동성중학교", "동신중학교", "동양중학교", "동원중학교", "동일중학교", "동작중학교", "둔촌중학교", "등명중학교", "등원중학교", "등촌중학교", "마곡중학교", "마곡하늬중학교", "마장중학교", "마포중학교", "면목중학교", "명덕여자중학교", "명일중학교", "명지중학교", "목동중학교", "목운중학교", "목일중학교", "무학중학교", "문래중학교", "문성중학교", "문일중학교", "문정중학교", "문창중학교", "문현중학교", "미성중학교", "반포중학교", "방배중학교", "방산중학교", "방원중학교", "방이중학교", "방학중학교", "방화중학교", "배명중학교", "배문중학교", "배재중학교", "배화여자중학교", "백석중학교", "백운중학교", "번동중학교", "보성여자중학교", "보성중학교", "보인중학교", "봉림중학교", "봉영여자중학교", "봉원중학교", "봉은중학교", "봉화중학교", "북서울중학교", "북악중학교", "불광중학교", "불암중학교", "사당중학교", "삼각산중학교", "삼선중학교", "삼성중학교", "삼정중학교", "상경중학교", "상계제일중학교", "상계중학교", "상도중학교", "상명대학교 사범대학 부속여자중학교", "상명중학교", "상봉중학교", "상신중학교", "상암중학교", "상원중학교", "상일중학교", "상현중학교", "서라벌중학교", "서문여자중학교", "서연중학교", "서운중학교", "서울대학교 사범대학 부설여자중학교", "서울대학교 사범대학 부설중학교", "서울문영여자중학교", "서울여자중학교", "서울체육중학교", "서일중학교", "서초중학교", "석관중학교", "석촌중학교", "선덕중학교", "선린중학교", "선유중학교", "선일여자중학교", "선정중학교", "성남중학교", "성내중학교", "성덕여자중학교", "성보중학교", "성사중학교", "성산중학교", "성서중학교", "성수중학교", "성신여자중학교", "성심여자중학교", "성암여자중학교", "성원중학교", "성일중학교", "성재중학교", "세곡중학교", "세륜중학교", "세일중학교", "세화여자중학교", "솔샘중학교", "송곡중학교", "송례중학교", "송정중학교", "송파중학교", "수락중학교", "수명중학교", "수서중학교", "수송중학교", "수유중학교", "숙명여자중학교", "숭곡중학교", "숭문중학교", "숭실중학교", "숭의여자중학교", "숭인중학교", "시흥중학교", "신관중학교", "신광여자중학교", "신구중학교", "신길중학교", "신남중학교", "신도림중학교", "신도봉중학교", "신도중학교", "신동중학교", "신림중학교", "신명중학교", "신목중학교", "신반포중학교", "신방학중학교", "신사중학교", "신상중학교", "신서중학교", "신수중학교", "신암중학교", "신양중학교", "신연중학교", "신원중학교", "신월중학교", "신일중학교", "신정여자중학교", "신창중학교", "신천중학교", "신현중학교", "신화중학교", "아주중학교", "아현중학교", "안천중학교", "압구정중학교", "양강중학교", "양동중학교", "양서중학교", "양정중학교", "양진중학교", "양천중학교", "양화중학교", "언남중학교", "언북중학교", "언주중학교", "여의도중학교", "역삼중학교", "연북중학교", "연서중학교", "연신중학교", "연천중학교", "연희중학교", "염경중학교", "염광중학교", "염창중학교", "영남중학교", "영도중학교", "영동중학교", "영등포중학교", "영락중학교", "영란여자중학교", "영림중학교", "영서중학교", "영원중학교", "영파여자중학교", "영훈국제중학교", "예일여자중학교", "오금중학교", "오남중학교", "오류중학교", "오륜중학교", "오산중학교", "오주중학교", "옥정중학교", "온곡중학교", "용강중학교", "용곡중학교", "용마중학교", "용문중학교", "용산중학교", "우신중학교", "위례솔중학교", "원묵중학교", "원촌중학교", "월계중학교", "월곡중학교", "월촌중학교", "윤중중학교", "은성중학교", "은평중학교", "을지중학교", "이수중학교", "이화여자대학교 사범대학 부속 이화·금란중학교", "인수중학교", "인왕중학교", "인창중학교", "인헌중학교", "일신여자중학교", "자양중학교", "잠신중학교", "잠실중학교", "장승중학교", "장안중학교", "장원중학교", "장위중학교", "장충중학교", "장평중학교", "재현중학교", "전농중학교", "전동중학교", "전일중학교", "정신여자중학교", "정원여자중학교", "정의여자중학교", "정화여자중학교", "종암중학교", "중계중학교", "중동중학교", "중랑중학교", "중암중학교", "중앙대학교 사범대학 부속중학교", "중앙여자중학교", "중앙중학교", "중원중학교", "중평중학교", "중화중학교", "증산중학교", "진관중학교", "진선여자중학교", "창덕여자중학교", "창동중학교", "창문여자중학교", "창북중학교", "창일중학교", "창천중학교", "천왕중학교", "천일중학교", "천호중학교", "청담중학교", "청량중학교", "청운중학교", "청원중학교", "충암중학교", "하계중학교", "한강중학교", "한산중학교", "한성여자중학교", "한성중학교", "한양대학교 사범대학 부속중학교", "한양중학교", "한영중학교", "한울중학교", "한천중학교", "항동중학교", "해누리중학교", "행당중학교", "휘원여자중학교", "홍은중학교", "홍익대학교 사범대학 부속여자중학교", "홍익대학교 사범대학 부속중학교", "화계중학교", "화곡중학교", "화원중학교", "환일중학교", "효문중학교", "휘경여자중학교", "휘경중학교", "휘문중학교"
         ];
 
+        // 시간표 및 학교 선택 변수
         const schoolList = document.getElementById('school-list');
         const timetableCells = document.querySelectorAll('.timetable td[contenteditable="true"]');
         let currentClass = "1반";
         let currentSchool = "";
         const timetables = {};
 
+        // 학교 선택: 선택된 학교의 시간표 초기화
         function selectSchool(school) {
             currentSchool = school;
             if (!timetables[school]) {
@@ -1347,6 +1271,7 @@
             loadTimetable();
         }
 
+        // 시간표 로드: 현재 학교와 반의 시간표 표시
         function loadTimetable() {
             if (currentSchool && timetables[currentSchool]) {
                 timetableCells.forEach((cell, index) => {
@@ -1355,6 +1280,7 @@
             }
         }
 
+        // 반 변경: 현재 시간표 저장 후 새 반으로 전환
         function switchClass(newClass) {
             if (currentSchool) {
                 timetableCells.forEach((cell, index) => {
@@ -1365,6 +1291,7 @@
             loadTimetable();
         }
 
+        // 학교 목록 생성: 검색 가능한 학교 목록 추가
         schools.forEach(school => {
             const option = document.createElement('a');
             option.href = "#";
@@ -1378,6 +1305,7 @@
             schoolList.appendChild(option);
         });
 
+        // 시간표 입력 처리: 입력된 내용 저장
         timetableCells.forEach(cell => {
             cell.addEventListener('blur', function() {
                 if (currentSchool) {
@@ -1387,6 +1315,7 @@
             });
         });
 
+        // 학교 검색: 입력에 따라 학교 목록 필터링
         function filterSchools() {
             const input = document.getElementById("search-input");
             const filter = input.value.toLowerCase();
@@ -1412,12 +1341,13 @@
             }
         }
 
+        // 달력 생성: 지정된 연도와 월로 달력 생성
         function createCalendar(year = 2025, month = 4) {
             const calendarBody = document.getElementById('calendar-body');
             const firstDay = new Date(year, month, 1);
             const lastDay = new Date(year, month + 1, 0);
-            const startDay = firstDay.getDay(); // 2025년 5월 1일은 일요일 (0)
-            const totalDays = lastDay.getDate(); // 31일
+            const startDay = firstDay.getDay();
+            const totalDays = lastDay.getDate();
             let date = 1;
             let calendar = '';
             for (let i = 0; i < 6; i++) {
@@ -1437,7 +1367,7 @@
             }
             calendarBody.innerHTML = calendar;
 
-            // 메모 로드 및 저장
+            // 메모 저장 및 로드
             document.querySelectorAll('.memo').forEach(memo => {
                 const dateStr = memo.dataset.date;
                 if (dateStr) {
@@ -1450,18 +1380,21 @@
             });
         }
 
+        // 검색창 포커스 처리
         document.getElementById("search-input").addEventListener("focus", function() {
             if (this.value !== "") {
                 schoolList.style.display = "block";
             }
         });
 
+        // 검색창 포커스 해제 처리
         document.getElementById("search-input").addEventListener("blur", function() {
             setTimeout(() => {
                 schoolList.style.display = "none";
             }, 200);
         });
 
+        // 시간표 입력 제한: Enter 키와 붙여넣기 처리
         document.querySelectorAll('.timetable td[contenteditable="true"]').forEach(cell => {
             cell.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') {
@@ -1475,6 +1408,7 @@
             });
         });
 
+        // 탭 전환: 메인, 커뮤니티, 설정 간 화면 전환
         function switchTab(tabName) {
             document.querySelectorAll('.tab-button, .mobile-tab-button').forEach(button => {
                 button.classList.remove('active');
@@ -1495,6 +1429,7 @@
             syncMobileTabs();
         }
 
+        // 모바일 탭 동기화
         function syncMobileTabs() {
             const desktopTabs = document.querySelectorAll('.tab-button');
             const mobileTabs = document.querySelectorAll('.mobile-tab-button');
@@ -1507,7 +1442,7 @@
             });
         }
 
-        // 글쓰기 기능
+        // 게시글 작성 폼 표시/숨김
         function showPostForm() {
             const postForm = document.querySelector('.post-form');
             postForm.style.display = postForm.style.display === 'none' ? 'block' : 'none';
@@ -1516,6 +1451,7 @@
             document.getElementById('post-content').value = '';
         }
 
+        // 게시글 제출: 새 게시글 저장
         function submitPost() {
             const title = document.getElementById('post-title').value.trim();
             const author = document.getElementById('post-author').value.trim() || '익명';
@@ -1539,9 +1475,17 @@
             loadPosts();
         }
 
+        // 게시글 목록 로드: localStorage에서 게시글 표시
         function loadPosts() {
-            const posts = JSON.parse(localStorage.getItem('posts') || '[]');
+            let posts;
+            try {
+                posts = JSON.parse(localStorage.getItem('posts') || '[]');
+            } catch (error) {
+                console.error('게시글 로드 오류:', error);
+                posts = [];
+            }
             const postListBody = document.getElementById('post-list-body');
+            if (!postListBody) return;
             postListBody.innerHTML = '';
             posts.forEach(post => {
                 const row = document.createElement('tr');
@@ -1551,36 +1495,63 @@
                     <td>${post.date}</td>
                     <td>${post.views}</td>
                 `;
-                row.onclick = () => viewPost(post.id);
+                row.style.cursor = 'pointer';
+                row.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    viewPost(post.id);
+                });
                 postListBody.appendChild(row);
             });
         }
 
+        // 게시글 상세 보기: 선택된 게시글 표시
         function viewPost(postId) {
-            const posts = JSON.parse(localStorage.getItem('posts') || '[]');
-            const post = posts.find(p => p.id === postId);
-            if (post) {
+            try {
+                const posts = JSON.parse(localStorage.getItem('posts') || '[]');
+                const post = posts.find(p => p.id === postId);
+                if (!post) {
+                    alert(translations[currentLanguage].postNotFound);
+                    return;
+                }
                 post.views++;
                 localStorage.setItem('posts', JSON.stringify(posts));
-                document.getElementById('detail-title').textContent = post.title;
-                document.getElementById('detail-meta').textContent = `작성자: ${post.author} | 작성일: ${post.date} | 조회수: ${post.views}`;
-                document.getElementById('detail-content').textContent = post.content;
-                document.querySelector('.post-list').style.display = 'none';
-                document.querySelector('.post-detail').classList.add('active');
+                const detailTitle = document.getElementById('detail-title');
+                const detailMeta = document.getElementById('detail-meta');
+                const detailContent = document.getElementById('detail-content');
+                if (detailTitle && detailMeta && detailContent) {
+                    detailTitle.textContent = post.title;
+                    detailMeta.textContent = `작성자: ${post.author} | 작성일: ${post.date} | 조회수: ${post.views}`;
+                    detailContent.textContent = post.content;
+                    document.querySelector('.post-list').style.display = 'none';
+                    document.querySelector('.post-detail').classList.add('active');
+                } else {
+                    console.error('상세 보기 요소를 찾을 수 없습니다.');
+                }
+            } catch (error) {
+                console.error('게시글 보기 오류:', error);
+                alert(translations[currentLanguage].postNotFound);
             }
         }
 
+        // 게시글 상세 보기 숨김: 목록으로 돌아감
         function hidePostDetail() {
-            document.querySelector('.post-list').style.display = 'block';
-            document.querySelector('.post-detail').classList.remove('active');
-            loadPosts();
+            const postList = document.querySelector('.post-list');
+            const postDetail = document.querySelector('.post-detail');
+            if (postList && postDetail) {
+                postList.style.display = 'block';
+                postDetail.classList.remove('active');
+                loadPosts();
+            }
         }
 
+        // 다크 모드 전환
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
             localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
         }
 
+        // 아코디언 토글: 설정 항목 확장/축소
         function toggleAccordion(section) {
             const item = document.querySelector(`.settings-item[data-section="${section}"]`);
             const content = item.querySelector('.accordion-content');
@@ -1598,6 +1569,7 @@
             }
         }
 
+        // 설정 항목 클릭 이벤트
         document.querySelectorAll('.settings-item').forEach(item => {
             item.addEventListener('click', (e) => {
                 if (e.target.closest('.accordion-content') || e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') {
@@ -1608,6 +1580,7 @@
             });
         });
 
+        // 폰트 크기 변경
         function changeFontSize(delta) {
             const currentSize = parseInt(getComputedStyle(document.body).fontSize);
             const newSize = Math.max(12, Math.min(24, currentSize + delta));
@@ -1615,6 +1588,7 @@
             localStorage.setItem('fontSize', newSize);
         }
 
+        // 폰트 크기 초기화
         function resetFontSize() {
             document.body.style.fontSize = '16px';
             localStorage.setItem('fontSize', '16');
