@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Talk Talk</title>
+    <title>Shool Talk Talk</title>
     <style>
         body {
             font-family: 'Malgun Gothic', sans-serif;
@@ -312,36 +312,57 @@
         body.dark-mode .post-actions-menu button:hover {
             background-color: #444;
         }
+        /* 수정: 게시물 상세 보기 UI 디자인 개선 */
         .post-detail {
             max-height: 0;
             overflow: hidden;
             padding: 0 20px;
-            background-color: #fff;
-            border-bottom: 1px solid #eee;
-            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+            background-color: #fafafa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out, opacity 0.3s ease-out;
+            opacity: 0;
         }
         body.dark-mode .post-detail {
-            background-color: #333;
-            border-bottom: 1px solid #444;
+            background-color: #2a2a2a;
+            border-color: #555;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
         .post-detail.active {
             padding: 20px;
+            opacity: 1;
             overflow: auto;
         }
         .post-detail h2 {
-            margin-top: 0;
-            font-size: 1.5em;
+            margin: 0 0 10px;
+            font-size: 1.6em;
+            font-weight: 600;
+            color: #333;
+        }
+        body.dark-mode .post-detail h2 {
+            color: #fff;
         }
         .post-detail .meta {
             color: #666;
+            font-size: 0.9em;
             margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
         }
         body.dark-mode .post-detail .meta {
             color: #aaa;
+            border-bottom-color: #444;
         }
         .post-detail .content {
             white-space: pre-wrap;
             font-size: 1em;
+            line-height: 1.6;
+            color: #333;
+        }
+        body.dark-mode .post-detail .content {
+            color: #fff;
         }
         .main-container {
             display: flex;
@@ -1398,35 +1419,50 @@
             }
         }
 
-        // 게시글 상세 보기: 아코디언 스타일로 토글
+        // 수정: 게시글 상세 보기 - 토글 및 조회수 중복 방지
         function viewPost(postId) {
             try {
-                // 모든 아코디언 닫기
-                document.querySelectorAll('.post-detail').forEach(detail => {
-                    detail.classList.remove('active');
-                    detail.style.maxHeight = null;
-                    detail.style.padding = '0 20px';
-                });
-
-                // 선택된 게시글의 아코디언 열기
                 const detailDiv = document.getElementById(`post-detail-${postId}`);
                 if (!detailDiv) {
                     alert(translations[currentLanguage].postNotFound);
                     return;
                 }
 
-                // 조회수 증가
-                let posts = JSON.parse(localStorage.getItem('posts') || '[]');
-                const post = posts.find(p => p.id === postId);
-                if (post) {
-                    post.views += 1;
-                    localStorage.setItem('posts', JSON.stringify(posts));
-                    loadPosts(); // 조회수 및 상세 보기 업데이트
+                // 이미 열려있는 경우 닫기
+                if (detailDiv.classList.contains('active')) {
+                    detailDiv.classList.remove('active');
+                    detailDiv.style.maxHeight = null;
+                    detailDiv.style.padding = '0 20px';
+                    detailDiv.style.opacity = '0';
+                    return;
                 }
 
-                // 아코디언 토글
+                // 모든 아코디언 닫기
+                document.querySelectorAll('.post-detail').forEach(detail => {
+                    detail.classList.remove('active');
+                    detail.style.maxHeight = null;
+                    detail.style.padding = '0 20px';
+                    detail.style.opacity = '0';
+                });
+
+                // 선택된 게시글 열기
                 detailDiv.classList.add('active');
                 detailDiv.style.maxHeight = detailDiv.scrollHeight + 'px';
+                detailDiv.style.padding = '20px';
+                detailDiv.style.opacity = '1';
+
+                // 조회수 증가 (세션당 1회)
+                const viewedKey = `viewed-${postId}`;
+                if (!sessionStorage.getItem(viewedKey)) {
+                    let posts = JSON.parse(localStorage.getItem('posts') || '[]');
+                    const post = posts.find(p => p.id === postId);
+                    if (post) {
+                        post.views += 1;
+                        localStorage.setItem('posts', JSON.stringify(posts));
+                        sessionStorage.setItem(viewedKey, 'true');
+                        loadPosts(); // 조회수 및 상세 보기 업데이트
+                    }
+                }
             } catch (error) {
                 console.error('게시글 상세 보기 오류:', error);
                 alert(translations[currentLanguage].postNotFound);
@@ -1466,7 +1502,7 @@
             input.onblur = function() {
                 element.textContent = input.value || currentValue;
                 localStorage.setItem(fieldId, input.value || currentValue);
-                element.style.display = 'inline';
+                elementスタイル.display = 'inline';
                 input.remove();
             };
             input.onkeydown = function(e) {
