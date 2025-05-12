@@ -593,6 +593,17 @@
             background-color: #333;
             border-color: #555;
         }
+        .data-import input[type="file"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+            color: inherit;
+        }
+        body.dark-mode .data-import input[type="file"] {
+            background-color: #333;
+            border-color: #555;
+        }
         /* 반응형 디자인 */
         @media screen and (max-width: 768px) {
             body {
@@ -1028,8 +1039,9 @@
                                 <li onclick="exportData()">
                                     데이터 내보내기
                                 </li>
-                                <li onclick="importData()">
+                                <li class="data-import">
                                     데이터 가져오기
+                                    <input type="file" id="import-data" accept=".json" onchange="importData(event)">
                                 </li>
                                 <li onclick="resetData()">
                                     데이터 초기화
@@ -1175,7 +1187,11 @@
                 postListAuthor: "작성자",
                 postListDate: "작성일",
                 postListViews: "조회수",
-                back: "뒤로"
+                back: "뒤로",
+                exportSuccess: "데이터가 성공적으로 내보내졌습니다.",
+                importSuccess: "데이터가 성공적으로 불러와졌습니다.",
+                importError: "잘못된 파일 형식입니다. JSON 파일을 업로드해주세요.",
+                importInvalid: "유효하지 않은 데이터 형식입니다."
             }
         };
 
