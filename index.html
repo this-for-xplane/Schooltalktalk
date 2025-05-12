@@ -68,7 +68,7 @@
         body.dark-mode .content-area {
             background-color: #2b2b2b;
         }
-        .main-container, .empty-container, .settings-container {
+        .main-container, .community-container, .settings-container {
             display: none;
             max-width: 1200px;
             margin: 0 auto;
@@ -78,12 +78,12 @@
             transition: background-color 0.3s;
         }
         body.dark-mode .main-container,
-        body.dark-mode .empty-container,
+        body.dark-mode .community-container,
         body.dark-mode .settings-container {
             background-color: #333333;
         }
         .main-container.active,
-        .empty-container.active,
+        .community-container.active,
         .settings-container.active {
             display: block;
         }
@@ -145,8 +145,12 @@
             background-color: #444;
         }
         .settings-item .accordion-toggle {
-            color: #999;
-            transition: transform 0.3s;
+            color: #666;
+            font-size: 1.2em;
+            transition: transform 0.3s, color 0.3s;
+        }
+        body.dark-mode .settings-item .accordion-toggle {
+            color: #aaa;
         }
         .settings-item.active .accordion-toggle {
             transform: rotate(90deg);
@@ -175,18 +179,130 @@
             align-items: center;
             justify-content: space-between;
         }
-        .empty-container {
-            display: none;
-            height: 100%;
-            align-items: center;
-            justify-content: center;
+        .community-container {
+            padding: 20px;
         }
-        .empty-container.active {
+        .community-header {
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
         }
-        .empty-message {
+        .post-form {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        body.dark-mode .post-form {
+            background-color: #333;
+        }
+        .post-form input, .post-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+            color: inherit;
+            background-color: #fff;
+            transition: border-color 0.3s, background-color 0.3s;
+        }
+        body.dark-mode .post-form input,
+        body.dark-mode .post-form textarea {
+            border-color: #555;
+            background-color: #2a2a2a;
+        }
+        .post-form textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .post-form button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #0078d4;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .post-form button:hover {
+            background-color: #005ea2;
+        }
+        .post-list table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .post-list th, .post-list td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.dark-mode .post-list th,
+        body.dark-mode .post-list td {
+            border-bottom: 1px solid #444;
+        }
+        .post-list th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+        body.dark-mode .post-list th {
+            background-color: #333;
+        }
+        .post-list tr:hover {
+            background-color: #f8f8f8;
+            cursor: pointer;
+        }
+        body.dark-mode .post-list tr:hover {
+            background-color: #444;
+        }
+        .post-detail {
+            display: none;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        body.dark-mode .post-detail {
+            background-color: #333;
+        }
+        .post-detail.active {
+            display: block;
+        }
+        .post-detail h2 {
+            margin-top: 0;
+        }
+        .post-detail .meta {
             color: #666;
-            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+        body.dark-mode .post-detail .meta {
+            color: #aaa;
+        }
+        .post-detail .content {
+            white-space: pre-wrap;
+        }
+        .back-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #e0e0e0;
+            color: #333;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        body.dark-mode .back-button {
+            background-color: #3f3f3f;
+            color: #fff;
+        }
+        .back-button:hover {
+            background-color: #d0d0d0;
+        }
+        body.dark-mode .back-button:hover {
+            background-color: #4f4f4f;
         }
         .main-container {
             display: flex;
@@ -461,30 +577,18 @@
         input:checked + .toggle-slider:before {
             transform: translateX(26px);
         }
-        .language-select {
+        .language-select, .notification-sound {
             padding: 8px;
             border-radius: 4px;
             border: 1px solid #ddd;
             background-color: white;
             color: inherit;
         }
-        body.dark-mode .language-select {
-            background-color: #333;
-            border-color: #555;
-        }
-        .notification-sound {
-            width: 100%;
-            padding: 8px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-            background-color: white;
-            color: inherit;
-        }
+        body.dark-mode .language-select,
         body.dark-mode .notification-sound {
             background-color: #333;
             border-color: #555;
         }
-        
         /* 반응형 디자인 */
         @media screen and (max-width: 768px) {
             body {
@@ -533,10 +637,8 @@
                 margin-bottom: 20px;
             }
             .top-controls {
-                display: flex;
                 flex-direction: column;
                 gap: 10px;
-                margin-bottom: 20px;
                 height: auto;
             }
             .search-container {
@@ -561,26 +663,11 @@
             .settings-container {
                 max-width: 100%;
             }
-            .settings-profile {
-                flex-direction: row;
-                text-align: left;
-                padding: 30px;
+            .post-list th:nth-child(4), .post-list td:nth-child(4) {
+                display: none;
             }
-            .profile-image {
-                width: 100px;
-                height: 100px;
-                margin: 0;
-            }
-            .profile-info {
-                margin-top: 0;
-                margin-left: 20px;
-            }
-            .profile-info h2 {
-                font-size: 1.5em;
-                margin-bottom: 10px;
-            }
-            .profile-info p {
-                font-size: 1.1em;
+            .post-form input, .post-form textarea {
+                font-size: 14px;
             }
             .mobile-bottom-tabs {
                 display: flex;
@@ -605,10 +692,6 @@
                 width: 70px;
                 height: 70px;
                 border-radius: 50%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
                 font-size: 28px;
                 background-color: #e0e0e0;
                 color: #333333;
@@ -631,11 +714,7 @@
                 background-color: #0078d4;
                 color: #ffffff;
             }
-            .content-area {
-                padding-bottom: 100px;
-            }
         }
-        
         @media screen and (min-width: 769px) and (max-width: 1024px) {
             .main-container {
                 flex-direction: column;
@@ -647,11 +726,10 @@
             .timetable, .calendar {
                 height: 500px;
             }
-            .settings-container {
+            .settings-container, .community-container {
                 max-width: 90%;
             }
         }
-        
         @media screen and (min-width: 1025px) {
             .main-container {
                 flex-direction: row;
@@ -663,7 +741,6 @@
                 height: 700px;
             }
         }
-        
         .mobile-menu-toggle {
             display: none;
             position: fixed;
@@ -679,81 +756,23 @@
             z-index: 1000;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        
         @media screen and (max-width: 768px) {
             .mobile-menu-toggle {
                 display: block;
             }
             .vertical-tabs {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                background-color: inherit;
-                z-index: 999;
                 display: none;
             }
             .vertical-tabs.active {
                 display: flex;
             }
         }
-        
         .mobile-bottom-tabs {
             display: none;
         }
-        
         @media screen and (max-width: 768px) {
-            body {
-                padding-bottom: 100px;
-            }
             .mobile-bottom-tabs {
                 display: flex;
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                height: 90px;
-                background-color: #f5f5f5;
-                flex-direction: row;
-                justify-content: space-around;
-                align-items: center;
-                z-index: 1000;
-                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-                padding: 0 20px;
-            }
-            body.dark-mode .mobile-bottom-tabs {
-                background-color: #2b2b2b;
-                box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
-            }
-            .mobile-tab-button {
-                width: 70px;
-                height: 70px;
-                border-radius: 50%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                font-size: 28px;
-                background-color: #e0e0e0;
-                color: #333333;
-                border: none;
-                cursor: pointer;
-                transition: background-color 0.2s, color 0.2s;
-                margin: 0 5px;
-            }
-            body.dark-mode .mobile-tab-button {
-                background-color: #3f3f3f;
-                color: #ffffff;
-            }
-            .mobile-tab-button:hover {
-                background-color: #d0d0d0;
-            }
-            body.dark-mode .mobile-tab-button:hover {
-                background-color: #4f4f4f;
-            }
-            .mobile-tab-button.active {
-                background-color: #0078d4;
-                color: #ffffff;
             }
             .content-area {
                 padding-bottom: 100px;
@@ -764,7 +783,7 @@
 <body>
     <div class="vertical-tabs">
         <button class="tab-button active" onclick="switchTab('main')">📅</button>
-        <button class="tab-button" onclick="switchTab('empty')">📋</button>
+        <button class="tab-button" onclick="switchTab('community')">📋</button>
         <button class="tab-button" onclick="switchTab('settings')">⚙️</button>
     </div>
     <div class="content-area">
@@ -872,9 +891,35 @@
             </div>
         </div>
         
-        <div class="empty-container">
-            <div class="empty-message">
-                준비 중인 기능입니다.
+        <div class="community-container">
+            <div class="community-header">
+                <h2>커뮤니티</h2>
+                <button class="post-form-button" onclick="showPostForm()">글쓰기</button>
+            </div>
+            <div class="post-form" style="display: none;">
+                <input type="text" id="post-title" placeholder="제목">
+                <textarea id="post-content" placeholder="내용"></textarea>
+                <button onclick="submitPost()">게시</button>
+            </div>
+            <div class="post-list">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 50%;">제목</th>
+                            <th style="width: 20%;">작성자</th>
+                            <th style="width: 20%;">작성일</th>
+                            <th style="width: 10%;">조회수</th>
+                        </tr>
+                    </thead>
+                    <tbody id="post-list-body">
+                    </tbody>
+                </table>
+            </div>
+            <div class="post-detail">
+                <button class="back-button" onclick="hidePostDetail()">뒤로</button>
+                <h2 id="detail-title"></h2>
+                <div class="meta" id="detail-meta"></div>
+                <div class="content" id="detail-content"></div>
             </div>
         </div>
 
@@ -890,7 +935,7 @@
                         <button class="edit-button" onclick="editField('user-name')">✏️</button>
                     </h2>
                     <p>
-                        <span id="user-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5366076f6b6f7613766b727e637f763d707c7e">[email&#160;protected]</a></span>
+                        <span id="user-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="59382d2521243d193c21283429353c773a3634">[email&#160;protected]</a></span>
                         <button class="edit-button" onclick="editField('user-email')">✏️</button>
                     </p>
                 </div>
@@ -903,51 +948,41 @@
                         <div class="accordion-content" id="notifications-content">
                             <ul>
                                 <li>
-                                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                                        푸시 알림
-                                        <label class="toggle-switch">
-                                            <input type="checkbox" id="push-notification" onchange="toggleNotification('push')">
-                                            <span class="toggle-slider"></span>
-                                        </label>
-                                    </div>
+                                    푸시 알림
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="push-notification" onchange="toggleNotification('push')">
+                                        <span class="toggle-slider"></span>
+                                    </label>
                                 </li>
                                 <li>
-                                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                                        이메일 알림
-                                        <label class="toggle-switch">
-                                            <input type="checkbox" id="email-notification" onchange="toggleNotification('email')">
-                                            <span class="toggle-slider"></span>
-                                        </label>
-                                    </div>
+                                    이메일 알림
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="email-notification" onchange="toggleNotification('email')">
+                                        <span class="toggle-slider"></span>
+                                    </label>
                                 </li>
                                 <li>
-                                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                                        시간표 변경 알림
-                                        <label class="toggle-switch">
-                                            <input type="checkbox" id="timetable-notification" onchange="toggleNotification('timetable')">
-                                            <span class="toggle-slider"></span>
-                                        </label>
-                                    </div>
+                                    시간표 변경 알림
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="timetable-notification" onchange="toggleNotification('timetable')">
+                                        <span class="toggle-slider"></span>
+                                    </label>
                                 </li>
                                 <li>
-                                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                                        시험 일정 알림
-                                        <label class="toggle-switch">
-                                            <input type="checkbox" id="exam-notification" onchange="toggleNotification('exam')">
-                                            <span class="toggle-slider"></span>
-                                        </label>
-                                    </div>
+                                    시험 일정 알림
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="exam-notification" onchange="toggleNotification('exam')">
+                                        <span class="toggle-slider"></span>
+                                    </label>
                                 </li>
                                 <li>
-                                    <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
-                                        알림음 설정
-                                        <select class="notification-sound" onchange="changeNotificationSound(this.value)">
-                                            <option value="default">기본 알림음</option>
-                                            <option value="bell">벨 소리</option>
-                                            <option value="chime">차임벨</option>
-                                            <option value="ding">딩동</option>
-                                        </select>
-                                    </div>
+                                    알림음 설정
+                                    <select class="notification-sound" onchange="changeNotificationSound(this.value)">
+                                        <option value="default">기본 알림음</option>
+                                        <option value="bell">벨 소리</option>
+                                        <option value="chime">차임벨</option>
+                                        <option value="ding">딩동</option>
+                                    </select>
                                 </li>
                             </ul>
                         </div>
@@ -959,7 +994,6 @@
                             <ul>
                                 <li onclick="toggleDarkMode()">
                                     다크모드 전환
-                                    <i>›</i>
                                 </li>
                                 <li>
                                     <div class="font-size-control">
@@ -970,15 +1004,13 @@
                                     </div>
                                 </li>
                                 <li>
-                                    <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
-                                        언어 설정
-                                        <select class="language-select" onchange="changeLanguage(this.value)">
-                                            <option value="ko">한국어</option>
-                                            <option value="en">English</option>
-                                            <option value="ja">日本語</option>
-                                            <option value="zh">中文</option>
-                                        </select>
-                                    </div>
+                                    언어 설정
+                                    <select class="language-select" onchange="changeLanguage(this.value)">
+                                        <option value="ko">한국어</option>
+                                        <option value="en">English</option>
+                                        <option value="ja">日本語</option>
+                                        <option value="zh">中文</option>
+                                    </select>
                                 </li>
                             </ul>
                         </div>
@@ -990,24 +1022,19 @@
                             <ul>
                                 <li onclick="exportData()">
                                     데이터 내보내기
-                                    <i>›</i>
                                 </li>
                                 <li onclick="importData()">
                                     데이터 가져오기
-                                    <i>›</i>
                                 </li>
                                 <li onclick="resetData()">
                                     데이터 초기화
-                                    <i>›</i>
                                 </li>
                                 <li>
-                                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                                        자동 저장
-                                        <label class="toggle-switch">
-                                            <input type="checkbox" id="auto-save" onchange="toggleAutoSave()">
-                                            <span class="toggle-slider"></span>
-                                        </label>
-                                    </div>
+                                    자동 저장
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="auto-save" onchange="toggleAutoSave()">
+                                        <span class="toggle-slider"></span>
+                                    </label>
                                 </li>
                             </ul>
                         </div>
@@ -1018,26 +1045,21 @@
                         <div class="accordion-content" id="sync-content">
                             <ul>
                                 <li>
-                                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                                        자동 백업
-                                        <label class="toggle-switch">
-                                            <input type="checkbox" id="auto-backup" onchange="toggleAutoBackup()">
-                                            <span class="toggle-slider"></span>
-                                        </label>
-                                    </div>
+                                    자동 백업
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="auto-backup" onchange="toggleAutoBackup()">
+                                        <span class="toggle-slider"></span>
+                                    </label>
                                 </li>
                                 <li onclick="manualBackup()">
                                     수동 백업
-                                    <i>›</i>
                                 </li>
                                 <li>
-                                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                                        클라우드 동기화
-                                        <label class="toggle-switch">
-                                            <input type="checkbox" id="cloud-sync" onchange="toggleCloudSync()">
-                                            <span class="toggle-slider"></span>
-                                        </label>
-                                    </div>
+                                    클라우드 동기화
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="cloud-sync" onchange="toggleCloudSync()">
+                                        <span class="toggle-slider"></span>
+                                    </label>
                                 </li>
                                 <li>
                                     마지막 동기화: <span id="last-sync">-</span>
@@ -1052,15 +1074,12 @@
                             <ul>
                                 <li onclick="showTerms()">
                                     개인정보 수집·이용 동의서
-                                    <i>›</i>
                                 </li>
                                 <li onclick="showLocationSettings()">
                                     위치 정보 설정
-                                    <i>›</i>
                                 </li>
                                 <li onclick="showAccountSettings()">
                                     계정 정보 관리
-                                    <i>›</i>
                                 </li>
                             </ul>
                         </div>
@@ -1072,19 +1091,15 @@
                             <ul>
                                 <li onclick="showFAQ()">
                                     자주 찾는 도움말
-                                    <i>›</i>
                                 </li>
                                 <li onclick="showContact()">
                                     문의하기
-                                    <i>›</i>
                                 </li>
                                 <li onclick="showUserGuide()">
                                     사용 가이드
-                                    <i>›</i>
                                 </li>
                                 <li>
                                     버전 정보: bEtA tEsT!
-                                    <i>›</i>
                                 </li>
                             </ul>
                         </div>
@@ -1096,7 +1111,7 @@
     
     <div class="mobile-bottom-tabs">
         <button class="mobile-tab-button active" onclick="switchTab('main')">📅</button>
-        <button class="mobile-tab-button" onclick="switchTab('empty')">📋</button>
+        <button class="mobile-tab-button" onclick="switchTab('community')">📋</button>
         <button class="mobile-tab-button" onclick="switchTab('settings')">⚙️</button>
     </div>
 
@@ -1106,7 +1121,7 @@
         const translations = {
             ko: {
                 timetable: "시간표",
-                calendar: "캘린더",
+                community: "커뮤니티",
                 settings: "설정",
                 searchPlaceholder: "학교 검색",
                 classSelect: "반 선택",
@@ -1145,11 +1160,21 @@
                 faq: "자주 찾는 도움말",
                 contact: "문의하기",
                 userGuide: "사용 가이드",
-                version: "버전 정보"
+                version: "버전 정보",
+                communityHeader: "커뮤니티",
+                writePost: "글쓰기",
+                postTitle: "제목",
+                postContent: "내용",
+                submitPost: "게시",
+                postListTitle: "제목",
+                postListAuthor: "작성자",
+                postListDate: "작성일",
+                postListViews: "조회수",
+                back: "뒤로"
             },
             en: {
                 timetable: "Timetable",
-                calendar: "Calendar",
+                community: "Community",
                 settings: "Settings",
                 searchPlaceholder: "Search school",
                 classSelect: "Select class",
@@ -1188,11 +1213,21 @@
                 faq: "FAQ",
                 contact: "Contact",
                 userGuide: "User Guide",
-                version: "Version"
+                version: "Version",
+                communityHeader: "Community",
+                writePost: "Write Post",
+                postTitle: "Title",
+                postContent: "Content",
+                submitPost: "Post",
+                postListTitle: "Title",
+                postListAuthor: "Author",
+                postListDate: "Date",
+                postListViews: "Views",
+                back: "Back"
             },
             ja: {
                 timetable: "時間割",
-                calendar: "カレンダー",
+                community: "コミュニティ",
                 settings: "設定",
                 searchPlaceholder: "学校を検索",
                 classSelect: "クラスを選択",
@@ -1231,11 +1266,21 @@
                 faq: "よくある質問",
                 contact: "お問い合わせ",
                 userGuide: "ユーザーガイド",
-                version: "バージョン情報"
+                version: "バージョン情報",
+                communityHeader: "コミュニティ",
+                writePost: "投稿する",
+                postTitle: "タイトル",
+                postContent: "内容",
+                submitPost: "投稿",
+                postListTitle: "タイトル",
+                postListAuthor: "投稿者",
+                postListDate: "投稿日",
+                postListViews: "閲覧数",
+                back: "戻る"
             },
             zh: {
                 timetable: "课程表",
-                calendar: "日历",
+                community: "社区",
                 settings: "设置",
                 searchPlaceholder: "搜索学校",
                 classSelect: "选择班级",
@@ -1274,7 +1319,17 @@
                 faq: "常见问题",
                 contact: "联系我们",
                 userGuide: "用户指南",
-                version: "版本信息"
+                version: "版本信息",
+                communityHeader: "社区",
+                writePost: "写帖子",
+                postTitle: "标题",
+                postContent: "内容",
+                submitPost: "发布",
+                postListTitle: "标题",
+                postListAuthor: "作者",
+                postListDate: "日期",
+                postListViews: "浏览量",
+                back: "返回"
             }
         };
 
@@ -1296,7 +1351,7 @@
         function updateTranslations() {
             const t = translations[currentLanguage];
             document.querySelector('.tab-button[onclick="switchTab(\'main\')"]').title = t.timetable;
-            document.querySelector('.tab-button[onclick="switchTab(\'empty\')"]').title = t.calendar;
+            document.querySelector('.tab-button[onclick="switchTab(\'community\')"]').title = t.community;
             document.querySelector('.tab-button[onclick="switchTab(\'settings\')"]').title = t.settings;
             document.getElementById('search-input').placeholder = t.searchPlaceholder;
             
@@ -1311,11 +1366,11 @@
             const notificationsContent = document.getElementById('notifications-content');
             if (notificationsContent) {
                 const items = notificationsContent.querySelectorAll('li');
-                items[0].querySelector('div').childNodes[0].textContent = t.pushNotification;
-                items[1].querySelector('div').childNodes[0].textContent = t.emailNotification;
-                items[2].querySelector('div').childNodes[0].textContent = t.timetableNotification;
-                items[3].querySelector('div').childNodes[0].textContent = t.examNotification;
-                items[4].querySelector('div').childNodes[0].textContent = t.notificationSound;
+                items[0].childNodes[0].textContent = t.pushNotification;
+                items[1].childNodes[0].textContent = t.emailNotification;
+                items[2].childNodes[0].textContent = t.timetableNotification;
+                items[3].childNodes[0].textContent = t.examNotification;
+                items[4].childNodes[0].textContent = t.notificationSound;
                 const soundSelect = items[4].querySelector('select');
                 soundSelect.options[0].textContent = t.defaultSound;
                 soundSelect.options[1].textContent = t.bellSound;
@@ -1329,7 +1384,7 @@
                 items[0].childNodes[0].textContent = t.darkMode;
                 items[1].querySelector('.font-size-control').childNodes[0].textContent = t.fontSize;
                 items[1].querySelector('.reset-button').textContent = t.reset;
-                items[2].querySelector('div').childNodes[0].textContent = t.language;
+                items[2].childNodes[0].textContent = t.language;
             }
 
             const dataContent = document.getElementById('data-content');
@@ -1338,15 +1393,15 @@
                 items[0].childNodes[0].textContent = t.exportData;
                 items[1].childNodes[0].textContent = t.importData;
                 items[2].childNodes[0].textContent = t.resetData;
-                items[3].querySelector('div').childNodes[0].textContent = t.autoSave;
+                items[3].childNodes[0].textContent = t.autoSave;
             }
 
             const syncContent = document.getElementById('sync-content');
             if (syncContent) {
                 const items = syncContent.querySelectorAll('li');
-                items[0].querySelector('div').childNodes[0].textContent = t.autoBackup;
+                items[0].childNodes[0].textContent = t.autoBackup;
                 items[1].childNodes[0].textContent = t.manualBackup;
-                items[2].querySelector('div').childNodes[0].textContent = t.cloudSync;
+                items[2].childNodes[0].textContent = t.cloudSync;
                 items[3].childNodes[0].textContent = t.lastSync + ': ';
             }
 
@@ -1366,6 +1421,26 @@
                 items[2].childNodes[0].textContent = t.userGuide;
                 items[3].childNodes[0].textContent = t.version + ': bEtA tEsT!';
             }
+
+            const communityHeader = document.querySelector('.community-header h2');
+            if (communityHeader) communityHeader.textContent = t.communityHeader;
+            const postFormButton = document.querySelector('.post-form-button');
+            if (postFormButton) postFormButton.textContent = t.writePost;
+            const postTitleInput = document.getElementById('post-title');
+            if (postTitleInput) postTitleInput.placeholder = t.postTitle;
+            const postContentInput = document.getElementById('post-content');
+            if (postContentInput) postContentInput.placeholder = t.postContent;
+            const submitPostButton = document.querySelector('.post-form button');
+            if (submitPostButton) submitPostButton.textContent = t.submitPost;
+            const postListHeaders = document.querySelectorAll('.post-list th');
+            if (postListHeaders.length >= 4) {
+                postListHeaders[0].textContent = t.postListTitle;
+                postListHeaders[1].textContent = t.postListAuthor;
+                postListHeaders[2].textContent = t.postListDate;
+                postListHeaders[3].textContent = t.postListViews;
+            }
+            const backButton = document.querySelector('.back-button');
+            if (backButton) backButton.textContent = t.back;
         }
 
         // 페이지 로드 시 번역 적용
@@ -1377,6 +1452,7 @@
                 languageSelect.value = savedLanguage;
             }
             updateTranslations();
+            loadPosts();
         });
 
         const schools = [
@@ -1528,14 +1604,26 @@
                 button.classList.remove('active');
             });
             event.currentTarget.classList.add('active');
-            document.querySelectorAll('.main-container, .empty-container, .settings-container').forEach(container => {
+            document.querySelectorAll('.main-container, .community-container, .settings-container').forEach(container => {
                 container.classList.remove('active');
             });
-            const selectedContainer = document.querySelector('.' + tabName + '-container');
-            if (selectedContainer) {
-                selectedContainer.classList.add('active');
+            document.querySelector('.' + tabName + '-container').classList.add('active');
+            if (tabName === 'community') {
+                loadPosts();
             }
             syncMobileTabs();
+        }
+
+        function syncMobileTabs() {
+            const desktopTabs = document.querySelectorAll('.tab-button');
+            const mobileTabs = document.querySelectorAll('.mobile-tab-button');
+            desktopTabs.forEach((tab, index) => {
+                if (tab.classList.contains('active')) {
+                    mobileTabs[index].classList.add('active');
+                } else {
+                    mobileTabs[index].classList.remove('active');
+                }
+            });
         }
 
         function toggleDarkMode() {
