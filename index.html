@@ -997,7 +997,7 @@
         <button class="edit-button" onclick="editField('user-name')">✏️</button>
       </h2>
       <p>
-        <span id="user-email">user@example.com</span>
+        <span id="user-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d5a0a6b0a795b0adb4b8a5b9b0fbb6bab8">[email&#160;protected]</a></span>
         <button class="edit-button" onclick="editField('user-email')">✏️</button>
       </p>
     </div>
@@ -1005,18 +1005,18 @@
 
   <div class="main-settings">
     <ul class="settings-list">
-      <li class="settings-item" onclick="showSubmenu('notifications')">🔔 알림 설정 <i>›</i></li>
-      <li class="settings-item" onclick="showSubmenu('theme')">🌙 테마 설정 <i>›</i></li>
-      <li class="settings-item" onclick="showSubmenu('data')">🗃 데이터 관리 <i>›</i></li>
-      <li class="settings-item" onclick="showSubmenu('sync')">☁️ 백업 및 동기화 <i>›</i></li>
-      <li class="settings-item" onclick="showSubmenu('privacy')">🔒 개인정보 설정 <i>›</i></li>
-      <li class="settings-item" onclick="showSubmenu('help')">❓ 도움말 <i>›</i></li>
+      <li class="settings-item" onclick="toggleSubmenu('notifications')">🔔 알림 설정 <i>›</i></li>
+      <li class="settings-item" onclick="toggleSubmenu('theme')">🌙 테마 설정 <i>›</i></li>
+      <li class="settings-item" onclick="toggleSubmenu('data')">🗃 데이터 관리 <i>›</i></li>
+      <li class="settings-item" onclick="toggleSubmenu('sync')">☁️ 백업 및 동기화 <i>›</i></li>
+      <li class="settings-item" onclick="toggleSubmenu('privacy')">🔒 개인정보 설정 <i>›</i></li>
+      <li class="settings-item" onclick="toggleSubmenu('help')">❓ 도움말 <i>›</i></li>
     </ul>
   </div>
 
   <!-- submenu 구조 (내용 유지, 세부 내용 제거) -->
   <div class="submenu" id="notifications">
-    <div class="back-button" onclick="hideSubmenu('notifications')"><i>‹</i> 알림 설정</div>
+    <div class="back-button" onclick="toggleSubmenu('notifications')"><i>‹</i> 알림 설정</div>
     <ul class="settings-list">
       <li class="submenu-item">
         푸시 알림
@@ -1059,7 +1059,7 @@
   </div>
 
   <div class="submenu" id="theme">
-    <div class="back-button" onclick="hideSubmenu('theme')"><i>‹</i> 테마 설정</div>
+    <div class="back-button" onclick="toggleSubmenu('theme')"><i>‹</i> 테마 설정</div>
     <ul class="settings-list">
       <li class="submenu-item" onclick="toggleDarkMode()">다크모드 전환</li>
       <li class="submenu-item">
@@ -1087,7 +1087,7 @@
 <button class="mobile-tab-button" onclick="switchTab('empty')">📋</button>
 <button class="mobile-tab-button" onclick="switchTab('settings')">⚙️</button>
 </div>
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         // 번역 데이터
         const translations = {
             ko: {
@@ -1351,12 +1351,12 @@
             document.getElementById('search-input').placeholder = t.searchPlaceholder;
             
             // 설정 메뉴
-            document.querySelector('.settings-item[onclick="showSubmenu(\'notifications\')"]').textContent = t.notifications;
-            document.querySelector('.settings-item[onclick="showSubmenu(\'theme\')"]').textContent = t.theme;
-            document.querySelector('.settings-item[onclick="showSubmenu(\'data\')"]').textContent = t.data;
-            document.querySelector('.settings-item[onclick="showSubmenu(\'sync\')"]').textContent = t.sync;
-            document.querySelector('.settings-item[onclick="showSubmenu(\'privacy\')"]').textContent = t.privacy;
-            document.querySelector('.settings-item[onclick="showSubmenu(\'help\')"]').textContent = t.help;
+            document.querySelector('.settings-item[onclick="toggleSubmenu(\'notifications\')"]').textContent = t.notifications;
+            document.querySelector('.settings-item[onclick="toggleSubmenu(\'theme\')"]').textContent = t.theme;
+            document.querySelector('.settings-item[onclick="toggleSubmenu(\'data\')"]').textContent = t.data;
+            document.querySelector('.settings-item[onclick="toggleSubmenu(\'sync\')"]').textContent = t.sync;
+            document.querySelector('.settings-item[onclick="toggleSubmenu(\'privacy\')"]').textContent = t.privacy;
+            document.querySelector('.settings-item[onclick="toggleSubmenu(\'help\')"]').textContent = t.help;
             
             // 알림 설정
             document.querySelector('#notifications .back-button').textContent = `‹ ${t.notifications}`;
