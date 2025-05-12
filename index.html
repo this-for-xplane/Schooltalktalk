@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shool Talk Talk</title>
-    <!-- 스타일시트: 전체 레이아웃, 다크 모드, 반응형 디자인 정의 -->
+    <!-- 스타일시트: 전체 레이아웃, 다크 모드, 반응형 디자인, 아코디언 및 드롭다운 메뉴 -->
     <style>
         body {
             font-family: 'Malgun Gothic', sans-serif;
@@ -263,51 +263,84 @@
         body.dark-mode .post-list tr:hover {
             background-color: #444;
         }
-        .post-detail {
+        .post-actions {
+            position: relative;
+            display: inline-block;
+        }
+        .post-actions-button {
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            color: #333;
+        }
+        body.dark-mode .post-actions-button {
+            color: #fff;
+        }
+        .post-actions-menu {
             display: none;
+            position: absolute;
+            right: 0;
             background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 100;
         }
-        body.dark-mode .post-detail {
+        body.dark-mode .post-actions-menu {
             background-color: #333;
+            border-color: #555;
         }
-        .post-detail.active {
+        .post-actions-menu.active {
             display: block;
         }
-        .post-detail h2 {
+        .post-actions-menu button {
+            display: block;
+            width: 100%;
+            padding: 10px 15px;
+            border: none;
+            background: none;
+            text-align: left;
+            cursor: pointer;
+            color: #333;
+        }
+        body.dark-mode .post-actions-menu button {
+            color: #fff;
+        }
+        .post-actions-menu button:hover {
+            background-color: #f8f8f8;
+        }
+        body.dark-mode .post-actions-menu button:hover {
+            background-color: #444;
+        }
+        .post-detail-row {
+            display: none;
+        }
+        .post-detail-row.active {
+            display: table-row;
+        }
+        .post-detail-content {
+            padding: 20px;
+            background-color: #fff;
+            border-bottom: 1px solid #eee;
+            transition: max-height 0.3s ease-out;
+        }
+        body.dark-mode .post-detail-content {
+            background-color: #333;
+            border-bottom: 1px solid #444;
+        }
+        .post-detail-content h2 {
             margin-top: 0;
         }
-        .post-detail .meta {
+        .post-detail-content .meta {
             color: #666;
             margin-bottom: 15px;
         }
-        body.dark-mode .post-detail .meta {
+        body.dark-mode .post-detail-content .meta {
             color: #aaa;
         }
-        .post-detail .content {
+        .post-detail-content .content {
             white-space: pre-wrap;
-        }
-        .back-button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            background-color: #e0e0e0;
-            color: #333;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        body.dark-mode .back-button {
-            background-color: #3f3f3f;
-            color: #fff;
-        }
-        .back-button:hover {
-            background-color: #d0d0d0;
-        }
-        body.dark-mode .back-button:hover {
-            background-color: #4f4f4f;
         }
         .main-container {
             display: flex;
@@ -679,56 +712,15 @@
             .settings-container {
                 max-width: 100%;
             }
-            .post-list th:nth-child(4), .post-list td:nth-child(4) {
+            .post-list th:nth-child(4), .post-list td:nth-child(4),
+            .post-list th:nth-child(5), .post-list td:nth-child(5) {
                 display: none;
             }
             .post-form input, .post-form textarea {
                 font-size: 14px;
             }
-            .mobile-bottom-tabs {
-                display: flex;
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                height: 90px;
-                background-color: #f5f5f5;
-                flex-direction: row;
-                justify-content: space-around;
-                align-items: center;
-                z-index: 1000;
-                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-                padding: 0 20px;
-            }
-            body.dark-mode .mobile-bottom-tabs {
-                background-color: #2b2b2b;
-                box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
-            }
-            .mobile-tab-button {
-                width: 70px;
-                height: 70px;
-                border-radius: 50%;
-                font-size: 28px;
-                background-color: #e0e0e0;
-                color: #333333;
-                border: none;
-                cursor: pointer;
-                transition: background-color 0.2s, color 0.2s;
-                margin: 0 5px;
-            }
-            body.dark-mode .mobile-tab-button {
-                background-color: #3f3f3f;
-                color: #ffffff;
-            }
-            .mobile-tab-button:hover {
-                background-color: #d0d0d0;
-            }
-            body.dark-mode .mobile-tab-button:hover {
-                background-color: #4f4f4f;
-            }
-            .mobile-tab-button.active {
-                background-color: #0078d4;
-                color: #ffffff;
+            .post-actions-menu {
+                right: -10px;
             }
         }
         @media screen and (min-width: 769px) and (max-width: 1024px) {
@@ -859,7 +851,7 @@
                 </table>
             </div>
         </div>
-        <!-- 커뮤니티 페이지: 게시글 목록, 작성 폼, 상세 보기 -->
+        <!-- 커뮤니티 페이지: 게시글 목록, 작성 폼 -->
         <div class="community-container">
             <div class="community-header">
                 <h2>커뮤니티</h2>
@@ -875,20 +867,15 @@
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 50%;">제목</th>
+                            <th style="width: 45%;">제목</th>
                             <th style="width: 20%;">작성자</th>
                             <th style="width: 20%;">작성일</th>
                             <th style="width: 10%;">조회수</th>
+                            <th style="width: 5%;"></th>
                         </tr>
                     </thead>
                     <tbody id="post-list-body"></tbody>
                 </table>
-            </div>
-            <div class="post-detail">
-                <button class="back-button" onclick="hidePostDetail()">뒤로</button>
-                <h2 id="detail-title"></h2>
-                <div class="meta" id="detail-meta"></div>
-                <div class="content" id="detail-content"></div>
             </div>
         </div>
         <!-- 설정 페이지: 프로필, 알림, 테마, 데이터 관리 등 -->
@@ -1116,12 +1103,16 @@
                 postListAuthor: "작성자",
                 postListDate: "작성일",
                 postListViews: "조회수",
-                back: "뒤로",
+                deletePost: "삭제",
+                sharePost: "공유",
                 exportSuccess: "데이터가 성공적으로 내보내졌습니다.",
                 importSuccess: "데이터가 성공적으로 불러와졌습니다.",
                 importError: "잘못된 파일 형식입니다. JSON 파일을 업로드해주세요.",
                 importInvalid: "유효하지 않은 데이터 형식입니다.",
-                postNotFound: "게시글을 찾을 수 없습니다."
+                postNotFound: "게시글을 찾을 수 없습니다.",
+                deleteConfirm: "이 게시글을 삭제하시겠습니까?",
+                shareSuccess: "게시글 내용이 클립보드에 복사되었습니다.",
+                shareError: "공유에 실패했습니다. 다시 시도해주세요."
             }
         };
 
@@ -1216,14 +1207,12 @@
             const submitPostButton = document.querySelector('.post-form button');
             if (submitPostButton) submitPostButton.textContent = t.submitPost;
             const postListHeaders = document.querySelectorAll('.post-list th');
-            if (postListHeaders.length >= 4) {
+            if (postListHeaders.length >= 5) {
                 postListHeaders[0].textContent = t.postListTitle;
                 postListHeaders[1].textContent = t.postListAuthor;
                 postListHeaders[2].textContent = t.postListDate;
                 postListHeaders[3].textContent = t.postListViews;
             }
-            const backButton = document.querySelector('.back-button');
-            if (backButton) backButton.textContent = t.back;
         }
 
         // 페이지 로드 시 초기화
@@ -1422,8 +1411,6 @@
             document.querySelector('.' + tabName + '-container').classList.add('active');
             if (tabName === 'community') {
                 loadPosts();
-                document.querySelector('.post-list').style.display = 'block';
-                document.querySelector('.post-detail').classList.remove('active');
                 document.querySelector('.post-form').style.display = 'none';
             }
             syncMobileTabs();
@@ -1485,28 +1472,85 @@
                 posts = [];
             }
             const postListBody = document.getElementById('post-list-body');
-            if (!postListBody) return;
+            if (!postListBody) {
+                console.error('게시글 목록 요소를 찾을 수 없습니다.');
+                return;
+            }
             postListBody.innerHTML = '';
             posts.forEach(post => {
+                // 게시글 행
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${post.title}</td>
                     <td>${post.author}</td>
                     <td>${post.date}</td>
                     <td>${post.views}</td>
+                    <td>
+                        <div class="post-actions">
+                            <button class="post-actions-button" onclick="togglePostActions(${post.id})">⋮</button>
+                            <div class="post-actions-menu" id="post-actions-${post.id}">
+                                <button onclick="deletePost(${post.id})">${translations[currentLanguage].deletePost}</button>
+                                <button onclick="sharePost(${post.id})">${translations[currentLanguage].sharePost}</button>
+                            </div>
+                        </div>
+                    </td>
                 `;
                 row.style.cursor = 'pointer';
                 row.addEventListener('click', (e) => {
+                    if (e.target.closest('.post-actions')) return; // 3점 버튼 클릭 시 상세 보기 방지
                     e.preventDefault();
                     e.stopPropagation();
                     viewPost(post.id);
                 });
                 postListBody.appendChild(row);
+
+                // 상세 보기 아코디언 행
+                const detailRow = document.createElement('tr');
+                detailRow.classList.add('post-detail-row');
+                detailRow.id = `post-detail-${post.id}`;
+                detailRow.innerHTML = `
+                    <td colspan="5">
+                        <div class="post-detail-content">
+                            <h2>${post.title}</h2>
+                            <div class="meta">작성자: ${post.author} | 작성일: ${post.date} | 조회수: ${post.views}</div>
+                            <div class="content">${post.content}</div>
+                        </div>
+                    </td>
+                `;
+                postListBody.appendChild(detailRow);
             });
         }
 
-        // 게시글 상세 보기: 선택된 게시글 표시
-        function viewPost(postId) {
+        // 3점 버튼 메뉴 토글
+        function togglePostActions(postId) {
+            const menu = document.getElementById(`post-actions-${postId}`);
+            if (!menu) return;
+            const isActive = menu.classList.contains('active');
+            // 모든 메뉴 닫기
+            document.querySelectorAll('.post-actions-menu').forEach(m => {
+                m.classList.remove('active');
+            });
+            // 선택된 메뉴만 토글
+            if (!isActive) {
+                menu.classList.add('active');
+            }
+        }
+
+        // 게시글 삭제
+        function deletePost(postId) {
+            if (!confirm(translations[currentLanguage].deleteConfirm)) return;
+            try {
+                let posts = JSON.parse(localStorage.getItem('posts') || '[]');
+                posts = posts.filter(post => post.id !== postId);
+                localStorage.setItem('posts', JSON.stringify(posts));
+                loadPosts();
+            } catch (error) {
+                console.error('게시글 삭제 오류:', error);
+            }
+        }
+
+        // 게시글 공유: 클립보드에 복사
+        function sharePost(postId) {
             try {
                 const posts = JSON.parse(localStorage.getItem('posts') || '[]');
                 const post = posts.find(p => p.id === postId);
@@ -1514,664 +1558,321 @@
                     alert(translations[currentLanguage].postNotFound);
                     return;
                 }
-                post.views++;
-                localStorage.setItem('posts', JSON.stringify(posts));
-                const detailTitle = document.getElementById('detail-title');
-                const detailMeta = document.getElementById('detail-meta');
-                const detailContent = document.getElementById('detail-content');
-                if (detailTitle && detailMeta && detailContent) {
-                    detailTitle.textContent = post.title;
-                    detailMeta.textContent = `작성자: ${post.author} | 작성일: ${post.date} | 조회수: ${post.views}`;
-                    detailContent.textContent = post.content;
-                    document.querySelector('.post-list').style.display = 'none';
-                    document.querySelector('.post-detail').classList.add('active');
-                } else {
-                    console.error('상세 보기 요소를 찾을 수 없습니다.');
-                }
+                const shareText = `제목: ${post.title}\n작성자: ${post.author}\n내용: ${post.content}`;
+                navigator.clipboard.writeText(shareText).then(() => {
+                    alert(translations[currentLanguage].shareSuccess);
+                }).catch(() => {
+                    alert(translations[currentLanguage].shareError);
+                });
             } catch (error) {
-                console.error('게시글 보기 오류:', error);
+                console.error('게시글 공유 오류:', error);
+                alert(translations[currentLanguage].shareError);
+            }
+        }
+
+        // 게시글 상세 보기: 아코디언 스타일로 토글
+    function viewPost(postId) {
+        try {
+            // 모든 아코디언 닫기
+            document.querySelectorAll('.post-detail-row').forEach(row => {
+                row.classList.remove('active');
+                row.style.display = 'none';
+            });
+
+            // 선택된 게시글의 아코디언 열기
+            const detailRow = document.getElementById(`post-detail-${postId}`);
+            if (!detailRow) {
                 alert(translations[currentLanguage].postNotFound);
-            }
-        }
-
-        // 게시글 상세 보기 숨김: 목록으로 돌아감
-        function hidePostDetail() {
-            const postList = document.querySelector('.post-list');
-            const postDetail = document.querySelector('.post-detail');
-            if (postList && postDetail) {
-                postList.style.display = 'block';
-                postDetail.classList.remove('active');
-                loadPosts();
-            }
-        }
-
-        // 다크 모드 전환
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-        }
-
-        // 아코디언 토글: 설정 항목 확장/축소
-        function toggleAccordion(section) {
-            const item = document.querySelector(`.settings-item[data-section="${section}"]`);
-            const content = item.querySelector('.accordion-content');
-            const isActive = item.classList.contains('active');
-            document.querySelectorAll('.settings-item').forEach(i => {
-                i.classList.remove('active');
-                const c = i.querySelector('.accordion-content');
-                c.classList.remove('active');
-                c.style.maxHeight = null;
-            });
-            if (!isActive) {
-                item.classList.add('active');
-                content.classList.add('active');
-                content.style.maxHeight = content.scrollHeight + 'px';
-            }
-        }
-
-        // 설정 항목 클릭 이벤트
-        document.querySelectorAll('.settings-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                if (e.target.closest('.accordion-content') || e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') {
-                    return;
-                }
-                const section = item.dataset.section;
-                toggleAccordion(section);
-            });
-        });
-
-        // 폰트 크기 변경
-        function changeFontSize(delta) {
-            const currentSize = parseInt(getComputedStyle(document.body).fontSize);
-            const newSize = Math.max(12, Math.min(24, currentSize + delta));
-            document.body.style.fontSize = newSize + 'px';
-            localStorage.setItem('fontSize', newSize);
-        }
-
-        // 폰트 크기 초기화
-        function resetFontSize() {
-            document.body.style.fontSize = '16px';
-            localStorage.setItem('fontSize', '16');
-        }
-
-        function handleImageUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const preview = document.getElementById('profile-preview');
-                    preview.src = e.target.result;
-                    localStorage.setItem('profileImage', e.target.result);
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function editField(fieldId) {
-            const span = document.getElementById(fieldId);
-            const currentValue = span.textContent;
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.value = currentValue;
-            input.className = 'edit-input';
-            input.onblur = function() {
-                span.textContent = input.value || currentValue;
-                localStorage.setItem(fieldId, input.value || currentValue);
-                span.style.display = 'inline';
-                input.remove();
-            };
-            input.onkeydown = function(e) {
-                if (e.key === 'Enter') {
-                    input.blur();
-                }
-            };
-            span.style.display = 'none';
-            span.parentNode.insertBefore(input, span);
-            input.focus();
-        }
-
-        function toggleNotification(type) {
-            console.log(`${type} notification toggled`);
-        }
-
-        function changeNotificationSound(sound) {
-            console.log(`Notification sound changed to: ${sound}`);
-        }
-
-        function exportData() {
-            alert('데이터 내보내기 기능은 준비 중입니다.');
-        }
-
-        function importData() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            input.onchange = function(e) {
-                const file = e.target.files[0];
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const data = JSON.parse(e.target.result);
-                    
-                    // 사용자 정보 복원
-                    if (data.userInfo) {
-                        document.getElementById('user-name').textContent = data.userInfo.name;
-                        document.getElementById('user-email').textContent = data.userInfo.email;
-                        if (data.userInfo.profileImage) {
-                            document.getElementById('profile-preview').src = data.userInfo.profileImage;
-                            localStorage.setItem('profileImage', data.userInfo.profileImage);
-                        }
-                    }
-
-                    // 설정 복원
-                    if (data.settings) {
-                        if (data.settings.darkMode) document.body.classList.add('dark-mode');
-                        if (data.settings.fontSize) document.body.style.fontSize = data.settings.fontSize + 'px';
-                        if (data.settings.language) localStorage.setItem('language', data.settings.language);
-                        if (data.settings.notificationSound) localStorage.setItem('notificationSound', data.settings.notificationSound);
-                        if (data.settings.autoSave) localStorage.setItem('autoSave', data.settings.autoSave);
-                        if (data.settings.autoBackup) localStorage.setItem('autoBackup', data.settings.autoBackup);
-                        if (data.settings.cloudSync) localStorage.setItem('cloudSync', data.settings.cloudSync);
-                    }
-
-                    // 시간표 데이터 복원
-                    if (data.timetableData) {
-                        timetables = data.timetableData;
-                        if (data.currentState) {
-                            currentSchool = data.currentState.selectedSchool;
-                            currentClass = data.currentState.selectedClass;
-                            document.getElementById('search-input').value = currentSchool;
-                            document.getElementById('class-select').value = currentClass;
-                            loadTimetable();
-                        }
-                    }
-
-                    // 캘린더 데이터 복원
-                    if (data.calendarData) {
-                        const calendarCells = document.querySelectorAll('.calendar tbody td');
-                        calendarCells.forEach(cell => {
-                            const dateNumber = cell.querySelector('.date-number').textContent;
-                            if (dateNumber && data.calendarData[dateNumber]) {
-                                cell.querySelector('.memo').value = data.calendarData[dateNumber];
-                            }
-                        });
-                    }
-
-                    // 마지막 동기화 시간 업데이트
-                    if (data.lastSync) {
-                        document.getElementById('last-sync').textContent = new Date(data.lastSync).toLocaleString();
-                        localStorage.setItem('lastSync', data.lastSync);
-                    }
-
-                    alert('데이터 복원이 완료되었습니다.');
-                };
-                reader.readAsText(file);
-            };
-            input.click();
-        }
-
-        function resetData() {
-            if (confirm('모든 데이터를 초기화하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
-                localStorage.clear();
-                location.reload();
-            }
-        }
-
-        // 자동 저장 설정
-        function toggleAutoSave() {
-            const checkbox = document.getElementById('auto-save');
-            localStorage.setItem('autoSave', checkbox.checked);
-        }
-
-        // 백업 설정
-        function toggleAutoBackup() {
-            const checkbox = document.getElementById('auto-backup');
-            localStorage.setItem('autoBackup', checkbox.checked);
-        }
-
-        function manualBackup() {
-            exportData();
-            document.getElementById('last-sync').textContent = new Date().toLocaleString();
-        }
-
-        // 클라우드 동기화
-        function toggleCloudSync() {
-            const checkbox = document.getElementById('cloud-sync');
-            localStorage.setItem('cloudSync', checkbox.checked);
-        }
-
-        // 페이지 로드 시 설정 복원
-        window.addEventListener('load', function() {
-            // 알림 설정 복원
-            ['push', 'email', 'timetable', 'exam'].forEach(type => {
-                const saved = localStorage.getItem(`${type}Notification`);
-                if (saved !== null) {
-                    document.getElementById(`${type}-notification`).checked = saved === 'true';
-                }
-            });
-
-            // 자동 저장 설정 복원
-            const autoSave = localStorage.getItem('autoSave');
-            if (autoSave !== null) {
-                document.getElementById('auto-save').checked = autoSave === 'true';
-            }
-
-            // 자동 백업 설정 복원
-            const autoBackup = localStorage.getItem('autoBackup');
-            if (autoBackup !== null) {
-                document.getElementById('auto-backup').checked = autoBackup === 'true';
-            }
-
-            // 클라우드 동기화 설정 복원
-            const cloudSync = localStorage.getItem('cloudSync');
-            if (cloudSync !== null) {
-                document.getElementById('cloud-sync').checked = cloudSync === 'true';
-            }
-
-            // 마지막 동기화 시간 표시
-            const lastSync = localStorage.getItem('lastSync');
-            if (lastSync) {
-                document.getElementById('last-sync').textContent = lastSync;
-            }
-        });
-
-        // 자주 찾는 도움말 표시
-        function showFAQ() {
-            const faqContent = `
-                <div class="terms-container">
-                    <h2>자주 찾는 도움말</h2>
-                    
-                    <div class="faq-item">
-                        <h3>Q. 시간표를 어떻게 저장하나요?</h3>
-                        <p>A. 시간표는 자동으로 저장됩니다. 수정한 내용은 즉시 저장되며, 페이지를 새로고침하거나 다시 방문해도 데이터가 유지됩니다.</p>
-                    </div>
-
-                    <div class="faq-item">
-                        <h3>Q. 다크모드는 어떻게 켜나요?</h3>
-                        <p>A. 설정 > 테마 설정 > 다크모드 전환을 통해 다크모드를 활성화할 수 있습니다. 설정은 자동으로 저장됩니다.</p>
-                    </div>
-
-                    <div class="faq-item">
-                        <h3>Q. 데이터를 백업하는 방법이 있나요?</h3>
-                        <p>A. 설정 > 백업 및 동기화 > 수동 백업을 통해 현재 데이터를 백업할 수 있습니다. 백업 파일은 JSON 형식으로 저장됩니다.</p>
-                    </div>
-
-                    <div class="faq-item">
-                        <h3>Q. 캘린더에 메모를 작성할 수 있나요?</h3>
-                        <p>A. 네, 캘린더의 각 날짜 칸에 메모를 작성할 수 있습니다. 작성한 메모는 자동으로 저장됩니다.</p>
-                    </div>
-
-                    <div class="faq-item">
-                        <h3>Q. 알림 설정은 어떻게 하나요?</h3>
-                        <p>A. 설정 > 알림 설정에서 푸시 알림, 이메일 알림, 시간표 변경 알림 등을 설정할 수 있습니다.</p>
-                    </div>
-
-                    <div class="faq-item">
-                        <h3>Q. 언어를 변경할 수 있나요?</h3>
-                        <p>A. 설정 > 테마 설정 > 언어 설정에서 한국어, 영어, 일본어, 중국어 중 선택할 수 있습니다.</p>
-                    </div>
-                </div>
-            `;
-            
-            const submenu = document.getElementById('help');
-            const existingContent = submenu.querySelector('.terms-container');
-            if (existingContent) {
-                existingContent.remove();
-            } else {
-                submenu.insertAdjacentHTML('beforeend', faqContent);
-            }
-        }
-
-        // 문의하기 표시
-        function showContact() {
-            const contactContent = `
-                <div class="terms-container">
-                    <h2>문의하기</h2>
-                    <p>문의사항이 있으시면 아래 연락처로 연락주세요.</p>
-                    
-                    <div class="contact-info">
-                        <h3>이메일</h3>
-                        <p>seojunji62@gmail.com</p>
-                        
-                        <h3>주소</h3>
-                        <p>추가예정</p>
-                        
-                        <h3>문의 시간</h3>
-                        <p>평일: 09:00 - 18:00</p>
-                        <p>주말 및 공휴일: 휴무</p>
-                    </div>
-
-                    <div class="contact-note">
-                        <p>※ 이메일 문의 시 답변은 1-2일 정도 소요될 수 있습니다.</p>
-                        <p>※ 주말 및 공휴일 문의는 다음 영업일에 처리됩니다.</p>
-                    </div>
-                </div>
-            `;
-            
-            const submenu = document.getElementById('help');
-            const existingContent = submenu.querySelector('.terms-container');
-            if (existingContent) {
-                existingContent.remove();
-            } else {
-                submenu.insertAdjacentHTML('beforeend', contactContent);
-            }
-        }
-
-        // 사용 가이드 표시
-        function showUserGuide() {
-            const guideContent = `
-                <div class="terms-container">
-                    <h2>사용 가이드</h2>
-                    
-                    <div class="guide-section">
-                        <h3>1. 시작하기</h3>
-                        <p>시간표 관리 프로그램을 시작하기 전에 다음 사항을 확인해주세요:</p>
-                        <ul>
-                            <li>최신 버전의 웹 브라우저 사용 (Chrome, Firefox, Safari, Edge 등)</li>
-                            <li>인터넷 연결 상태 확인</li>
-                            <li>JavaScript 활성화</li>
-                        </ul>
-                    </div>
-
-                    <div class="guide-section">
-                        <h3>2. 기본 기능</h3>
-                        <h4>2.1 시간표 관리</h4>
-                        <ul>
-                            <li>학교 검색: 상단 검색창에서 학교를 검색할 수 있습니다.</li>
-                            <li>반 선택: 드롭다운 메뉴에서 반을 선택할 수 있습니다.</li>
-                            <li>시간표 편집: 각 셀을 클릭하여 수업 내용을 입력할 수 있습니다.</li>
-                        </ul>
-
-                        <h4>2.2 캘린더</h4>
-                        <ul>
-                            <li>메모 작성: 각 날짜 칸에 메모를 작성할 수 있습니다.</li>
-                            <li>자동 저장: 작성한 메모는 자동으로 저장됩니다.</li>
-                        </ul>
-                    </div>
-
-                    <div class="guide-section">
-                        <h3>3. 설정</h3>
-                        <h4>3.1 테마 설정</h4>
-                        <ul>
-                            <li>다크모드: 눈의 피로를 줄이기 위한 다크모드를 사용할 수 있습니다.</li>
-                            <li>폰트 크기: 화면에서 보기 편한 폰트 크기를 설정할 수 있습니다.</li>
-                            <li>언어 설정: 한국어, 영어, 일본어, 중국어 중 선택할 수 있습니다.</li>
-                        </ul>
-
-                        <h4>3.2 알림 설정</h4>
-                        <ul>
-                            <li>푸시 알림: 중요한 일정에 대한 푸시 알림을 받을 수 있습니다.</li>
-                            <li>이메일 알림: 이메일로 알림을 받을 수 있습니다.</li>
-                            <li>알림음 설정: 알림음 종류를 선택할 수 있습니다.</li>
-                        </ul>
-                    </div>
-
-                    <div class="guide-section">
-                        <h3>4. 데이터 관리</h3>
-                        <ul>
-                            <li>데이터 내보내기: 현재 데이터를 백업할 수 있습니다.</li>
-                            <li>데이터 가져오기: 백업한 데이터를 복원할 수 있습니다.</li>
-                            <li>자동 저장: 모든 변경사항은 자동으로 저장됩니다.</li>
-                        </ul>
-                    </div>
-
-                    <div class="guide-section">
-                        <h3>5. 문제 해결</h3>
-                        <ul>
-                            <li>페이지가 제대로 로드되지 않는 경우: 브라우저 캐시를 삭제하고 다시 시도해주세요.</li>
-                            <li>데이터가 저장되지 않는 경우: 인터넷 연결을 확인하고 다시 시도해주세요.</li>
-                            <li>기타 문제 발생 시: 문의하기를 통해 연락주세요.</li>
-                        </ul>
-                    </div>
-                </div>
-            `;
-            
-            const submenu = document.getElementById('help');
-            const existingContent = submenu.querySelector('.terms-container');
-            if (existingContent) {
-                existingContent.remove();
-            } else {
-                submenu.insertAdjacentHTML('beforeend', guideContent);
-            }
-        }
-
-        // 위치 정보 설정 표시
-        function showLocationSettings() {
-            const locationContent = `
-                <div class="terms-container">
-                    <h2>위치 정보 설정</h2>
-                    <p>위치 정보를 사용하여 다음과 같은 서비스를 제공합니다:</p>
-                    <ul>
-                        <li>근처 학교 검색</li>
-                        <li>날씨 정보 제공</li>
-                        <li>지역별 공지사항</li>
-                    </ul>
-
-                    <div class="location-controls">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="location-enabled" onchange="toggleLocation()">
-                            <span class="toggle-slider"></span>
-                        </label>
-                        <span>위치 정보 사용</span>
-                    </div>
-
-                    <div class="location-note">
-                        <p>※ 위치 정보는 사용자의 동의 하에 수집되며, 서비스 제공 목적으로만 사용됩니다.</p>
-                        <p>※ 위치 정보 사용을 중지하더라도 기본 서비스 이용에는 제한이 없습니다.</p>
-                    </div>
-                </div>
-            `;
-            
-            const submenu = document.getElementById('privacy');
-            const existingContent = submenu.querySelector('.terms-container');
-            if (existingContent) {
-                existingContent.remove();
-            } else {
-                submenu.insertAdjacentHTML('beforeend', locationContent);
-            }
-        }
-
-        // 계정 정보 관리 표시
-        function showAccountSettings() {
-            const accountContent = `
-                <div class="terms-container">
-                    <h2>계정 정보 관리</h2>
-                    
-                    <div class="account-section">
-                        <h3>프로필 정보</h3>
-                        <div class="profile-edit">
-                            <label>이름:</label>
-                            <input type="text" id="account-name" value="${document.getElementById('user-name').textContent}">
-                            <button class="edit-button" onclick="updateAccountInfo('name')">저장</button>
-                        </div>
-                        <div class="profile-edit">
-                            <label>이메일:</label>
-                            <input type="email" id="account-email" value="${document.getElementById('user-email').textContent}">
-                            <button class="edit-button" onclick="updateAccountInfo('email')">저장</button>
-                        </div>
-                    </div>
-
-                    <div class="account-section">
-                        <h3>보안 설정</h3>
-                        <div class="profile-edit">
-                            <label>비밀번호 변경:</label>
-                            <input type="password" id="current-password" placeholder="현재 비밀번호">
-                            <input type="password" id="new-password" placeholder="새 비밀번호">
-                            <input type="password" id="confirm-password" placeholder="새 비밀번호 확인">
-                            <button class="edit-button" onclick="changePassword()">변경</button>
-                        </div>
-                    </div>
-
-                    <div class="account-section">
-                        <h3>계정 삭제</h3>
-                        <p>계정을 삭제하면 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.</p>
-                        <button class="delete-account" onclick="deleteAccount()">계정 삭제</button>
-                    </div>
-                </div>
-            `;
-            
-            const submenu = document.getElementById('privacy');
-            const existingContent = submenu.querySelector('.terms-container');
-            if (existingContent) {
-                existingContent.remove();
-            } else {
-                submenu.insertAdjacentHTML('beforeend', accountContent);
-            }
-        }
-
-        // 위치 정보 토글
-        function toggleLocation() {
-            const checkbox = document.getElementById('location-enabled');
-            localStorage.setItem('locationEnabled', checkbox.checked);
-            if (checkbox.checked) {
-                // 위치 정보 요청
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(
-                        function(position) {
-                            localStorage.setItem('userLocation', JSON.stringify({
-                                latitude: position.coords.latitude,
-                                longitude: position.coords.longitude
-                            }));
-                        },
-                        function(error) {
-                            console.error('위치 정보를 가져올 수 없습니다:', error);
-                        }
-                    );
-                }
-            }
-        }
-
-        // 계정 정보 업데이트
-        function updateAccountInfo(type) {
-            const value = document.getElementById(`account-${type}`).value;
-            if (type === 'name') {
-                document.getElementById('user-name').textContent = value;
-                localStorage.setItem('user-name', value);
-            } else if (type === 'email') {
-                document.getElementById('user-email').textContent = value;
-                localStorage.setItem('user-email', value);
-            }
-            alert('정보가 업데이트되었습니다.');
-        }
-
-        // 비밀번호 변경
-        function changePassword() {
-            const currentPassword = document.getElementById('current-password').value;
-            const newPassword = document.getElementById('new-password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
-
-            if (newPassword !== confirmPassword) {
-                alert('새 비밀번호가 일치하지 않습니다.');
                 return;
             }
 
-            // 실제로는 서버와 통신하여 비밀번호를 변경해야 함
-            alert('비밀번호가 변경되었습니다.');
-            document.getElementById('current-password').value = '';
-            document.getElementById('new-password').value = '';
-            document.getElementById('confirm-password').value = '';
-        }
-
-        // 계정 삭제
-        function deleteAccount() {
-            if (confirm('정말로 계정을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
-                localStorage.clear();
-                location.reload();
+            // 조회수 증가
+            let posts = JSON.parse(localStorage.getItem('posts') || '[]');
+            const post = posts.find(p => p.id === postId);
+            if (post) {
+                post.views += 1;
+                localStorage.setItem('posts', JSON.stringify(posts));
+                loadPosts(); // 조회수 업데이트 반영
             }
-        }
 
-        // 모바일 메뉴 토글
-        function toggleMobileMenu() {
-            // 제거
+            // 아코디언 토글
+            detailRow.style.display = 'table-row';
+            setTimeout(() => {
+                detailRow.classList.add('active');
+            }, 10); // 애니메이션 위해 약간의 지연
+        } catch (error) {
+            console.error('게시글 상세 보기 오류:', error);
+            alert(translations[currentLanguage].postNotFound);
         }
-        
-        // 화면 크기 변경 시 레이아웃 조정
-        window.addEventListener('resize', function() {
-            if (window.innerWidth > 768) {
-                const verticalTabs = document.querySelector('.vertical-tabs');
-                verticalTabs.classList.remove('active');
+    }
+
+    // 다크 모드 토글: 테마 전환 및 저장
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+        const isDarkMode = document.body.classList.contains('dark-mode');
+        localStorage.setItem('darkMode', isDarkMode);
+    }
+
+    // 폰트 크기 변경: UI 텍스트 크기 조정
+    function changeFontSize(delta) {
+        const root = document.documentElement;
+        const currentSize = parseFloat(getComputedStyle(root).fontSize);
+        const newSize = Math.max(12, Math.min(20, currentSize + delta));
+        root.style.fontSize = `${newSize}px`;
+        localStorage.setItem('fontSize', newSize);
+    }
+
+    // 폰트 크기 초기화: 기본값(16px)으로 복원
+    function resetFontSize() {
+        document.documentElement.style.fontSize = '16px';
+        localStorage.setItem('fontSize', '16');
+    }
+
+    // 프로필 필드 편집: 이름, 이메일 수정
+    function editField(fieldId) {
+        const element = document.getElementById(fieldId);
+        const currentValue = element.textContent;
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = currentValue;
+        input.className = 'edit-input';
+        input.onblur = function() {
+            element.textContent = input.value || currentValue;
+            localStorage.setItem(fieldId, input.value || currentValue);
+            element.style.display = 'inline';
+            input.remove();
+        };
+        input.onkeydown = function(e) {
+            if (e.key === 'Enter') input.blur();
+        };
+        element.style.display = 'none';
+        element.parentNode.insertBefore(input, element.nextSibling);
+        input.focus();
+    }
+
+    // 프로필 이미지 업로드: 이미지 미리보기 및 저장
+    function handleImageUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = document.getElementById('profile-preview');
+            img.src = e.target.result;
+            localStorage.setItem('profileImage', e.target.result);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // 알림 설정 토글: 푸시, 이메일, 시간표, 시험 알림
+    function toggleNotification(type) {
+        const checkbox = document.getElementById(`${type}-notification`);
+        localStorage.setItem(`${type}Notification`, checkbox.checked);
+    }
+
+    // 알림음 변경: 선택된 알림음 저장
+    function changeNotificationSound(sound) {
+        localStorage.setItem('notificationSound', sound);
+    }
+
+    // 자동 저장 토글
+    function toggleAutoSave() {
+        const autoSave = document.getElementById('auto-save').checked;
+        localStorage.setItem('autoSave', autoSave);
+    }
+
+    // 자동 백업 토글
+    function toggleAutoBackup() {
+        const autoBackup = document.getElementById('auto-backup').checked;
+        localStorage.setItem('autoBackup', autoBackup);
+    }
+
+    // 클라우드 동기화 토글
+    function toggleCloudSync() {
+        const cloudSync = document.getElementById('cloud-sync').checked;
+        localStorage.setItem('cloudSync', cloudSync);
+        if (cloudSync) {
+            document.getElementById('last-sync').textContent = new Date().toLocaleString('ko-KR');
+            localStorage.setItem('lastSync', new Date().toISOString());
+        }
+    }
+
+    // 수동 백업: 데이터 다운로드
+    function manualBackup() {
+        const data = {
+            timetables,
+            posts: JSON.parse(localStorage.getItem('posts') || '[]'),
+            settings: {
+                darkMode: localStorage.getItem('darkMode'),
+                fontSize: localStorage.getItem('fontSize'),
+                language: localStorage.getItem('language')
             }
-        });
-        
-        // 모바일에서 메뉴 외부 클릭 시 메뉴 닫기 관련 코드 제거
-        document.addEventListener('click', function(event) {
-            // 제거
-        });
+        };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'school-talk-backup.json';
+        a.click();
+        URL.revokeObjectURL(url);
+        alert(translations[currentLanguage].exportSuccess);
+    }
 
-        // 모바일 탭 버튼 상태 동기화
-        function syncMobileTabs() {
-            const desktopTabs = document.querySelectorAll('.tab-button');
-            const mobileTabs = document.querySelectorAll('.mobile-tab-button');
-            
-            desktopTabs.forEach((tab, index) => {
-                if (tab.classList.contains('active')) {
-                    mobileTabs[index].classList.add('active');
-                } else {
-                    mobileTabs[index].classList.remove('active');
+    // 데이터 내보내기: 현재 데이터 다운로드
+    function exportData() {
+        manualBackup();
+    }
+
+    // 데이터 가져오기: JSON 파일 업로드 및 복원
+    function importData(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        if (!file.name.endsWith('.json')) {
+            alert(translations[currentLanguage].importError);
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                if (data.timetables) {
+                    Object.assign(timetables, data.timetables);
+                    loadTimetable();
                 }
+                if (data.posts) {
+                    localStorage.setItem('posts', JSON.stringify(data.posts));
+                    loadPosts();
+                }
+                if (data.settings) {
+                    if (data.settings.darkMode) {
+                        localStorage.setItem('darkMode', data.settings.darkMode);
+                        if (data.settings.darkMode === 'true') {
+                            document.body.classList.add('dark-mode');
+                        } else {
+                            document.body.classList.remove('dark-mode');
+                        }
+                    }
+                    if (data.settings.fontSize) {
+                        document.documentElement.style.fontSize = `${data.settings.fontSize}px`;
+                        localStorage.setItem('fontSize', data.settings.fontSize);
+                    }
+                    if (data.settings.language) {
+                        changeLanguage(data.settings.language);
+                    }
+                }
+                alert(translations[currentLanguage].importSuccess);
+            } catch (error) {
+                console.error('데이터 가져오기 오류:', error);
+                alert(translations[currentLanguage].importInvalid);
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    // 데이터 초기화: 모든 데이터 삭제
+    function resetData() {
+        if (!confirm(translations[currentLanguage].confirmReset)) return;
+        localStorage.clear();
+        Object.keys(timetables).forEach(school => {
+            timetables[school] = {
+                "1반": Array(timetableCells.length).fill(""),
+                "2반": Array(timetableCells.length).fill(""),
+                "3반": Array(timetableCells.length).fill(""),
+                "4반": Array(timetableCells.length).fill("")
+            };
+        });
+        loadTimetable();
+        loadPosts();
+        document.documentElement.style.fontSize = '16px';
+        document.body.classList.remove('dark-mode');
+        document.getElementById('profile-preview').src = '';
+        document.getElementById('user-name').textContent = '사용자 이름';
+        document.getElementById('user-email').textContent = 'user@example.com';
+        changeLanguage('ko');
+    }
+
+    // 설정 복원: 저장된 설정 적용
+    function restoreSettings() {
+        const fontSize = localStorage.getItem('fontSize');
+        if (fontSize) document.documentElement.style.fontSize = `${fontSize}px`;
+
+        const language = localStorage.getItem('language');
+        if (language) changeLanguage(language);
+
+        const notifications = ['push', 'email', 'timetable', 'exam'];
+        notifications.forEach(type => {
+            const enabled = localStorage.getItem(`${type}Notification`) === 'true';
+            document.getElementById(`${type}-notification`).checked = enabled;
+        });
+
+        const notificationSound = localStorage.getItem('notificationSound') || 'default';
+        document.querySelector('.notification-sound').value = notificationSound;
+
+        const autoSave = localStorage.getItem('autoSave') === 'true';
+        document.getElementById('auto-save').checked = autoSave;
+
+        const autoBackup = localStorage.getItem('autoBackup') === 'true';
+        document.getElementById('auto-backup').checked = autoBackup;
+
+        const cloudSync = localStorage.getItem('cloudSync') === 'true';
+        document.getElementById('cloud-sync').checked = cloudSync;
+
+        const lastSync = localStorage.getItem('lastSync');
+        if (lastSync) {
+            document.getElementById('last-sync').textContent = new Date(lastSync).toLocaleString('ko-KR');
+        }
+    }
+
+    // 아코디언 설정 메뉴 토글: 설정 페이지의 아코디언 동작
+    document.querySelectorAll('.settings-item').forEach(item => {
+        item.addEventListener('click', function() {
+            const section = this.dataset.section;
+            const content = document.getElementById(`${section}-content`);
+            const isActive = content.classList.contains('active');
+
+            // 모든 아코디언 닫기
+            document.querySelectorAll('.accordion-content').forEach(c => {
+                c.classList.remove('active');
+                c.style.maxHeight = null;
+            });
+            document.querySelectorAll('.settings-item').forEach(i => {
+                i.classList.remove('active');
+            });
+
+            // 선택된 아코디언 열기
+            if (!isActive) {
+                this.classList.add('active');
+                content.classList.add('active');
+                content.style.maxHeight = content.scrollHeight + 'px';
+            }
+        });
+    });
+
+    // 도움말 관련 함수: 미구현 알림
+    function showTerms() {
+        alert('개인정보 수집·이용 동의서: 구현 예정');
+    }
+    function showLocationSettings() {
+        alert('위치 정보 설정: 구현 예정');
+    }
+    function showAccountSettings() {
+        alert('계정 정보 관리: 구현 예정');
+    }
+    function showFAQ() {
+        alert('자주 찾는 도움말: 구현 예정');
+    }
+    function showContact() {
+        alert('문의하기: 구현 예정');
+    }
+    function showUserGuide() {
+        alert('사용 가이드: 구현 예정');
+    }
+
+    // 문서 외부 클릭 시 3점 메뉴 닫기
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.post-actions')) {
+            document.querySelectorAll('.post-actions-menu').forEach(menu => {
+                menu.classList.remove('active');
             });
         }
-    </script>
-<script>
-function openPostModal() {
-  // 간단하게 prompt로 처리
-  const title = prompt("제목 입력");
-  const author = prompt("작성자 이름", "익명");
-  const content = prompt("내용 입력");
-  if (!title || !content) return;
-
-  const post = {
-    title, author, content,
-    date: new Date().toLocaleString()
-  };
-
-  const posts = JSON.parse(localStorage.getItem("posts") || "[]");
-  posts.unshift(post);
-  localStorage.setItem("posts", JSON.stringify(posts));
-  renderPosts();
-}
-
-function renderPosts() {
-  const posts = JSON.parse(localStorage.getItem("posts") || "[]");
-  const tbody = document.getElementById("post-list-body");
-  if (!tbody) return;
-  tbody.innerHTML = "";
-  posts.forEach(post => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${post.title}</td>
-      <td>${post.author}</td>
-      <td>${post.date}</td>
-      <td><button onclick="alert('${post.content.replace(/'/g, "\\'")}')">보기</button></td>
-    `;
-    tbody.appendChild(row);
-  });
-}
-
-window.addEventListener("DOMContentLoaded", renderPosts);
+    });
 </script>
-<script>
-function viewPost(index) {
-  const posts = JSON.parse(localStorage.getItem("posts") || "[]");
-  const post = posts[index];
-  if (!post) return;
-
-  document.getElementById("post-view").style.display = "block";
-  document.querySelector(".post-list").style.display = "none";
-
-  document.getElementById("view-title").textContent = post.title;
-  document.getElementById("view-author").textContent = post.author;
-  document.getElementById("view-date").textContent = post.date;
-  document.getElementById("view-content").textContent = post.content;
-}
-
-function backToList() {
-  document.getElementById("post-view").style.display = "none";
-  document.querySelector(".post-list").style.display = "table";
-}
-
-function toggleSettingDetail(i) {
-  const all = document.querySelectorAll(".settings-detail");
-  all[i].style.display = (all[i].style.display === "block") ? "none" : "block";
-}
-</script></body>
-</html>
