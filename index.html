@@ -986,238 +986,101 @@
 <div id="view-content" style="white-space:pre-line;"></div>
 </div></div>
 <div class="settings-container">
-<div class="settings-profile">
-<div class="profile-image" onclick="document.getElementById('profile-image-input').click()">
-<input accept="image/*" id="profile-image-input" onchange="handleImageUpload(event)" type="file"/>
-<img alt="프로필 이미지" id="profile-preview" src=""/>
-</div>
-<div class="profile-info">
-<h2>
-<span id="user-name">사용자 이름</span>
-<button class="edit-button" onclick="editField('user-name')">✏️</button>
-</h2>
-<p>
-<span id="user-email">user@example.com</span>
-<button class="edit-button" onclick="editField('user-email')">✏️</button>
-</p>
-</div>
-</div>
-<div class="main-settings">
-<ul class="settings-list">
-<li class="settings-item" onclick="toggleSettingDetail(0)">
-                        알림 설정
-                        <i>›</i>
-</li><div class="settings-detail" style="display:none; padding:10px;">설정 1 상세 내용입니다.</div>
-<li class="settings-item" onclick="toggleSettingDetail(1)">
-                        테마 설정
-                        <i>›</i>
-</li><div class="settings-detail" style="display:none; padding:10px;">설정 2 상세 내용입니다.</div>
-<li class="settings-item" onclick="toggleSettingDetail(2)">
-                        데이터 관리
-                        <i>›</i>
-</li><div class="settings-detail" style="display:none; padding:10px;">설정 3 상세 내용입니다.</div>
-<li class="settings-item" onclick="toggleSettingDetail(3)">
-                        백업 및 동기화
-                        <i>›</i>
-</li><div class="settings-detail" style="display:none; padding:10px;">설정 4 상세 내용입니다.</div>
-<li class="settings-item" onclick="toggleSettingDetail(4)">
-                        개인정보 설정
-                        <i>›</i>
-</li><div class="settings-detail" style="display:none; padding:10px;">설정 5 상세 내용입니다.</div>
-<li class="settings-item" onclick="toggleSettingDetail(5)">
-                        도움말
-                        <i>›</i>
-</li><div class="settings-detail" style="display:none; padding:10px;">설정 6 상세 내용입니다.</div>
-</ul>
-</div>
-<div class="submenu" id="notifications">
-<div class="back-button" onclick="hideSubmenu('notifications')">
-<i>‹</i> 알림 설정
-                </div>
-<ul class="settings-list">
-<li class="submenu-item" onclick="toggleSettingDetail(6)">
-<div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                            푸시 알림
-                            <label class="toggle-switch">
-<input id="push-notification" onchange="toggleNotification('push')" type="checkbox"/>
-<span class="toggle-slider"></span>
-</label>
-</div>
-</li><div class="settings-detail" style="display:none; padding:10px;">설정 7 상세 내용입니다.</div>
-<li class="submenu-item" onclick="toggleSettingDetail(7)">
-<div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                            이메일 알림
-                            <label class="toggle-switch">
-<input id="email-notification" onchange="toggleNotification('email')" type="checkbox"/>
-<span class="toggle-slider"></span>
-</label>
-</div>
-</li><div class="settings-detail" style="display:none; padding:10px;">설정 8 상세 내용입니다.</div>
-<li class="submenu-item" onclick="toggleSettingDetail(8)">
-<div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                            시간표 변경 알림
-                            <label class="toggle-switch">
-<input id="timetable-notification" onchange="toggleNotification('timetable')" type="checkbox"/>
-<span class="toggle-slider"></span>
-</label>
-</div>
-</li><div class="settings-detail" style="display:none; padding:10px;">설정 9 상세 내용입니다.</div>
-<li class="submenu-item" onclick="toggleSettingDetail(9)">
-<div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                            시험 일정 알림
-                            <label class="toggle-switch">
-<input id="exam-notification" onchange="toggleNotification('exam')" type="checkbox"/>
-<span class="toggle-slider"></span>
-</label>
-</div>
-</li><div class="settings-detail" style="display:none; padding:10px;">설정 10 상세 내용입니다.</div>
-<li class="submenu-item" onclick="toggleSettingDetail(10)">
-<div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
-                            알림음 설정
-                            <select class="notification-sound" onchange="changeNotificationSound(this.value)">
-<option value="default">기본 알림음</option>
-<option value="bell">벨 소리</option>
-<option value="chime">차임벨</option>
-<option value="ding">딩동</option>
-</select>
-</div>
-</li><div class="settings-detail" style="display:none; padding:10px;">설정 11 상세 내용입니다.</div>
-</ul>
-</div>
-<div class="submenu" id="theme">
-<div class="back-button" onclick="hideSubmenu('theme')">
-<i>‹</i> 테마 설정
-                </div>
-<ul class="settings-list">
-<li class="submenu-item" onclick="toggleSettingDetail(11)">
-                        다크모드 전환
-                        <i>›</i>
-</li><div class="settings-detail" style="display:none; padding:10px;">설정 12 상세 내용입니다.</div>
-<li class="submenu-item" onclick="toggleSettingDetail(12)">
-<div class="font-size-control">
-                            폰트 크기
-                            <button class="font-size-button" onclick="changeFontSize(-1)">A-</button>
-<button class="font-size-button" onclick="changeFontSize(1)">A+</button>
-<button class="reset-button" onclick="resetFontSize()">초기화</button>
-</div>
-</li><div class="settings-detail" style="display:none; padding:10px;">설정 13 상세 내용입니다.</div>
-<li class="submenu-item" onclick="toggleSettingDetail(13)">
-<div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
-                            언어 설정
-                            <select class="language-select" onchange="changeLanguage(this.value)">
-<option value="ko">한국어</option>
-<option value="en">English</option>
-<option value="ja">日本語</option>
-<option value="zh">中文</option>
-</select>
-</div>
-</li><div class="settings-detail" style="display:none; padding:10px;">설정 14 상세 내용입니다.</div>
-</ul>
-</div>
-<div class="submenu" id="data">
-<div class="back-button" onclick="hideSubmenu('data')">
-<i>‹</i> 데이터 관리
-                </div>
-<ul class="settings-list">
-<li class="submenu-item" onclick="toggleSettingDetail(14)">
-                        데이터 내보내기
-                        <i>›</i>
-</li><div class="settings-detail" style="display:none; padding:10px;">설정 15 상세 내용입니다.</div>
-<li class="submenu-item" onclick="toggleSettingDetail(15)">
-                        데이터 가져오기
-                        <i>›</i>
-</li><div class="settings-detail" style="display:none; padding:10px;">설정 16 상세 내용입니다.</div>
-<li class="submenu-item" onclick="toggleSettingDetail(16)">
-                        데이터 초기화
-                        <i>›</i>
-</li><div class="settings-detail" style="display:none; padding:10px;">설정 17 상세 내용입니다.</div>
-<li class="submenu-item" onclick="toggleSettingDetail(17)">
-<div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                            자동 저장
-                            <label class="toggle-switch">
-<input id="auto-save" onchange="toggleAutoSave()" type="checkbox"/>
-<span class="toggle-slider"></span>
-</label>
-</div>
-</li><div class="settings-detail" style="display:none; padding:10px;">설정 18 상세 내용입니다.</div>
-</ul>
-</div>
-<div class="submenu" id="sync">
-<div class="back-button" onclick="hideSubmenu('sync')">
-<i>‹</i> 백업 및 동기화
-                </div>
-<ul class="settings-list">
-<li class="submenu-item" onclick="toggleSettingDetail(18)">
-<div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                            자동 백업
-                            <label class="toggle-switch">
-<input id="auto-backup" onchange="toggleAutoBackup()" type="checkbox"/>
-<span class="toggle-slider"></span>
-</label>
-</div>
-</li><div class="settings-detail" style="display:none; padding:10px;">설정 19 상세 내용입니다.</div>
-<li class="submenu-item" onclick="toggleSettingDetail(19)">
-                        수동 백업
-                        <i>›</i>
-</li><div class="settings-detail" style="display:none; padding:10px;">설정 20 상세 내용입니다.</div>
-<li class="submenu-item" onclick="toggleSettingDetail(20)">
-<div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                            클라우드 동기화
-                            <label class="toggle-switch">
-<input id="cloud-sync" onchange="toggleCloudSync()" type="checkbox"/>
-<span class="toggle-slider"></span>
-</label>
-</div>
-</li><div class="settings-detail" style="display:none; padding:10px;">설정 21 상세 내용입니다.</div>
-<li class="submenu-item" onclick="toggleSettingDetail(21)">
-                        마지막 동기화: <span id="last-sync">-</span>
-</li><div class="settings-detail" style="display:none; padding:10px;">설정 22 상세 내용입니다.</div>
-</ul>
-</div>
-<div class="submenu" id="privacy">
-<div class="back-button" onclick="hideSubmenu('privacy')">
-<i>‹</i> 개인정보 설정
-                </div>
-<ul class="settings-list">
-<li class="submenu-item" onclick="toggleSettingDetail(22)">
-                        개인정보 수집·이용 동의서
-                        <i>›</i>
-</li><div class="settings-detail" style="display:none; padding:10px;">설정 23 상세 내용입니다.</div>
-<li class="submenu-item" onclick="toggleSettingDetail(23)">
-                        위치 정보 설정
-                        <i>›</i>
-</li><div class="settings-detail" style="display:none; padding:10px;">설정 24 상세 내용입니다.</div>
-<li class="submenu-item" onclick="toggleSettingDetail(24)">
-                        계정 정보 관리
-                        <i>›</i>
-</li><div class="settings-detail" style="display:none; padding:10px;">설정 25 상세 내용입니다.</div>
-</ul>
-</div>
-<div class="submenu" id="help">
-<div class="back-button" onclick="hideSubmenu('help')">
-<i>‹</i> 도움말
-                </div>
-<ul class="settings-list">
-<li class="submenu-item" onclick="toggleSettingDetail(25)">
-                        자주 찾는 도움말
-                        <i>›</i>
-</li><div class="settings-detail" style="display:none; padding:10px;">설정 26 상세 내용입니다.</div>
-<li class="submenu-item" onclick="toggleSettingDetail(26)">
-                        문의하기
-                        <i>›</i>
-</li><div class="settings-detail" style="display:none; padding:10px;">설정 27 상세 내용입니다.</div>
-<li class="submenu-item" onclick="toggleSettingDetail(27)">
-                        사용 가이드
-                        <i>›</i>
-</li><div class="settings-detail" style="display:none; padding:10px;">설정 28 상세 내용입니다.</div>
-<li class="submenu-item" onclick="toggleSettingDetail(28)">
-                        버전 정보: bEtA tEsT!
-                        <i>›</i>
-</li><div class="settings-detail" style="display:none; padding:10px;">설정 29 상세 내용입니다.</div>
-</ul>
-</div>
-</div>
-</div>
+  <div class="settings-profile">
+    <div class="profile-image" onclick="document.getElementById('profile-image-input').click()">
+      <input id="profile-image-input" type="file" accept="image/*" onchange="handleImageUpload(event)" />
+      <img id="profile-preview" src="" alt="프로필 이미지" />
+    </div>
+    <div class="profile-info">
+      <h2>
+        <span id="user-name">사용자 이름</span>
+        <button class="edit-button" onclick="editField('user-name')">✏️</button>
+      </h2>
+      <p>
+        <span id="user-email">user@example.com</span>
+        <button class="edit-button" onclick="editField('user-email')">✏️</button>
+      </p>
+    </div>
+  </div>
+
+  <div class="main-settings">
+    <ul class="settings-list">
+      <li class="settings-item" onclick="showSubmenu('notifications')">🔔 알림 설정 <i>›</i></li>
+      <li class="settings-item" onclick="showSubmenu('theme')">🌙 테마 설정 <i>›</i></li>
+      <li class="settings-item" onclick="showSubmenu('data')">🗃 데이터 관리 <i>›</i></li>
+      <li class="settings-item" onclick="showSubmenu('sync')">☁️ 백업 및 동기화 <i>›</i></li>
+      <li class="settings-item" onclick="showSubmenu('privacy')">🔒 개인정보 설정 <i>›</i></li>
+      <li class="settings-item" onclick="showSubmenu('help')">❓ 도움말 <i>›</i></li>
+    </ul>
+  </div>
+
+  <!-- submenu 구조 (내용 유지, 세부 내용 제거) -->
+  <div class="submenu" id="notifications">
+    <div class="back-button" onclick="hideSubmenu('notifications')"><i>‹</i> 알림 설정</div>
+    <ul class="settings-list">
+      <li class="submenu-item">
+        푸시 알림
+        <label class="toggle-switch">
+          <input id="push-notification" type="checkbox" onchange="toggleNotification('push')" />
+          <span class="toggle-slider"></span>
+        </label>
+      </li>
+      <li class="submenu-item">
+        이메일 알림
+        <label class="toggle-switch">
+          <input id="email-notification" type="checkbox" onchange="toggleNotification('email')" />
+          <span class="toggle-slider"></span>
+        </label>
+      </li>
+      <li class="submenu-item">
+        시간표 변경 알림
+        <label class="toggle-switch">
+          <input id="timetable-notification" type="checkbox" onchange="toggleNotification('timetable')" />
+          <span class="toggle-slider"></span>
+        </label>
+      </li>
+      <li class="submenu-item">
+        시험 일정 알림
+        <label class="toggle-switch">
+          <input id="exam-notification" type="checkbox" onchange="toggleNotification('exam')" />
+          <span class="toggle-slider"></span>
+        </label>
+      </li>
+      <li class="submenu-item">
+        알림음 설정
+        <select class="notification-sound" onchange="changeNotificationSound(this.value)">
+          <option value="default">기본 알림음</option>
+          <option value="bell">벨 소리</option>
+          <option value="chime">차임벨</option>
+          <option value="ding">딩동</option>
+        </select>
+      </li>
+    </ul>
+  </div>
+
+  <div class="submenu" id="theme">
+    <div class="back-button" onclick="hideSubmenu('theme')"><i>‹</i> 테마 설정</div>
+    <ul class="settings-list">
+      <li class="submenu-item" onclick="toggleDarkMode()">다크모드 전환</li>
+      <li class="submenu-item">
+        <div class="font-size-control">
+          폰트 크기
+          <button class="font-size-button" onclick="changeFontSize(-1)">A-</button>
+          <button class="font-size-button" onclick="changeFontSize(1)">A+</button>
+          <button class="reset-button" onclick="resetFontSize()">초기화</button>
+        </div>
+      </li>
+      <li class="submenu-item">
+        언어 설정
+        <select class="language-select" onchange="changeLanguage(this.value)">
+          <option value="ko">한국어</option>
+          <option value="en">English</option>
+          <option value="ja">日本語</option>
+          <option value="zh">中文</option>
+        </select>
+      </li>
+    </ul>
+  </div>
 <!-- 모바일 하단 탭 -->
 <div class="mobile-bottom-tabs">
 <button class="mobile-tab-button active" onclick="switchTab('main')">📅</button>
